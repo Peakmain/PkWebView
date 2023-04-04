@@ -9,8 +9,5 @@ import java.io.Serializable
  * describe：
  */
 data class WebViewConfigBean(
-    var url: String? = null,
-    var model: Int = 2,
-    var statusBarColor: Int? = null,
-    var statusBarAlpha: Int = 1
+    var url: String? = null
 ) : Serializable

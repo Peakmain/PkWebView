@@ -43,29 +43,6 @@ class WebViewConfig private constructor(){
         return this
     }
 
-    /**
-     * 设置状态栏的model，默认是黑底白字
-     */
-    fun statusMode(@StatusState model: Int = MODE_DARK): WebViewConfig {
-        webViewConfigBean.model = model
-        return this
-    }
-
-    /**
-     * 设置状态栏的颜色
-     */
-    fun statusBarColor(@ColorInt color: Int): WebViewConfig {
-        webViewConfigBean.statusBarColor = color
-        return this
-    }
-
-    /**
-     * 设置状态栏的颜色
-     */
-    fun statusBarAlpha(@IntRange(from = 0, to = 255) statusBarAlpha: Int): WebViewConfig {
-        webViewConfigBean.statusBarAlpha = statusBarAlpha
-        return this
-    }
 
 
 }

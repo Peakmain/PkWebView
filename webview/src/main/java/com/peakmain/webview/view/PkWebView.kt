@@ -3,6 +3,7 @@ package com.peakmain.webview.view
 import android.content.Context
 import android.util.AttributeSet
 import android.webkit.WebView
+import com.peakmain.webview.R
 import com.peakmain.webview.helper.WebViewHelper
 
 /**
@@ -11,10 +12,10 @@ import com.peakmain.webview.helper.WebViewHelper
  * mail:2726449200@qq.com
  * describe：
  */
-class BaseWebView @JvmOverloads constructor(
+class PkWebView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyle: Int = 0
+    defStyle: Int = R.style.PkWebView
 ) :
     WebView(context, attrs, defStyle) {
 

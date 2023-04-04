@@ -7,7 +7,7 @@ import android.content.pm.PackageManager
 import android.content.res.AssetManager
 import android.os.Build
 import android.text.TextUtils
-import com.peakmain.basiclibrary.utils.reflect.ReflectUtils
+import com.peakmain.webview.utils.ReflectUtils
 import java.lang.reflect.Method
 
 /**

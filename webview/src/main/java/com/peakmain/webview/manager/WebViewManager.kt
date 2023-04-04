@@ -1,28 +1,24 @@
-package com.peakmain.webview.viewmodel
+package com.peakmain.webview.manager
 
 import android.graphics.Bitmap
 import android.net.Uri
 import android.net.http.SslError
-import android.os.Build
 import android.text.TextUtils
+import android.util.Log
 import android.webkit.*
-import androidx.annotation.RequiresApi
-import com.peakmain.basiclibrary.base.viewmodel.BaseViewModel
-import com.peakmain.basiclibrary.constants.AndroidVersion
-import com.peakmain.webview.callback.WebViewChromeClientCallback
-import com.peakmain.webview.callback.WebViewClientCallback
 
 /**
  * author ：Peakmain
- * createTime：2023/4/1
+ * createTime：2023/04/04
  * mail:2726449200@qq.com
  * describe：
  */
-class WebViewModel : BaseViewModel() {
-    override fun initModel() {
-
+internal class WebViewManager {
+    companion object{
+        val instance by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
+            WebViewManager()
+        }
     }
-
     fun initWebViewSetting(webView: WebView, userAgent: String? = null) {
         val webSettings: WebSettings = webView.settings
         WebView.setWebContentsDebuggingEnabled(true)
@@ -41,25 +37,28 @@ class WebViewModel : BaseViewModel() {
             setSupportMultipleWindows(false)
             setSupportZoom(false)
             builtInZoomControls = false
-            cacheMode = WebSettings.LOAD_DEFAULT
+            cacheMode = WebSettings.LOAD_NO_CACHE
         }
         if (!TextUtils.isEmpty(userAgent)) {
             webSettings.userAgentString = userAgent
         }
-        webSettings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         CookieManager.setAcceptFileSchemeCookies(true)
         CookieManager.getInstance().setAcceptCookie(true)
     }
 
-    fun initWebClient(webView: WebView, callback: WebViewClientCallback? = null) {
+    fun initWebClient(webView: WebView) {
         webView.webViewClient = object : WebViewClient() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                if (view != null && url != null)
-                    callback?.onPageStarted(view, url)
+                if (view != null && url != null){
+
+                }
+                Log.e("TAG","onPageStarted->>>>>")
+                    //callback?.onPageStarted(view, url)
             }
 
             override fun onPageFinished(view: WebView, url: String) {
-                callback?.onPageFinished(view, url)
+                //callback?.onPageFinished(view, url)
+                Log.e("TAG","<<<<<-onPageFinished>")
             }
 
             override fun onLoadResource(view: WebView, url: String) {
@@ -67,13 +66,14 @@ class WebViewModel : BaseViewModel() {
             }
 
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                if (TextUtils.isEmpty(url) || callback == null) {
+                /* if (TextUtils.isEmpty(url) || callback == null) {
                     return super.shouldOverrideUrlLoading(view, url)
                 }
-                return callback.shouldOverrideUrlLoading(
+               return callback.shouldOverrideUrlLoading(
                     view,
                     url
-                ) || super.shouldOverrideUrlLoading(view, url)
+                ) || super.shouldOverrideUrlLoading(view, url)*/
+                return super.shouldOverrideUrlLoading(view, url)
             }
 
 
@@ -98,7 +98,7 @@ class WebViewModel : BaseViewModel() {
                     ERROR_TOO_MANY_REQUESTS -> des = "错误：请求已到上限"
                 }
                 //view.loadUrl("javascript:document.body.innerHtml='';")
-                callback?.onReceivedError(view, err, des, url)
+               // callback?.onReceivedError(view, err, des, url)
             }
 
             override fun onReceivedSslError(
@@ -108,11 +108,19 @@ class WebViewModel : BaseViewModel() {
             ) {
                 handler.proceed()
             }
+
+            override fun onReceivedError(
+                view: WebView?,
+                request: WebResourceRequest?,
+                error: WebResourceError?
+            ) {
+                super.onReceivedError(view, request, error)
+            }
         }
     }
 
 
-    fun initWebChromeClient(webView: WebView, callback: WebViewChromeClientCallback?) {
+    fun initWebChromeClient(webView: WebView) {
         webView.webChromeClient = object : WebChromeClient() {
             // file upload callback (Android 5.0 (API level 21) -- current) (public method)
             override fun onShowFileChooser(
@@ -125,7 +133,7 @@ class WebViewModel : BaseViewModel() {
                 if (acceptTypes != null && acceptTypes.isNotEmpty()) {
                     acceptType = acceptTypes[0]
                 }
-                callback?.openFileInput(null, filePathCallback, acceptType)
+                //callback?.openFileInput(null, filePathCallback, acceptType)
                 return true
             }
 
@@ -134,7 +142,7 @@ class WebViewModel : BaseViewModel() {
                 acceptType: String? = null,
                 capture: String? = null
             ) {
-                callback?.openFileInput(uploadMsg, null, acceptType)
+                //callback?.openFileInput(uploadMsg, null, acceptType)
             }
 
             override fun onConsoleMessage(consoleMessage: ConsoleMessage): Boolean {
@@ -142,11 +150,11 @@ class WebViewModel : BaseViewModel() {
             }
 
             override fun onReceivedTitle(view: WebView, title: String) {
-                callback?.onReceivedTitle(title)
+                //callback?.onReceivedTitle(title)
             }
 
             override fun onProgressChanged(view: WebView?, newProgress: Int) {
-                callback?.onProgressChanged(view, newProgress)
+                //callback?.onProgressChanged(view, newProgress)
             }
 
             override fun onJsAlert(
@@ -159,5 +167,4 @@ class WebViewModel : BaseViewModel() {
             }
         }
     }
-
 }

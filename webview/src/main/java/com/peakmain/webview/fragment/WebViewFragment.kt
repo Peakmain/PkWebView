@@ -3,21 +3,23 @@ package com.peakmain.webview.fragment
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
+import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.webkit.ValueCallback
 import android.webkit.WebView
-import com.peakmain.basiclibrary.base.fragment.BaseFragment
-import com.peakmain.webview.R
+import android.widget.FrameLayout
+import androidx.fragment.app.Fragment
 import com.peakmain.webview.WebViewActivity
-import com.peakmain.webview.WebViewLifecycle
-import com.peakmain.webview.callback.WebViewChromeClientCallback
 import com.peakmain.webview.callback.WebViewClientCallback
-import com.peakmain.webview.databinding.LayoutFragmentWebViewBinding
 import com.peakmain.webview.helper.WebViewHelper
-import com.peakmain.webview.viewmodel.WebViewModel
-import java.lang.Exception
+import com.peakmain.webview.manager.WebViewPool
+import com.peakmain.webview.view.PkWebView
 
 /**
  * author ：Peakmain
@@ -25,24 +27,45 @@ import java.lang.Exception
  * mail:2726449200@qq.com
  * describe：
  */
-class WebViewFragment(override val layoutId: Int = R.layout.layout_fragment_web_view) :
-    BaseFragment<LayoutFragmentWebViewBinding, WebViewModel>(),
-        (String) -> String, WebViewClientCallback, WebViewChromeClientCallback {
+open class WebViewFragment : Fragment(), WebViewClientCallback {
     protected var mFileUploadCallbackFirst: ValueCallback<Uri>? = null
     protected var mFileUploadCallbackSecond: ValueCallback<Array<Uri>>? = null
-    override fun initView(fragmentView: View) {
-        mBinding.libraryWebView.apply {
+    private var mWebView: PkWebView? = null
+    private var mStartTime: Long = 0L
+    private var mEndTime: Long = 0L
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        context?.let {
+            val frameLayout = FrameLayout(it)
+            frameLayout.layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+            initView(frameLayout)
+            return frameLayout
+        }
+        return null
+    }
+
+    private fun initView(fragmentView: FrameLayout?) {
+        mWebView = WebViewPool.instance.getWebView()
+        mWebView?.apply {
             //不显示滚动条
             isHorizontalScrollBarEnabled = false
             isVerticalScrollBarEnabled = false
-            mLoadUrlListener = this@WebViewFragment
-            mViewModel.initWebViewSetting(this)
-            mViewModel.initWebClient(this, this@WebViewFragment)
-            mViewModel.initWebChromeClient(this, this@WebViewFragment)
+            addWebView(fragmentView, this)
         }
         //ProgressLoading.getInstance(requireContext(), mBinding.libraryWebView)?.showLoading()
         loadUrl2WebView(null)
-        lifecycle.addObserver(WebViewLifecycle(mBinding.libraryWebView))
+    }
+
+    private fun addWebView(fragmentView: FrameLayout?, pkWebView: PkWebView) {
+        if (fragmentView != null && fragmentView.childCount <= 0) {
+            fragmentView.addView(pkWebView)
+        }
     }
 
     private fun loadUrl2WebView(oldUrl: String?) {
@@ -51,50 +74,42 @@ class WebViewFragment(override val layoutId: Int = R.layout.layout_fragment_web_
             curUrl = getWebViewUrl()
         }
         if (!TextUtils.isEmpty(curUrl)) {
-            mBinding.libraryWebView.loadUrl(curUrl!!)
+            mWebView?.loadUrl(curUrl!!)
         } else {
             //LogUtils.e("WebView is empty page not found!")
         }
     }
 
     private fun getWebViewUrl(): String? {
-        return arguments!!.getString(WebViewHelper.LIBRARY_WEB_VIEW_URL)
+        return arguments?.getString(WebViewHelper.LIBRARY_WEB_VIEW_URL)
     }
 
-    override fun invoke(p1: String): String {
-        return p1
-    }
 
     fun canGoBack(): Boolean {
-        return mBinding.libraryWebView.canGoBack()
+        return mWebView?.canGoBack() ?: false
     }
 
     fun webViewPageGoBack() {
         if (canGoBack()) {
-            mBinding.libraryWebView.goBack()
+            mWebView?.goBack()
         }
     }
 
     override fun onDestroy() {
+        if (mWebView != null) {
+            WebViewPool.instance.releaseWebView(mWebView)
+            mWebView=null
+        }
         super.onDestroy()
-        mBinding.libraryWebView.mLoadUrlListener = null
     }
-
     override fun onPageStarted(view: WebView, url: String) {
-        //LogUtils.e("onPageStarted:$url")
+        mStartTime = System.currentTimeMillis()
 
     }
 
     override fun onPageFinished(view: WebView, url: String) {
-      /*  ProgressLoading.getInstance(requireContext(), mBinding.libraryWebView)?.hideLoading()
-        if (!TextUtils.isEmpty(url) && (url.startsWith("http") || url.startsWith("https"))
-            && !BasicLibraryUtils.isNetworkAvailable(activity)
-        ) {
-            ProgressLoading.getInstance(requireContext(), mBinding.libraryWebView)?.showNoNetwork()
-                ?.setOnRetryClickListener(View.OnClickListener {
-                    loadUrl2WebView(url)
-                })
-        }*/
+        mEndTime = System.currentTimeMillis()
+        Log.e("TAG", "消耗的时间:$mEndTime")
     }
 
     override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
@@ -132,14 +147,10 @@ class WebViewFragment(override val layoutId: Int = R.layout.layout_fragment_web_
     }
 
     override fun onReceivedError(view: WebView, err: Int, des: String, url: String) {
-  /*      ProgressLoading.getInstance(requireContext(), mBinding.libraryWebView)
-            ?.showError()
-            ?.setOnRetryClickListener(View.OnClickListener {
-                loadUrl2WebView(url)
-            })*/
+
     }
 
-    override fun onReceivedTitle(title: String) {
+    fun onReceivedTitle(title: String) {
         if (activity != null && activity is WebViewActivity) {
             val activity = activity as WebViewActivity
             activity.onReceivedTitle(title)
@@ -147,10 +158,10 @@ class WebViewFragment(override val layoutId: Int = R.layout.layout_fragment_web_
     }
 
     fun loadUrl(url: String) {
-        mBinding.libraryWebView.loadUrl(url)
+        mWebView?.loadUrl(url)
     }
 
-    override fun openFileInput(
+    fun openFileInput(
         fileUploadCallbackFirst: ValueCallback<Uri>?,
         fileUploadCallbackSecond: ValueCallback<Array<Uri>>?,
         acceptType: String?
@@ -171,16 +182,10 @@ class WebViewFragment(override val layoutId: Int = R.layout.layout_fragment_web_
             type = "image/*"
         }
         i.type = type
-        if (activity != null) {
-            activity!!.startActivityForResult(
-                Intent.createChooser(i, "File Chooser!"),
-                REQUEST_CODE_FILE_PICKER
-            )
-        }
-    }
-
-    override fun onProgressChanged(view: WebView?, newProgress: Int) {
-       //LogUtils.e("progress:$newProgress")
+        activity?.startActivityForResult(
+            Intent.createChooser(i, "File Chooser!"),
+            REQUEST_CODE_FILE_PICKER
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
@@ -224,14 +229,6 @@ class WebViewFragment(override val layoutId: Int = R.layout.layout_fragment_web_
         return false
     }
 
-    fun clearWebView() {
-        mBinding.libraryWebView.let {
-            mBinding.libraryFlRoot.removeAllViews()
-            it.visibility = View.GONE
-            it.destroy()
-            null
-        }
-    }
 
     companion object {
         private const val REQUEST_CODE_FILE_PICKER = 51426
