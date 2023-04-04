@@ -17,8 +17,8 @@ class PkWebViewInit private constructor() {
 
     }
 
-    fun init(context: Context?) {
-        WebViewPool.instance.initWebViewPool(context)
+    fun init(context: Context?,userAgent:String="") {
+        WebViewPool.instance.initWebViewPool(context,userAgent)
     }
 
 }
