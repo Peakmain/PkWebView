@@ -33,7 +33,6 @@ internal class WebViewActivity(override val layoutId: Int = R.layout.layout_acti
         intent.extras?.getSerializable(WebViewHelper.LIBRARY_WEB_VIEW) as WebViewConfigBean
     }
     var mWebViewFragment: WebViewFragment? = null
-    private var mDefaultNavigationBar: DefaultNavigationBar? = null
     override fun initView() {
         val bundle = Bundle()
         if (!TextUtils.isEmpty(mWebViewConfigBean.url)) {
@@ -96,54 +95,7 @@ internal class WebViewActivity(override val layoutId: Int = R.layout.layout_acti
         mWebViewFragment?.clearWebView();
     }
 
-    private fun initTitle(title: String?) {
-        mWebViewConfigBean.titleBean?.apply {
-            val builder = DefaultNavigationBar.Builder(
-                this@WebViewActivity,
-                findViewById<View>(android.R.id.content) as ViewGroup
-            )
-            if (!isShowRightIcon) {
-                builder.hideRightView()
-            } else {
-                builder.setRightResId(rightImageIcon)
-            }
-            if (isHideLeftText) {
-                builder.hideLeftText()
-            } else if (!TextUtils.isEmpty(leftText)) {
-                builder.setLeftText(leftText)
-            }
-            if (isHideTitleText) {
-                builder.hideTitleText()
-            } else {
-                builder.setTitleText(
-                    titleText ?: (title ?: ""),
-                    if (isTitleTextBold) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
-                ).setTitleTextColor(titleColor)
-            }
-            builder.setToolbarBackgroundColor(toolbarBackgroundColor)
-            builder.setHomeAsUpIndicator(customLeftBackIcon)
-                .setLeftClickListener(View.OnClickListener {
-                    leftViewClickListener
-                }).setRightViewClickListener(View.OnClickListener {
-                    rightViewClickListener
-                })
-            builder.setDisplayHomeAsUpEnabled(isShowHomeAsUp)
-                .setNavigationOnClickListener(View.OnClickListener { finish() })
-            builder.setDisplayShowTitleEnabled(isShowToolbarTitle)
-            mDefaultNavigationBar = builder.create()
-            mDefaultNavigationBar?.findViewById<TextView>(R.id.tv_title)
-                ?.setTextSize(TypedValue.COMPLEX_UNIT_SP, titleTextSize)
-            val appBarLayout =
-                mDefaultNavigationBar?.findViewById<AppBarLayout>(R.id.navigation_header_container)
-            appBarLayout?.apply {
-                stateListAnimator = null
-                elevation = 2f
-            }
-        }
-
-    }
 
     fun onReceivedTitle(title: String) {
-        initTitle(title)
     }
 }

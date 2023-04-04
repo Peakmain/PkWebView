@@ -8,6 +8,7 @@ import android.text.TextUtils
 import android.webkit.*
 import androidx.annotation.RequiresApi
 import com.peakmain.basiclibrary.base.viewmodel.BaseViewModel
+import com.peakmain.basiclibrary.constants.AndroidVersion
 import com.peakmain.webview.callback.WebViewChromeClientCallback
 import com.peakmain.webview.callback.WebViewClientCallback
 
@@ -26,24 +27,26 @@ class WebViewModel : BaseViewModel() {
         val webSettings: WebSettings = webView.settings
         WebView.setWebContentsDebuggingEnabled(true)
         webSettings.apply {
-            allowFileAccessFromFileURLs = true
-            allowUniversalAccessFromFileURLs = true
+            //允许网页JavaScript
+            javaScriptEnabled = true
             allowFileAccess = true
             useWideViewPort = true
-            builtInZoomControls = false
-            javaScriptEnabled = true
+            // 支持混合内容（https和http共存）
+            mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+            // 开启DOM存储API
             domStorageEnabled = true
+            // 开启数据库存储API
             databaseEnabled = true
+            //不允许WebView中跳转到其他链接
             setSupportMultipleWindows(false)
             setSupportZoom(false)
-            setRenderPriority(WebSettings.RenderPriority.HIGH)
+            builtInZoomControls = false
+            cacheMode = WebSettings.LOAD_DEFAULT
         }
         if (!TextUtils.isEmpty(userAgent)) {
             webSettings.userAgentString = userAgent
         }
-        if (Build.VERSION.SDK_INT >= 21) {
-            webSettings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-        }
+        webSettings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         CookieManager.setAcceptFileSchemeCookies(true)
         CookieManager.getInstance().setAcceptCookie(true)
     }
@@ -72,6 +75,7 @@ class WebViewModel : BaseViewModel() {
                     url
                 ) || super.shouldOverrideUrlLoading(view, url)
             }
+
 
             override fun onReceivedError(view: WebView, err: Int, des: String, url: String) {
                 var des = des

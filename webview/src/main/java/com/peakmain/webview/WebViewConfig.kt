@@ -1,16 +1,9 @@
 package com.peakmain.webview
 
-import android.content.Context
-import android.content.Intent
-import android.os.Bundle
 import androidx.annotation.ColorInt
 import androidx.annotation.IntDef
 import androidx.annotation.IntRange
-import com.peakmain.webview.base.BaseOneSingleton
 import com.peakmain.webview.bean.WebViewConfigBean
-import com.peakmain.webview.bean.WebViewTitleBean
-import com.peakmain.webview.helper.WebViewHelper
-import java.lang.ref.WeakReference
 
 /**
  * author ：Peakmain
@@ -18,12 +11,14 @@ import java.lang.ref.WeakReference
  * mail:2726449200@qq.com
  * describe：
  */
-class WebViewConfig(val contextRef: WeakReference<Context>) {
-    companion object : BaseOneSingleton<Context, WebViewConfig>() {
+class WebViewConfig private constructor(){
+    companion object  {
         const val MODE_LIGHT = 1
         const val MODE_DARK = 2
-        override fun createSingleton(params: Context): WebViewConfig =
-            WebViewConfig(WeakReference(params))
+        @JvmStatic
+        val instance by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
+            WebViewConfig()
+        }
     }
 
     private val webViewConfigBean = WebViewConfigBean()
@@ -72,24 +67,5 @@ class WebViewConfig(val contextRef: WeakReference<Context>) {
         return this
     }
 
-    /**
-     * 设置标题
-     */
-    fun titleBean(titleBean: WebViewTitleBean? = WebViewTitleBean()): WebViewConfig {
-        webViewConfigBean.titleBean = titleBean
-        return this
-    }
-
-    fun start(flags: Int? = null) {
-        val bundle = Bundle()
-        val context = contextRef.get()
-        val intent = Intent(context, WebViewActivity::class.java)
-        bundle.putSerializable(WebViewHelper.LIBRARY_WEB_VIEW, webViewConfigBean)
-        intent.putExtras(bundle)
-        if (flags != null) {
-            intent.flags = flags
-        }
-        context?.startActivity(intent)
-    }
 
 }
