@@ -12,15 +12,24 @@ import com.peakmain.webview.helper.WebViewHelper
  * mail:2726449200@qq.com
  * describe：
  */
-class PkWebView @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyle: Int = R.style.PkWebView
-) :
-    WebView(context, attrs, defStyle) {
+class PkWebView :WebView {
+
+    constructor(context: Context, attrs: AttributeSet? = null) : super(context, attrs) {
+        WebViewHelper.loadWebViewResource(context)
+    }
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
+        WebViewHelper.loadWebViewResource(context)
+    }
+    constructor(
+        context: Context
+    ) : this(context,null)
 
     init {
-        WebViewHelper.loadWebViewResource(context)
+
     }
 
     var mLoadUrlListener: ((String) -> String)? = null

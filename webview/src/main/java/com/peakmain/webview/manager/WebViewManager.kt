@@ -37,7 +37,7 @@ internal class WebViewManager {
             setSupportMultipleWindows(false)
             setSupportZoom(false)
             builtInZoomControls = false
-            cacheMode = WebSettings.LOAD_NO_CACHE
+            cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
         }
         if (!TextUtils.isEmpty(userAgent)) {
             webSettings.userAgentString = userAgent
