@@ -1,11 +1,16 @@
 package com.peakmain.webview.manager
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.net.http.SslError
 import android.text.TextUtils
 import android.util.Log
 import android.webkit.*
+import com.peakmain.webview.activity.WebViewActivity
+import com.peakmain.webview.bean.WebViewConfigBean
+import com.peakmain.webview.callback.WebViewClientCallback
+import com.peakmain.webview.helper.WebViewHelper
 
 /**
  * author ：Peakmain
@@ -14,11 +19,17 @@ import android.webkit.*
  * describe：
  */
 internal class WebViewManager {
-    companion object{
+    companion object {
         val instance by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
             WebViewManager()
         }
     }
+
+    private var callback: WebViewClientCallback? = null
+    fun setCallback(callback: WebViewClientCallback) {
+        this.callback = callback
+    }
+
     fun initWebViewSetting(webView: WebView, userAgent: String? = null) {
         val webSettings: WebSettings = webView.settings
         WebView.setWebContentsDebuggingEnabled(true)
@@ -37,7 +48,7 @@ internal class WebViewManager {
             setSupportMultipleWindows(false)
             setSupportZoom(false)
             builtInZoomControls = false
-            cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
+            //cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
         }
         if (!TextUtils.isEmpty(userAgent)) {
             webSettings.userAgentString = userAgent
@@ -49,31 +60,21 @@ internal class WebViewManager {
     fun initWebClient(webView: WebView) {
         webView.webViewClient = object : WebViewClient() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                if (view != null && url != null){
-
+                if (view != null && url != null) {
+                    callback?.onPageStarted(view, url)
                 }
-                Log.e("TAG","onPageStarted->>>>>")
-                    //callback?.onPageStarted(view, url)
             }
 
             override fun onPageFinished(view: WebView, url: String) {
-                //callback?.onPageFinished(view, url)
-                Log.e("TAG","<<<<<-onPageFinished>")
-            }
-
-            override fun onLoadResource(view: WebView, url: String) {
-                super.onLoadResource(view, url)
+                callback?.onPageFinished(view, url)
             }
 
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                /* if (TextUtils.isEmpty(url) || callback == null) {
+                if (TextUtils.isEmpty(url) || callback == null) {
                     return super.shouldOverrideUrlLoading(view, url)
                 }
-               return callback.shouldOverrideUrlLoading(
-                    view,
-                    url
-                ) || super.shouldOverrideUrlLoading(view, url)*/
-                return super.shouldOverrideUrlLoading(view, url)
+                return callback?.shouldOverrideUrlLoading(view, url)
+                    ?: super.shouldOverrideUrlLoading(view, url)
             }
 
 
@@ -98,7 +99,7 @@ internal class WebViewManager {
                     ERROR_TOO_MANY_REQUESTS -> des = "错误：请求已到上限"
                 }
                 //view.loadUrl("javascript:document.body.innerHtml='';")
-               // callback?.onReceivedError(view, err, des, url)
+                 callback?.onReceivedError(view, err, des, url)
             }
 
             override fun onReceivedSslError(

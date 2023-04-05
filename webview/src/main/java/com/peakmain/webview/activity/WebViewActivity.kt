@@ -1,10 +1,11 @@
-package com.peakmain.webview
+package com.peakmain.webview.activity
 
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.KeyEvent
 import androidx.appcompat.app.AppCompatActivity
+import com.peakmain.webview.R
 import com.peakmain.webview.bean.WebViewConfigBean
 import com.peakmain.webview.fragment.WebViewFragment
 import com.peakmain.webview.helper.WebViewHelper

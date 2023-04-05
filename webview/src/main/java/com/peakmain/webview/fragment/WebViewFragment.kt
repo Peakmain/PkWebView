@@ -3,7 +3,6 @@ package com.peakmain.webview.fragment
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
@@ -15,9 +14,11 @@ import android.webkit.ValueCallback
 import android.webkit.WebView
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
-import com.peakmain.webview.WebViewActivity
+import com.peakmain.webview.activity.WebViewActivity
+import com.peakmain.webview.bean.WebViewConfigBean
 import com.peakmain.webview.callback.WebViewClientCallback
 import com.peakmain.webview.helper.WebViewHelper
+import com.peakmain.webview.manager.WebViewManager
 import com.peakmain.webview.manager.WebViewPool
 import com.peakmain.webview.view.PkWebView
 
@@ -27,7 +28,7 @@ import com.peakmain.webview.view.PkWebView
  * mail:2726449200@qq.com
  * describe：
  */
-open class WebViewFragment : Fragment(), WebViewClientCallback {
+open class WebViewFragment : Fragment(){
     protected var mFileUploadCallbackFirst: ValueCallback<Uri>? = null
     protected var mFileUploadCallbackSecond: ValueCallback<Array<Uri>>? = null
     private var mWebView: PkWebView? = null
@@ -60,6 +61,28 @@ open class WebViewFragment : Fragment(), WebViewClientCallback {
         }
         //ProgressLoading.getInstance(requireContext(), mBinding.libraryWebView)?.showLoading()
         loadUrl2WebView(null)
+        WebViewManager.instance.setCallback(object :WebViewClientCallback{
+            override fun onPageStarted(view: WebView, url: String) {
+               this@WebViewFragment.onPageStarted(view,url)
+            }
+
+            override fun onPageFinished(view: WebView, url: String) {
+                this@WebViewFragment.onPageFinished(view,url)
+            }
+
+            override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+               /* val bean= WebViewConfigBean(url)
+                val intent= Intent(context, WebViewActivity::class.java)
+                intent.putExtra(WebViewHelper.LIBRARY_WEB_VIEW,bean)
+                startActivity(intent)*/
+                return false
+            }
+
+            override fun onReceivedError(view: WebView, err: Int, des: String, url: String) {
+
+            }
+
+        })
     }
 
     private fun addWebView(fragmentView: FrameLayout?, pkWebView: PkWebView) {
@@ -102,17 +125,16 @@ open class WebViewFragment : Fragment(), WebViewClientCallback {
         }
         super.onDestroy()
     }
-    override fun onPageStarted(view: WebView, url: String) {
+     fun onPageStarted(view: WebView, url: String) {
         mStartTime = System.currentTimeMillis()
-
     }
 
-    override fun onPageFinished(view: WebView, url: String) {
+     fun onPageFinished(view: WebView, url: String) {
         mEndTime = System.currentTimeMillis()
-        Log.e("TAG", "消耗的时间:$mEndTime")
+        Log.e("TAG", "消耗的时间:${(mEndTime-mStartTime)/1000}")
     }
 
-    override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+     fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
 
         //处理电话功能
         if (url.startsWith("tel")) {
@@ -146,7 +168,7 @@ open class WebViewFragment : Fragment(), WebViewClientCallback {
         )
     }
 
-    override fun onReceivedError(view: WebView, err: Int, des: String, url: String) {
+     fun onReceivedError(view: WebView, err: Int, des: String, url: String) {
 
     }
 
