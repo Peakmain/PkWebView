@@ -11,6 +11,7 @@ import com.peakmain.webview.view.PkWebView
  * describe：WebView缓存池管理
  */
 internal class WebViewPool private constructor() {
+    private lateinit var mUserAgent: String
     private lateinit var mWebViewPool: Array<PkWebView?>
 
     companion object {
@@ -25,8 +26,9 @@ internal class WebViewPool private constructor() {
      * 初始化WebView池
      */
     fun initWebViewPool(context: Context?, userAgent: String = "") {
-        mWebViewPool = arrayOfNulls(WEB_VIEW_COUNT)
         if (context == null) return
+        mWebViewPool = arrayOfNulls(WEB_VIEW_COUNT)
+        mUserAgent = userAgent
         for (i in 0 until WEB_VIEW_COUNT) {
             mWebViewPool[i] = createWebView(context, userAgent)
         }
@@ -57,16 +59,21 @@ internal class WebViewPool private constructor() {
      * Activity销毁时需要释放当前WebView
      */
     fun releaseWebView(webView: PkWebView?) {
-        if (webView == null) return
-        webView.removeAllViews()
-        webView.clearHistory()
-        ((webView.parent) as ViewGroup?)?.removeView(webView)
-        for (i in 0 until WEB_VIEW_COUNT) {
-            if (mWebViewPool[i] == null) {
-                mWebViewPool[i] = webView
-                return
+        checkIsInitialized()
+        webView?.apply {
+            stopLoading()
+            removeAllViews()
+            clearHistory()
+            destroy()
+            (parent as ViewGroup?)?.removeView(this)
+            for (i in 0 until WEB_VIEW_COUNT) {
+                if (mWebViewPool[i] == null) {
+                    mWebViewPool[i] = createWebView(webView.context, mUserAgent)
+                    return
+                }
             }
         }
+
     }
 
     private fun createWebView(context: Context, userAgent: String): PkWebView? {

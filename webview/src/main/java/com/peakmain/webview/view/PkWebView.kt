@@ -3,7 +3,6 @@ package com.peakmain.webview.view
 import android.content.Context
 import android.util.AttributeSet
 import android.webkit.WebView
-import com.peakmain.webview.R
 import com.peakmain.webview.helper.WebViewHelper
 
 /**
@@ -28,9 +27,6 @@ class PkWebView :WebView {
         context: Context
     ) : this(context,null)
 
-    init {
-
-    }
 
     var mLoadUrlListener: ((String) -> String)? = null
 
