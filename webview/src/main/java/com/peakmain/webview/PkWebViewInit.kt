@@ -9,7 +9,7 @@ import com.peakmain.webview.manager.WebViewPool
  * author ：Peakmain
  * createTime：2023/04/04
  * mail:2726449200@qq.com
- * describe：
+ * describe：WebView初始化类
  */
 class PkWebViewInit private constructor(private val context: Context, private val userAgent: String) {
     private var mWebViewController: WebViewController = WebViewController()
@@ -30,8 +30,12 @@ class PkWebViewInit private constructor(private val context: Context, private va
             return this
         }
 
-        fun setUserAgent(userAgent: String): Builder {
+        fun setUserAgent(userAgent: String=""): Builder {
             P.userAgent = userAgent
+            return this
+        }
+        fun setWebViewCount(count:Int):Builder{
+            P.mWebViewCount=count
             return this
         }
 

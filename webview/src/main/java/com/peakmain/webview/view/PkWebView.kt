@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.webkit.WebView
 import com.peakmain.webview.helper.WebViewHelper
+import com.peakmain.webview.manager.WebViewController
 
 /**
  * author ：Peakmain

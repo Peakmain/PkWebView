@@ -1,6 +1,5 @@
 package com.peakmain.webview.manager
 
-import android.content.Context
 import android.view.ViewGroup
 import com.peakmain.webview.view.PkWebView
 
@@ -13,9 +12,10 @@ import com.peakmain.webview.view.PkWebView
 internal class WebViewPool private constructor() {
     private lateinit var mUserAgent: String
     private lateinit var mWebViewPool: Array<PkWebView?>
+    private lateinit var mParams: WebViewController.WebViewParams
 
     companion object {
-        private const val WEB_VIEW_COUNT = 3
+        private var WEB_VIEW_COUNT = 3
         val instance by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
             WebViewPool()
         }
@@ -27,10 +27,12 @@ internal class WebViewPool private constructor() {
      */
     fun initWebViewPool(params: WebViewController.WebViewParams?) {
         if (params == null) return
+        WEB_VIEW_COUNT = params.mWebViewCount
         mWebViewPool = arrayOfNulls(WEB_VIEW_COUNT)
         mUserAgent = params.userAgent
+        mParams = params
         for (i in 0 until WEB_VIEW_COUNT) {
-            mWebViewPool[i] = createWebView(params.context, mUserAgent)
+            mWebViewPool[i] = createWebView(params, mUserAgent)
         }
     }
 
@@ -68,7 +70,7 @@ internal class WebViewPool private constructor() {
             (parent as ViewGroup?)?.removeView(this)
             for (i in 0 until WEB_VIEW_COUNT) {
                 if (mWebViewPool[i] == null) {
-                    mWebViewPool[i] = createWebView(webView.context, mUserAgent)
+                    mWebViewPool[i] = createWebView(mParams, mUserAgent)
                     return
                 }
             }
@@ -76,9 +78,12 @@ internal class WebViewPool private constructor() {
 
     }
 
-    private fun createWebView(context: Context, userAgent: String): PkWebView? {
-        val webView = PkWebView(context)
-        WebViewManager.instance.mWebViewConfig.apply {
+    private fun createWebView(
+        params: WebViewController.WebViewParams,
+        userAgent: String
+    ): PkWebView? {
+        val webView = PkWebView(params.context)
+        params.webViewConfig.apply {
             initWebViewSetting(webView, userAgent)
             initWebChromeClient(webView)
             initWebClient(webView)

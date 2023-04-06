@@ -11,11 +11,12 @@ import com.peakmain.webview.interfaces.implement.DefaultWebViewConfig
  * describe：
  */
 internal class WebViewController {
-    var P: WebViewController.WebViewParams? = null
+    var P: WebViewParams? = null
         private set
 
 
-    internal class WebViewParams(val context: Context) {
+    class WebViewParams(val context: Context) {
+        var mWebViewCount: Int = 3
         var webViewConfig: IWebViewConfig = DefaultWebViewConfig()
         var userAgent: String = ""
 
