@@ -1,11 +1,11 @@
-package com.peakmain.webview.interfaces.implement
+package com.peakmain.webview.implement
 
-import android.graphics.Bitmap
 import android.net.Uri
 import android.net.http.SslError
 import android.text.TextUtils
+import android.util.Log
 import android.webkit.*
-import com.peakmain.webview.callback.WebViewClientCallback
+import com.peakmain.webview.fragment.WebViewFragment
 import com.peakmain.webview.interfaces.IWebViewConfig
 
 /**
@@ -14,11 +14,7 @@ import com.peakmain.webview.interfaces.IWebViewConfig
  * mail:2726449200@qq.com
  * describe：
  */
-class DefaultWebViewConfig:IWebViewConfig {
-    private var callback: WebViewClientCallback? = null
-    fun setCallback(callback: WebViewClientCallback) {
-        this.callback = callback
-    }
+class DefaultWebViewConfig : IWebViewConfig {
     override fun initWebViewSetting(webView: WebView, userAgent: String?) {
         val webSettings: WebSettings = webView.settings
         WebView.setWebContentsDebuggingEnabled(true)
@@ -47,27 +43,39 @@ class DefaultWebViewConfig:IWebViewConfig {
     }
 
     override fun initWebClient(webView: WebView) {
-        webView.webViewClient = object : WebViewClient() {
-            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                if (view != null && url != null) {
-                    callback?.onPageStarted(view, url)
-                }
-            }
-
-            override fun onPageFinished(view: WebView, url: String) {
-                callback?.onPageFinished(view, url)
-            }
-
-            override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                if (TextUtils.isEmpty(url) || callback == null) {
-                    return super.shouldOverrideUrlLoading(view, url)
-                }
-                return callback?.shouldOverrideUrlLoading(view, url)
-                    ?: super.shouldOverrideUrlLoading(view, url)
+        webView.webViewClient = object : BaseWebViewClient() {
+            override fun onPageFinished(view: WebView, url: String, fragment: WebViewFragment?) {
+                Log.e("TAG", "再次來到onPageFinished")
             }
 
 
-            override fun onReceivedError(view: WebView, err: Int, des: String, url: String) {
+            override fun onReceivedSslError(
+                view: WebView,
+                handler: SslErrorHandler,
+                error: SslError
+            ) {
+                handler.proceed()
+            }
+
+            override fun onReceivedError(
+                view: WebView?,
+                request: WebResourceRequest?,
+                error: WebResourceError?
+            ) {
+                super.onReceivedError(view, request, error)
+            }
+
+            override fun onPageStarted(view: WebView, url: String, fragment: WebViewFragment?) {
+                Log.e("TAG", "再次來到onPageStart")
+            }
+
+            override fun onReceivedError(
+                view: WebView?,
+                err: Int,
+                des: String?,
+                url: String?,
+                fragment: WebViewFragment?
+            ) {
                 var des = des
                 super.onReceivedError(view, err, des, url)
                 when (err) {
@@ -87,24 +95,14 @@ class DefaultWebViewConfig:IWebViewConfig {
                     ERROR_FILE_NOT_FOUND -> des = "文件不存在"
                     ERROR_TOO_MANY_REQUESTS -> des = "错误：请求已到上限"
                 }
-                //view.loadUrl("javascript:document.body.innerHtml='';")
-                callback?.onReceivedError(view, err, des, url)
             }
 
-            override fun onReceivedSslError(
+            override fun shouldOverrideUrlLoading(
                 view: WebView,
-                handler: SslErrorHandler,
-                error: SslError
-            ) {
-                handler.proceed()
-            }
-
-            override fun onReceivedError(
-                view: WebView?,
-                request: WebResourceRequest?,
-                error: WebResourceError?
-            ) {
-                super.onReceivedError(view, request, error)
+                url: String,
+                fragment: WebViewFragment?
+            ): Boolean {
+                return super.shouldOverrideUrlLoading(view, url)
             }
         }
     }
@@ -156,4 +154,6 @@ class DefaultWebViewConfig:IWebViewConfig {
             }
         }
     }
+
+
 }

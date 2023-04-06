@@ -12,7 +12,7 @@ import com.peakmain.webview.view.PkWebView
 internal class WebViewPool private constructor() {
     private lateinit var mUserAgent: String
     private lateinit var mWebViewPool: Array<PkWebView?>
-    private lateinit var mParams: WebViewController.WebViewParams
+    lateinit var mParams: WebViewController.WebViewParams
 
     companion object {
         private var WEB_VIEW_COUNT = 3
@@ -81,7 +81,7 @@ internal class WebViewPool private constructor() {
     private fun createWebView(
         params: WebViewController.WebViewParams,
         userAgent: String
-    ): PkWebView? {
+    ): PkWebView {
         val webView = PkWebView(params.context)
         params.webViewConfig.apply {
             initWebViewSetting(webView, userAgent)

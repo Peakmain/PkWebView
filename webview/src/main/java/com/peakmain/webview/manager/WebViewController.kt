@@ -2,7 +2,7 @@ package com.peakmain.webview.manager
 
 import android.content.Context
 import com.peakmain.webview.interfaces.IWebViewConfig
-import com.peakmain.webview.interfaces.implement.DefaultWebViewConfig
+import com.peakmain.webview.implement.DefaultWebViewConfig
 
 /**
  * author ：Peakmain

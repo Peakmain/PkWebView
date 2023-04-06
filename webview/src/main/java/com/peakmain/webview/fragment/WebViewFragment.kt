@@ -11,13 +11,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.ValueCallback
+import android.webkit.WebMessage
 import android.webkit.WebView
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import com.peakmain.webview.activity.WebViewActivity
-import com.peakmain.webview.callback.WebViewClientCallback
 import com.peakmain.webview.helper.WebViewHelper
-import com.peakmain.webview.interfaces.implement.DefaultWebViewConfig
+import com.peakmain.webview.implement.DefaultWebViewConfig
+import com.peakmain.webview.interfaces.IWebViewConfig
 import com.peakmain.webview.manager.WebViewManager
 import com.peakmain.webview.manager.WebViewPool
 import com.peakmain.webview.view.PkWebView
@@ -34,6 +35,7 @@ open class WebViewFragment : Fragment() {
     private var mWebView: PkWebView? = null
     private var mStartTime: Long = 0L
     private var mEndTime: Long = 0L
+    private var webViewConfig: IWebViewConfig = DefaultWebViewConfig()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -53,36 +55,15 @@ open class WebViewFragment : Fragment() {
 
     private fun initView(fragmentView: FrameLayout?) {
         mWebView = WebViewPool.instance.getWebView()
+        WebViewManager.instance.register(this)
         mWebView?.apply {
             //不显示滚动条
             isHorizontalScrollBarEnabled = false
             isVerticalScrollBarEnabled = false
             addWebView(fragmentView, this)
         }
-        //ProgressLoading.getInstance(requireContext(), mBinding.libraryWebView)?.showLoading()
         loadUrl2WebView(null)
-        ((WebViewManager.instance.mWebViewConfig) as DefaultWebViewConfig).setCallback(object : WebViewClientCallback {
-            override fun onPageStarted(view: WebView, url: String) {
-                this@WebViewFragment.onPageStarted(view, url)
-            }
-
-            override fun onPageFinished(view: WebView, url: String) {
-                this@WebViewFragment.onPageFinished(view, url)
-            }
-
-            override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                /* val bean= WebViewConfigBean(url)
-                 val intent= Intent(context, WebViewActivity::class.java)
-                 intent.putExtra(WebViewHelper.LIBRARY_WEB_VIEW,bean)
-                 startActivity(intent)*/
-                return false
-            }
-
-            override fun onReceivedError(view: WebView, err: Int, des: String, url: String) {
-
-            }
-
-        })
+        webViewConfig = WebViewPool.instance.mParams.webViewConfig
     }
 
     private fun addWebView(fragmentView: FrameLayout?, pkWebView: PkWebView) {
@@ -121,10 +102,11 @@ open class WebViewFragment : Fragment() {
     override fun onDestroy() {
         WebViewPool.instance.releaseWebView(mWebView)
         mWebView = null
+        WebViewManager.instance.unRegister()
         super.onDestroy()
     }
 
-    fun onPageStarted(view: WebView, url: String) {
+    fun onPageStarted(view: WebView?, url: String?) {
         mStartTime = System.currentTimeMillis()
     }
 
@@ -167,7 +149,7 @@ open class WebViewFragment : Fragment() {
         )
     }
 
-    fun onReceivedError(view: WebView, err: Int, des: String, url: String) {
+    fun onReceivedError(view: WebView?, err: Int, des: String?, failingUrl: String?) {
 
     }
 

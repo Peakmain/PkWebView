@@ -13,6 +13,7 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         PkWebViewInit.Builder(this)
+            //.setWebViewConfig(ReplaceWebViewConfig())
             .build()
     }
 }

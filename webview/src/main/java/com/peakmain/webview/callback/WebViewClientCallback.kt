@@ -1,6 +1,7 @@
 package com.peakmain.webview.callback
 
 import android.webkit.WebView
+import com.peakmain.webview.fragment.WebViewFragment
 
 /**
  * author ：Peakmain
@@ -9,8 +10,8 @@ import android.webkit.WebView
  * describe：
  */
 interface WebViewClientCallback {
-    fun onPageStarted(view: WebView, url: String)
-    fun onPageFinished(view: WebView, url: String)
-    fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean
-    fun onReceivedError(view: WebView, err: Int, des: String, url: String)
+    fun onPageStarted(view: WebView, url: String,fragment: WebViewFragment?)
+    fun onPageFinished(view: WebView, url: String, fragment: WebViewFragment?)
+    fun shouldOverrideUrlLoading(view: WebView, url: String,fragment: WebViewFragment?): Boolean
+    fun onReceivedError(view: WebView?, err: Int, des: String?, url: String?,fragment: WebViewFragment?)
 }

@@ -12,4 +12,5 @@ interface IWebViewConfig {
     fun initWebViewSetting(webView: WebView, userAgent: String? = null)
     fun initWebClient(webView: WebView)
     fun initWebChromeClient(webView: WebView)
+
 }
