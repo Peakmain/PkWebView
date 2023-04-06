@@ -15,7 +15,7 @@ internal class WebViewPool private constructor() {
     private lateinit var mWebViewPool: Array<PkWebView?>
 
     companion object {
-        const val WEB_VIEW_COUNT = 3
+        private const val WEB_VIEW_COUNT = 3
         val instance by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
             WebViewPool()
         }
@@ -25,12 +25,12 @@ internal class WebViewPool private constructor() {
     /**
      * 初始化WebView池
      */
-    fun initWebViewPool(context: Context?, userAgent: String = "") {
-        if (context == null) return
+    fun initWebViewPool(params: WebViewController.WebViewParams?) {
+        if (params == null) return
         mWebViewPool = arrayOfNulls(WEB_VIEW_COUNT)
-        mUserAgent = userAgent
+        mUserAgent = params.userAgent
         for (i in 0 until WEB_VIEW_COUNT) {
-            mWebViewPool[i] = createWebView(context, userAgent)
+            mWebViewPool[i] = createWebView(params.context, mUserAgent)
         }
     }
 
@@ -78,7 +78,7 @@ internal class WebViewPool private constructor() {
 
     private fun createWebView(context: Context, userAgent: String): PkWebView? {
         val webView = PkWebView(context)
-        WebViewManager.instance.apply {
+        WebViewManager.instance.mWebViewConfig.apply {
             initWebViewSetting(webView, userAgent)
             initWebChromeClient(webView)
             initWebClient(webView)

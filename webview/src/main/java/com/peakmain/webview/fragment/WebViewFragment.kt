@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment
 import com.peakmain.webview.activity.WebViewActivity
 import com.peakmain.webview.callback.WebViewClientCallback
 import com.peakmain.webview.helper.WebViewHelper
+import com.peakmain.webview.interfaces.implement.DefaultWebViewConfig
 import com.peakmain.webview.manager.WebViewManager
 import com.peakmain.webview.manager.WebViewPool
 import com.peakmain.webview.view.PkWebView
@@ -60,7 +61,7 @@ open class WebViewFragment : Fragment() {
         }
         //ProgressLoading.getInstance(requireContext(), mBinding.libraryWebView)?.showLoading()
         loadUrl2WebView(null)
-        WebViewManager.instance.setCallback(object : WebViewClientCallback {
+        ((WebViewManager.instance.mWebViewConfig) as DefaultWebViewConfig).setCallback(object : WebViewClientCallback {
             override fun onPageStarted(view: WebView, url: String) {
                 this@WebViewFragment.onPageStarted(view, url)
             }

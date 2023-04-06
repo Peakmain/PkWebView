@@ -12,6 +12,7 @@ import com.peakmain.webview.PkWebViewInit
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
-        PkWebViewInit.instance.init(this)
+        PkWebViewInit.Builder(this)
+            .build()
     }
 }
