@@ -83,8 +83,8 @@ internal class WebViewPool private constructor() {
         userAgent: String
     ): PkWebView {
         val webView = PkWebView(params.context)
+        params.mWebViewSetting.initWebViewSetting(webView,userAgent)
         params.webViewConfig.apply {
-            initWebViewSetting(webView, userAgent)
             initWebChromeClient(webView)
             initWebClient(webView)
         }

@@ -13,14 +13,15 @@ import com.peakmain.webview.manager.WebViewManager
  * mail:2726449200@qq.com
  * describe：
  */
-abstract class BaseWebViewClient : WebViewClient(), WebViewClientCallback {
+abstract class BaseWebViewClient constructor(val webViewClientCallback: WebViewClientCallback?) :
+    WebViewClient() {
     private var fragment: WebViewFragment? = null
     override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
         if (fragment == null) {
             fragment = WebViewManager.instance.getFragment()
         }
         fragment?.onPageStarted(view, url)
-        onPageStarted(view, url, fragment)
+        webViewClientCallback?.onPageStarted(view, url, fragment)
     }
 
     override fun onPageFinished(view: WebView, url: String) {
@@ -28,7 +29,7 @@ abstract class BaseWebViewClient : WebViewClient(), WebViewClientCallback {
             fragment = WebViewManager.instance.getFragment()
         }
         fragment?.onPageFinished(view, url)
-        onPageFinished(
+        webViewClientCallback?.onPageFinished(
             view,
             url,
             fragment
@@ -46,8 +47,7 @@ abstract class BaseWebViewClient : WebViewClient(), WebViewClientCallback {
             fragment = WebViewManager.instance.getFragment()
         }
         fragment?.onReceivedError(view, errorCode, description, failingUrl)
-        onReceivedError(view, errorCode, description, failingUrl, fragment)
-
+        webViewClientCallback?. onReceivedError(view, errorCode, description, failingUrl, fragment)
     }
 
     override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
@@ -55,10 +55,10 @@ abstract class BaseWebViewClient : WebViewClient(), WebViewClientCallback {
             fragment = WebViewManager.instance.getFragment()
         }
         fragment?.shouldOverrideUrlLoading(view, url)
-        return shouldOverrideUrlLoading(
+        return webViewClientCallback?.shouldOverrideUrlLoading(
             view,
             url,
             fragment
-        )
+        )?:super.shouldOverrideUrlLoading(view,url)
     }
 }

@@ -1,7 +1,6 @@
 package com.peakmain.pkwebview
 
 import android.webkit.WebView
-import com.peakmain.webview.callback.WebViewClientCallback
 import com.peakmain.webview.interfaces.IWebViewConfig
 
 /**

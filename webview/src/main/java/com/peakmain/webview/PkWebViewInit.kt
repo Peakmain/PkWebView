@@ -2,6 +2,7 @@ package com.peakmain.webview
 
 import android.content.Context
 import com.peakmain.webview.interfaces.IWebViewConfig
+import com.peakmain.webview.interfaces.IWebViewSetting
 import com.peakmain.webview.manager.WebViewController
 import com.peakmain.webview.manager.WebViewPool
 
@@ -11,12 +12,16 @@ import com.peakmain.webview.manager.WebViewPool
  * mail:2726449200@qq.com
  * describe：WebView初始化类
  */
-class PkWebViewInit private constructor(private val context: Context, private val userAgent: String) {
+class PkWebViewInit private constructor(
+    private val context: Context,
+    private val userAgent: String
+) {
     private var mWebViewController: WebViewController = WebViewController()
 
-    fun initPool(){
+    fun initPool() {
         WebViewPool.instance.initWebViewPool(mWebViewController.P)
     }
+
     class Builder constructor(context: Context) {
         private val P: WebViewController.WebViewParams
         private var mPkWebViewInit: PkWebViewInit? = null
@@ -25,17 +30,23 @@ class PkWebViewInit private constructor(private val context: Context, private va
             P = WebViewController.WebViewParams(context)
         }
 
+        fun setWebViewSetting(webViewSetting: IWebViewSetting):Builder {
+           P.mWebViewSetting=webViewSetting
+            return this
+        }
+
         fun setWebViewConfig(webViewConfig: IWebViewConfig): Builder {
             P.webViewConfig = webViewConfig
             return this
         }
 
-        fun setUserAgent(userAgent: String=""): Builder {
+        fun setUserAgent(userAgent: String = ""): Builder {
             P.userAgent = userAgent
             return this
         }
-        fun setWebViewCount(count:Int):Builder{
-            P.mWebViewCount=count
+
+        fun setWebViewCount(count: Int): Builder {
+            P.mWebViewCount = count
             return this
         }
 
@@ -48,7 +59,7 @@ class PkWebViewInit private constructor(private val context: Context, private va
 
         private fun create(): PkWebViewInit {
             val pkWebViewInit = PkWebViewInit(P.context, P.userAgent)
-            P.apply(pkWebViewInit.mWebViewController,P)
+            P.apply(pkWebViewInit.mWebViewController, P)
             mPkWebViewInit = pkWebViewInit
             return pkWebViewInit
         }
