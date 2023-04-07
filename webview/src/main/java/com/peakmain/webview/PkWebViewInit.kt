@@ -1,6 +1,7 @@
 package com.peakmain.webview
 
 import android.content.Context
+import com.peakmain.webview.callback.WebViewChromeClientCallback
 import com.peakmain.webview.callback.WebViewClientCallback
 import com.peakmain.webview.interfaces.InitWebViewConfig
 import com.peakmain.webview.interfaces.InitWebViewSetting
@@ -13,10 +14,7 @@ import com.peakmain.webview.manager.WebViewPool
  * mail:2726449200@qq.com
  * describe：WebView初始化类
  */
-class PkWebViewInit private constructor(
-    private val context: Context,
-    private val userAgent: String
-) {
+class PkWebViewInit private constructor() {
     private var mWebViewController: WebViewController = WebViewController()
 
     fun initPool() {
@@ -34,19 +32,21 @@ class PkWebViewInit private constructor(
         /**
          * 设置WebViewSetting
          */
-        fun setWebViewSetting(webViewSetting: InitWebViewSetting):Builder {
-           P.mWebViewSetting=webViewSetting
+        fun setWebViewSetting(webViewSetting: InitWebViewSetting): Builder {
+            P.mWebViewSetting = webViewSetting
             return this
         }
 
-        fun setWebViewClient(webViewClientCallback: WebViewClientCallback):Builder{
-            P.mWebViewClientCallback=webViewClientCallback
+        fun setWebViewClient(webViewClientCallback: WebViewClientCallback): Builder {
+            P.mWebViewClientCallback = webViewClientCallback
             return this
         }
-        fun setWebViewConfig(webViewConfig: InitWebViewConfig): Builder {
-            P.webViewConfig = webViewConfig
+
+        fun setWebViewChromeClient(webViewChromeClientCallback: WebViewChromeClientCallback): Builder {
+            P.mWebViewChromeClientCallback = webViewChromeClientCallback
             return this
         }
+
 
         /**
          * 设置UserAgent
@@ -72,7 +72,7 @@ class PkWebViewInit private constructor(
         }
 
         private fun create(): PkWebViewInit {
-            val pkWebViewInit = PkWebViewInit(P.context, P.userAgent)
+            val pkWebViewInit = PkWebViewInit()
             P.apply(pkWebViewInit.mWebViewController, P)
             mPkWebViewInit = pkWebViewInit
             return pkWebViewInit

@@ -1,6 +1,7 @@
 package com.peakmain.webview.manager
 
 import android.view.ViewGroup
+import com.peakmain.webview.implement.WebViewChromeClientImpl
 import com.peakmain.webview.implement.WebViewClientImpl
 import com.peakmain.webview.view.PkWebView
 
@@ -80,16 +81,14 @@ internal class WebViewPool private constructor() {
     }
 
     private fun createWebView(
-        params: WebViewController.WebViewParams,
-        userAgent: String
+        params: WebViewController.WebViewParams, userAgent: String
     ): PkWebView {
         val webView = PkWebView(params.context)
         params.apply {
-            mWebViewSetting.initWebViewSetting(webView,userAgent)
+            mWebViewSetting.initWebViewSetting(webView, userAgent)
             WebViewClientImpl(params.mWebViewClientCallback).initWebClient(webView)
-        }
-        params.webViewConfig.apply {
-            initWebChromeClient(webView)
+            WebViewChromeClientImpl(params.mWebViewChromeClientCallback)
+                .initWebChromeClient(webView)
         }
         return webView
     }

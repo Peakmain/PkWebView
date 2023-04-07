@@ -3,7 +3,6 @@ package com.peakmain.webview.abstracts
 import android.graphics.Bitmap
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.fragment.app.Fragment
 import com.peakmain.webview.callback.WebViewClientCallback
 import com.peakmain.webview.fragment.WebViewFragment
 import com.peakmain.webview.manager.WebViewManager
@@ -14,7 +13,7 @@ import com.peakmain.webview.manager.WebViewManager
  * mail:2726449200@qq.com
  * describe：
  */
-abstract class AbsWebViewClient constructor(val webViewClientCallback: WebViewClientCallback?) :
+abstract class AbstractWebViewClient constructor(val webViewClientCallback: WebViewClientCallback?) :
     WebViewClient() {
     private var fragment: WebViewFragment? = null
     abstract  fun initWebClient(webView: WebView)

@@ -16,8 +16,6 @@ import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import com.peakmain.webview.activity.WebViewActivity
 import com.peakmain.webview.helper.WebViewHelper
-import com.peakmain.webview.implement.DefaultWebViewConfig
-import com.peakmain.webview.interfaces.InitWebViewConfig
 import com.peakmain.webview.manager.WebViewManager
 import com.peakmain.webview.manager.WebViewPool
 import com.peakmain.webview.view.PkWebView
@@ -34,7 +32,7 @@ open class WebViewFragment : Fragment() {
     private var mWebView: PkWebView? = null
     private var mStartTime: Long = 0L
     private var mEndTime: Long = 0L
-    private var webViewConfig: InitWebViewConfig = DefaultWebViewConfig()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -62,7 +60,6 @@ open class WebViewFragment : Fragment() {
             addWebView(fragmentView, this)
         }
         loadUrl2WebView(null)
-        webViewConfig = WebViewPool.instance.mParams.webViewConfig
     }
 
     private fun addWebView(fragmentView: FrameLayout?, pkWebView: PkWebView) {
@@ -152,13 +149,14 @@ open class WebViewFragment : Fragment() {
 
     }
 
-    fun onReceivedTitle(title: String) {
+    fun onReceivedTitle(view: WebView?, title: String) {
         if (activity != null && activity is WebViewActivity) {
             val activity = activity as WebViewActivity
             activity.onReceivedTitle(title)
         }
     }
-
+    fun onProgressChanged(view: WebView?, newProgress: Int){
+    }
     fun loadUrl(url: String) {
         mWebView?.loadUrl(url)
     }
