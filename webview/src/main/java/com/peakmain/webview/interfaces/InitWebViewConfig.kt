@@ -8,8 +8,7 @@ import android.webkit.WebView
  * mail:2726449200@qq.com
  * describe：
  */
-interface IWebViewConfig {
-    fun initWebClient(webView: WebView)
+interface InitWebViewConfig {
     fun initWebChromeClient(webView: WebView)
 
 }

@@ -1,12 +1,8 @@
 package com.peakmain.webview.implement
 
 import android.net.Uri
-import android.net.http.SslError
-import android.text.TextUtils
-import android.util.Log
 import android.webkit.*
-import com.peakmain.webview.fragment.WebViewFragment
-import com.peakmain.webview.interfaces.IWebViewConfig
+import com.peakmain.webview.interfaces.InitWebViewConfig
 
 /**
  * author ：Peakmain
@@ -14,11 +10,7 @@ import com.peakmain.webview.interfaces.IWebViewConfig
  * mail:2726449200@qq.com
  * describe：
  */
-class DefaultWebViewConfig : IWebViewConfig {
-    override fun initWebClient(webView: WebView) {
-        webView.webViewClient = DefaultWebViewClient(DefaultWebViewClientCallback())
-    }
-
+class DefaultWebViewConfig : InitWebViewConfig {
     override fun initWebChromeClient(webView: WebView) {
         webView.webChromeClient = object : WebChromeClient() {
             // file upload callback (Android 5.0 (API level 21) -- current) (public method)

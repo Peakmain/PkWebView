@@ -1,7 +1,7 @@
 package com.peakmain.pkwebview
 
 import android.webkit.WebView
-import com.peakmain.webview.interfaces.IWebViewConfig
+import com.peakmain.webview.interfaces.InitWebViewConfig
 
 /**
  * author ：Peakmain
@@ -9,13 +9,7 @@ import com.peakmain.webview.interfaces.IWebViewConfig
  * mail:2726449200@qq.com
  * describe：
  */
-class ReplaceWebViewConfig:IWebViewConfig {
-    override fun initWebViewSetting(webView: WebView, userAgent: String?) {
-    }
-
-    override fun initWebClient(webView: WebView) {
-    }
-
+class ReplaceWebViewConfig:InitWebViewConfig {
     override fun initWebChromeClient(webView: WebView) {
     }
 }

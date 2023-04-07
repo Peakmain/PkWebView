@@ -11,14 +11,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.ValueCallback
-import android.webkit.WebMessage
 import android.webkit.WebView
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import com.peakmain.webview.activity.WebViewActivity
 import com.peakmain.webview.helper.WebViewHelper
 import com.peakmain.webview.implement.DefaultWebViewConfig
-import com.peakmain.webview.interfaces.IWebViewConfig
+import com.peakmain.webview.interfaces.InitWebViewConfig
 import com.peakmain.webview.manager.WebViewManager
 import com.peakmain.webview.manager.WebViewPool
 import com.peakmain.webview.view.PkWebView
@@ -35,7 +34,7 @@ open class WebViewFragment : Fragment() {
     private var mWebView: PkWebView? = null
     private var mStartTime: Long = 0L
     private var mEndTime: Long = 0L
-    private var webViewConfig: IWebViewConfig = DefaultWebViewConfig()
+    private var webViewConfig: InitWebViewConfig = DefaultWebViewConfig()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

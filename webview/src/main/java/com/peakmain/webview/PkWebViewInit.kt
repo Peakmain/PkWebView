@@ -1,8 +1,9 @@
 package com.peakmain.webview
 
 import android.content.Context
-import com.peakmain.webview.interfaces.IWebViewConfig
-import com.peakmain.webview.interfaces.IWebViewSetting
+import com.peakmain.webview.callback.WebViewClientCallback
+import com.peakmain.webview.interfaces.InitWebViewConfig
+import com.peakmain.webview.interfaces.InitWebViewSetting
 import com.peakmain.webview.manager.WebViewController
 import com.peakmain.webview.manager.WebViewPool
 
@@ -30,21 +31,34 @@ class PkWebViewInit private constructor(
             P = WebViewController.WebViewParams(context)
         }
 
-        fun setWebViewSetting(webViewSetting: IWebViewSetting):Builder {
+        /**
+         * 设置WebViewSetting
+         */
+        fun setWebViewSetting(webViewSetting: InitWebViewSetting):Builder {
            P.mWebViewSetting=webViewSetting
             return this
         }
 
-        fun setWebViewConfig(webViewConfig: IWebViewConfig): Builder {
+        fun setWebViewClient(webViewClientCallback: WebViewClientCallback):Builder{
+            P.mWebViewClientCallback=webViewClientCallback
+            return this
+        }
+        fun setWebViewConfig(webViewConfig: InitWebViewConfig): Builder {
             P.webViewConfig = webViewConfig
             return this
         }
 
+        /**
+         * 设置UserAgent
+         */
         fun setUserAgent(userAgent: String = ""): Builder {
             P.userAgent = userAgent
             return this
         }
 
+        /**
+         * 设置webView的count
+         */
         fun setWebViewCount(count: Int): Builder {
             P.mWebViewCount = count
             return this

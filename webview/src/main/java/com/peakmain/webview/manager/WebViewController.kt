@@ -1,10 +1,12 @@
 package com.peakmain.webview.manager
 
 import android.content.Context
-import com.peakmain.webview.interfaces.IWebViewConfig
+import com.peakmain.webview.callback.WebViewClientCallback
+import com.peakmain.webview.implement.DefaultWebViewClientCallback
+import com.peakmain.webview.interfaces.InitWebViewConfig
 import com.peakmain.webview.implement.DefaultWebViewConfig
-import com.peakmain.webview.implement.settings.DefaultWebViewSetting
-import com.peakmain.webview.interfaces.IWebViewSetting
+import com.peakmain.webview.implement.init.DefaultInitWebViewSetting
+import com.peakmain.webview.interfaces.InitWebViewSetting
 
 /**
  * author ：Peakmain
@@ -18,10 +20,13 @@ internal class WebViewController {
 
 
     class WebViewParams(val context: Context) {
-        var mWebViewSetting: IWebViewSetting = DefaultWebViewSetting()
+
         var mWebViewCount: Int = 3
-        var webViewConfig: IWebViewConfig = DefaultWebViewConfig()
         var userAgent: String = ""
+        var webViewConfig: InitWebViewConfig = DefaultWebViewConfig()
+        var mWebViewSetting: InitWebViewSetting = DefaultInitWebViewSetting()
+
+        var mWebViewClientCallback: WebViewClientCallback = DefaultWebViewClientCallback()
 
         fun apply(controller: WebViewController, P: WebViewParams) {
             controller.P = P

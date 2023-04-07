@@ -8,6 +8,6 @@ import android.webkit.WebView
  * mail:2726449200@qq.com
  * describe：
  */
-interface IWebViewSetting {
+interface InitWebViewSetting {
     fun initWebViewSetting(webView: WebView, userAgent: String? = null)
 }

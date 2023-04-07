@@ -1,10 +1,10 @@
-package com.peakmain.webview.implement.settings
+package com.peakmain.webview.implement.init
 
 import android.text.TextUtils
 import android.webkit.CookieManager
 import android.webkit.WebSettings
 import android.webkit.WebView
-import com.peakmain.webview.interfaces.IWebViewSetting
+import com.peakmain.webview.interfaces.InitWebViewSetting
 
 /**
  * author ：Peakmain
@@ -12,7 +12,7 @@ import com.peakmain.webview.interfaces.IWebViewSetting
  * mail:2726449200@qq.com
  * describe：
  */
-class DefaultWebViewSetting :IWebViewSetting{
+class DefaultInitWebViewSetting :InitWebViewSetting{
     override fun initWebViewSetting(webView: WebView, userAgent: String?) {
         val webSettings: WebSettings = webView.settings
         WebView.setWebContentsDebuggingEnabled(true)
