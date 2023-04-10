@@ -15,6 +15,7 @@ import android.webkit.WebView
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import com.peakmain.webview.activity.WebViewActivity
+import com.peakmain.webview.constants.WebViewConstants
 import com.peakmain.webview.helper.WebViewHelper
 import com.peakmain.webview.manager.WebViewManager
 import com.peakmain.webview.manager.WebViewPool
@@ -81,7 +82,7 @@ open class WebViewFragment : Fragment() {
     }
 
     private fun getWebViewUrl(): String? {
-        return arguments?.getString(WebViewHelper.LIBRARY_WEB_VIEW_URL)
+        return arguments?.getString(WebViewConstants.LIBRARY_WEB_VIEW_URL)
     }
 
 

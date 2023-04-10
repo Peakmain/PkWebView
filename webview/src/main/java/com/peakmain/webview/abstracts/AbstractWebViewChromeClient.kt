@@ -1,7 +1,5 @@
 package com.peakmain.webview.abstracts
 
-import android.net.Uri
-import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import com.peakmain.webview.callback.WebViewChromeClientCallback

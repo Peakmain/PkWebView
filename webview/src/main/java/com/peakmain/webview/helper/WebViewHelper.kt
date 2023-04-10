@@ -17,8 +17,7 @@ import java.lang.reflect.Method
  * describe：
  */
 object WebViewHelper {
-    const val LIBRARY_WEB_VIEW = "LIBRARY_WEB_VIEW"
-    const val LIBRARY_WEB_VIEW_URL = "LIBRARY_WEB_VIEW_URL"
+
     private var isFirst = false
     fun loadWebViewResource(context: Context): Boolean {
         if (isFirst) return true
