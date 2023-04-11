@@ -6,6 +6,8 @@ import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleRegistry
+import com.peakmain.pkwebview.intent.ReplaceH5ConfigDecorator
+import com.peakmain.pkwebview.intent.ReplaceH5IntentConfigImpl
 import com.peakmain.webview.H5Utils
 import com.peakmain.webview.helper.PkStartActivityResultContracts
 
@@ -19,7 +21,7 @@ class MainActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tv_webview).setOnClickListener {
             /*H5Utils()
                 .startActivity(this, "https://qa-xbu-activity.at-our.com/mallIndex")*/
-            H5Utils()
+            H5Utils(ReplaceH5ConfigDecorator())
                 .startActivityForResult(
                     this, launcher,
                     "https://qa-xbu-activity.at-our.com/mallIndex")

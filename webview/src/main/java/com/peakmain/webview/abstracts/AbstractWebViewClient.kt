@@ -16,7 +16,7 @@ import com.peakmain.webview.manager.WebViewManager
 abstract class AbstractWebViewClient constructor(val webViewClientCallback: WebViewClientCallback?) :
     WebViewClient() {
     private var fragment: WebViewFragment? = null
-    abstract  fun initWebClient(webView: WebView)
+    abstract fun initWebClient(webView: WebView)
     override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
         if (fragment == null) {
             fragment = WebViewManager.instance.getFragment()
@@ -48,7 +48,7 @@ abstract class AbstractWebViewClient constructor(val webViewClientCallback: WebV
             fragment = WebViewManager.instance.getFragment()
         }
         fragment?.onReceivedError(view, errorCode, description, failingUrl)
-        webViewClientCallback?. onReceivedError(view, errorCode, description, failingUrl, fragment)
+        webViewClientCallback?.onReceivedError(view, errorCode, description, failingUrl, fragment)
     }
 
     override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
@@ -60,6 +60,6 @@ abstract class AbstractWebViewClient constructor(val webViewClientCallback: WebV
             view,
             url,
             fragment
-        )?:super.shouldOverrideUrlLoading(view,url)
+        ) ?: super.shouldOverrideUrlLoading(view, url)
     }
 }
