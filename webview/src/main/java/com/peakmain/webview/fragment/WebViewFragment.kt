@@ -14,12 +14,17 @@ import android.webkit.ValueCallback
 import android.webkit.WebView
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import com.peakmain.webview.activity.WebViewActivity
 import com.peakmain.webview.constants.WebViewConstants
 import com.peakmain.webview.helper.WebViewHelper
 import com.peakmain.webview.manager.WebViewManager
 import com.peakmain.webview.manager.WebViewPool
 import com.peakmain.webview.view.PkWebView
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * author ：Peakmain
@@ -236,4 +241,7 @@ open class WebViewFragment : Fragment() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+    }
 }

@@ -2,8 +2,11 @@ package com.peakmain.pkwebview.intent
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.util.Log
+import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import com.peakmain.webview.bean.ActivityResultBean
 import com.peakmain.webview.interfaces.H5IntentConfig
 
@@ -21,12 +24,24 @@ class ReplaceH5IntentConfigImpl:H5IntentConfig {
     override fun startActivityForResult(context: Activity?, url: String, requestCode: Int) {
     }
 
+    override fun startActivityForResult(context: Fragment?, url: String, requestCode: Int) {
+
+    }
+
+    override fun startActivityForResult(
+        context: FragmentActivity?,
+        launcher: ActivityResultLauncher<Intent>?,
+        url: String
+    ) {
+
+    }
+
     override fun startActivityForResult(
         context: Fragment?,
-        url: String,
-        requestCode: Int,
-        block: ((ActivityResultBean) -> Unit)?
+        launcher: ActivityResultLauncher<Intent>?,
+        url: String
     ) {
+
     }
 
 }

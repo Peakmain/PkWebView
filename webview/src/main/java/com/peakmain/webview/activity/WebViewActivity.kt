@@ -19,13 +19,12 @@ import com.peakmain.webview.helper.WebViewHelper
  * mail:2726449200@qq.com
  * describe：
  */
-class WebViewActivity : AppCompatActivity() {
+internal class WebViewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_activity_web_view)
         initView()
     }
-
     private val mWebViewConfigBean by lazy {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
             intent.extras?.getSerializable(

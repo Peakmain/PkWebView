@@ -3,7 +3,11 @@ package com.peakmain.webview.implement
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.util.Log
+import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Lifecycle
 import com.peakmain.webview.activity.WebViewActivity
 import com.peakmain.webview.bean.ActivityResultBean
 import com.peakmain.webview.bean.WebViewConfigBean
@@ -31,16 +35,32 @@ class DefaultH5IntentConfigImpl : H5IntentConfig {
         context?.startActivityForResult(intent, requestCode)
     }
 
-    override fun startActivityForResult(
-        context: Fragment?, url: String, requestCode: Int,
-        block: ((ActivityResultBean) -> Unit)?) {
+    override fun startActivityForResult(context: Fragment?, url: String, requestCode: Int) {
         if (context == null || context.context == null) return
-        val activityFrResult = context.registerForActivityResult(PkStartActivityResultContracts(requestCode)) {
-            //返回结果
-            block?.invoke(it)
-        }
         val intent = Intent(context.context, WebViewActivity::class.java)
             .putExtra(WebViewConstants.LIBRARY_WEB_VIEW, WebViewConfigBean(url))
-        activityFrResult.launch(intent)
+        context.startActivityForResult(intent, requestCode)
+    }
+
+
+    override fun startActivityForResult(
+        context: FragmentActivity?,
+        launcher: ActivityResultLauncher<Intent>?,
+        url: String
+    ) {
+        val intent = Intent(context, WebViewActivity::class.java)
+            .putExtra(WebViewConstants.LIBRARY_WEB_VIEW, WebViewConfigBean(url))
+        launcher?.launch(intent)
+    }
+
+    override fun startActivityForResult(
+        context: Fragment?,
+        launcher: ActivityResultLauncher<Intent>?,
+        url: String
+    ) {
+        if (context == null || context.context == null) return
+        val intent = Intent(context.context, WebViewActivity::class.java)
+            .putExtra(WebViewConstants.LIBRARY_WEB_VIEW, WebViewConfigBean(url))
+        launcher?.launch(intent)
     }
 }

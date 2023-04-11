@@ -2,7 +2,10 @@ package com.peakmain.webview.abstracts
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import com.peakmain.webview.bean.ActivityResultBean
 import com.peakmain.webview.interfaces.H5IntentConfig
 
@@ -22,10 +25,22 @@ abstract class AbstractH5IntentConfigDecorator(private val decoratorConfig: H5In
         decoratorConfig.startActivityForResult(context, url, requestCode)
     }
 
+    override fun startActivityForResult(context: Fragment?, url: String, requestCode: Int) {
+        decoratorConfig.startActivityForResult(context, url, requestCode)
+    }
     override fun startActivityForResult(
-        context: Fragment?, url: String, requestCode: Int,
-        block: ((ActivityResultBean) -> Unit)?
+        context: Fragment?,
+        launcher: ActivityResultLauncher<Intent>?,
+        url: String
     ) {
-        decoratorConfig.startActivityForResult(context, url, requestCode, block)
+        decoratorConfig.startActivityForResult(context,launcher,url)
+    }
+
+    override fun startActivityForResult(
+        context: FragmentActivity?,
+        launcher: ActivityResultLauncher<Intent>?,
+        url: String
+    ) {
+        decoratorConfig.startActivityForResult(context,launcher,url)
     }
 }
