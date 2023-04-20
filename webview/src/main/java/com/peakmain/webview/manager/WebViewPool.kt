@@ -84,6 +84,7 @@ internal class WebViewPool private constructor() {
         params: WebViewController.WebViewParams, userAgent: String
     ): PkWebView {
         val webView = PkWebView(params.context)
+        webView.setWebViewParams(params)
         params.apply {
             mWebViewSetting.initWebViewSetting(webView, userAgent)
             WebViewClientImpl(params.mWebViewClientCallback).initWebClient(webView)

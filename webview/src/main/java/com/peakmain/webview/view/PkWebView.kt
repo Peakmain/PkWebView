@@ -12,11 +12,12 @@ import com.peakmain.webview.manager.WebViewController
  * mail:2726449200@qq.com
  * describe：
  */
-class PkWebView :WebView {
+class PkWebView : WebView {
 
     constructor(context: Context, attrs: AttributeSet? = null) : super(context, attrs) {
         WebViewHelper.loadWebViewResource(context)
     }
+
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context,
         attrs,
@@ -24,11 +25,13 @@ class PkWebView :WebView {
     ) {
         WebViewHelper.loadWebViewResource(context)
     }
+
     constructor(
         context: Context
-    ) : this(context,null)
+    ) : this(context, null)
 
 
+    private var mParams: WebViewController.WebViewParams? = null
     var mLoadUrlListener: ((String) -> String)? = null
 
     override fun loadUrl(url: String) {
@@ -44,5 +47,12 @@ class PkWebView :WebView {
         super.loadUrl(url, additionalHttpHeaders)
     }
 
+    fun setWebViewParams(params: WebViewController.WebViewParams) {
+        this.mParams = params
+    }
+
+    fun getWebViewParams(): WebViewController.WebViewParams? {
+        return mParams
+    }
 
 }

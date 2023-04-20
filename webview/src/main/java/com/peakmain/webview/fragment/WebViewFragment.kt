@@ -1,7 +1,6 @@
 package com.peakmain.webview.fragment
 
 import android.app.Activity
-import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -14,17 +13,15 @@ import android.webkit.ValueCallback
 import android.webkit.WebView
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
 import com.peakmain.webview.activity.WebViewActivity
 import com.peakmain.webview.constants.WebViewConstants
-import com.peakmain.webview.helper.WebViewHelper
+import com.peakmain.webview.implement.HorizontalProgressBarLoadingConfigImpl
+import com.peakmain.webview.implement.ProgressLoadingConfigImpl
+import com.peakmain.webview.interfaces.LoadingViewConfig
 import com.peakmain.webview.manager.WebViewManager
 import com.peakmain.webview.manager.WebViewPool
+import com.peakmain.webview.sealed.LoadingWebViewState
 import com.peakmain.webview.view.PkWebView
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /**
  * author ：Peakmain
@@ -38,7 +35,10 @@ open class WebViewFragment : Fragment() {
     private var mWebView: PkWebView? = null
     private var mStartTime: Long = 0L
     private var mEndTime: Long = 0L
-
+    private var mGroup: FrameLayout? = null
+    private var mLoadingViewConfig: LoadingViewConfig? = null
+    private var mLoadingView: View? = null
+    private lateinit var mLoadingWebViewState: LoadingWebViewState
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -51,10 +51,37 @@ open class WebViewFragment : Fragment() {
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
             initView(frameLayout)
+            addLoadingView(frameLayout)
             return frameLayout
         }
         return null
     }
+
+    private fun addLoadingView(frameLayout: FrameLayout) {
+        mGroup = frameLayout
+        val webViewParams = mWebView?.getWebViewParams() ?: return
+        mLoadingWebViewState = webViewParams.mLoadingWebViewState
+        if (mLoadingWebViewState == LoadingWebViewState.HorizontalProgressBarLoadingStyle) {
+            webViewParams.mLoadingViewConfig = HorizontalProgressBarLoadingConfigImpl()
+        } else {
+            webViewParams.mLoadingViewConfig = ProgressLoadingConfigImpl()
+        }
+        when (mLoadingWebViewState) {
+            is LoadingWebViewState.NotLoading -> {
+            }
+            is LoadingWebViewState.ProgressBarLoadingStyle,
+            LoadingWebViewState.HorizontalProgressBarLoadingStyle -> {
+                mLoadingViewConfig = webViewParams.mLoadingViewConfig
+                mLoadingView = mLoadingViewConfig?.getLoadingView(frameLayout.context)
+                mLoadingView?.visibility = View.VISIBLE
+                if (mLoadingView?.parent != frameLayout) {
+                    frameLayout.addView(mLoadingView, -1)
+                }
+            }
+        }
+
+    }
+
 
     private fun initView(fragmentView: FrameLayout?) {
         mWebView = WebViewPool.instance.getWebView()
@@ -105,50 +132,34 @@ open class WebViewFragment : Fragment() {
         WebViewPool.instance.releaseWebView(mWebView)
         mWebView = null
         WebViewManager.instance.unRegister()
+        /* mLoadingView?.apply {
+             (parent as ViewGroup?)?.removeView(this)
+         }*/
         super.onDestroy()
     }
 
     fun onPageStarted(view: WebView?, url: String?) {
         mStartTime = System.currentTimeMillis()
+        if (mLoadingWebViewState != LoadingWebViewState.NotLoading) {
+            mLoadingViewConfig?.showLoading(view?.context)
+        }
     }
 
     fun onPageFinished(view: WebView, url: String) {
         mEndTime = System.currentTimeMillis()
         Log.e("TAG", "消耗的时间:${(mEndTime - mStartTime) / 1000}")
+        if (mLoadingWebViewState != LoadingWebViewState.NotLoading) {
+            mLoadingViewConfig?.let {
+                if (it.isShowLoading()) {
+                    it.hideLoading()
+                }
+            }
+        }
     }
 
-    fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+    fun shouldOverrideUrlLoading(view: WebView, url: String) {
 
-        //处理电话功能
-        if (url.startsWith("tel")) {
-            try {
-                val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
-                activity?.startActivity(intent)
-                return true
-            } catch (ex: ActivityNotFoundException) {
-                ex.printStackTrace()
-            }
-        } else if (url.startsWith("mailto:")) {
-            val activity: Activity? = activity
-            if (activity != null) {
-                val i = Intent(Intent.ACTION_SEND)
-                i.setType("plain/text").putExtra(Intent.EXTRA_EMAIL, arrayOf(url))
-                activity.startActivity(i)
-                return true
-            }
-            return true
-        }
-        // 对支付宝和微信的支付页面点击做特殊处理
-        else if (url.contains("alipays://platformapi") || url.contains("weixin://wap/pay?")) {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            startActivity(intent)
-            return true
-        }
-        //处理外部链接
-        return (url.startsWith("http://") || url.startsWith("https://")) && onWebPageUrlLoading(
-            view,
-            url
-        )
+
     }
 
     fun onReceivedError(view: WebView?, err: Int, des: String?, failingUrl: String?) {
@@ -161,8 +172,21 @@ open class WebViewFragment : Fragment() {
             activity.onReceivedTitle(title)
         }
     }
-    fun onProgressChanged(view: WebView?, newProgress: Int){
+
+    fun onProgressChanged(view: WebView?, newProgress: Int) {
+        if (mLoadingWebViewState == LoadingWebViewState.HorizontalProgressBarLoadingStyle) {
+            mLoadingViewConfig?.setProgress(newProgress)
+        }
+        if (mLoadingWebViewState != LoadingWebViewState.NotLoading) {
+            mLoadingViewConfig?.let {
+                if (newProgress == 100 && it.isShowLoading()) {
+                    it.hideLoading()
+                }
+            }
+        }
+
     }
+
     fun loadUrl(url: String) {
         mWebView?.loadUrl(url)
     }

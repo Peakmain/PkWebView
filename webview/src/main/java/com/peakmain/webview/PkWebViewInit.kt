@@ -3,10 +3,11 @@ package com.peakmain.webview
 import android.content.Context
 import com.peakmain.webview.callback.WebViewChromeClientCallback
 import com.peakmain.webview.callback.WebViewClientCallback
-import com.peakmain.webview.interfaces.InitWebViewConfig
 import com.peakmain.webview.interfaces.InitWebViewSetting
+import com.peakmain.webview.interfaces.LoadingViewConfig
 import com.peakmain.webview.manager.WebViewController
 import com.peakmain.webview.manager.WebViewPool
+import com.peakmain.webview.sealed.LoadingWebViewState
 
 /**
  * author ：Peakmain
@@ -47,6 +48,11 @@ class PkWebViewInit private constructor() {
             return this
         }
 
+
+        fun setLoadingWebViewState(loadingWebViewState: LoadingWebViewState): Builder {
+            P.mLoadingWebViewState = loadingWebViewState
+            return this
+        }
 
         /**
          * 设置UserAgent

@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tv_webview).setOnClickListener {
             /*H5Utils()
                 .startActivity(this, "https://qa-xbu-activity.at-our.com/mallIndex")*/
-            H5Utils(ReplaceH5ConfigDecorator())
+            H5Utils()
                 .startActivityForResult(
                     this, launcher,
                     "https://qa-xbu-activity.at-our.com/mallIndex")

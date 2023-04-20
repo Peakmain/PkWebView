@@ -12,6 +12,6 @@ import com.peakmain.webview.fragment.WebViewFragment
 interface WebViewClientCallback {
     fun onPageStarted(view: WebView, url: String,fragment: WebViewFragment?)
     fun onPageFinished(view: WebView, url: String, fragment: WebViewFragment?)
-    fun shouldOverrideUrlLoading(view: WebView, url: String,fragment: WebViewFragment?): Boolean
+    fun shouldOverrideUrlLoading(view: WebView, url: String,fragment: WebViewFragment?): Boolean?
     fun onReceivedError(view: WebView?, err: Int, des: String?, url: String?,fragment: WebViewFragment?)
 }
