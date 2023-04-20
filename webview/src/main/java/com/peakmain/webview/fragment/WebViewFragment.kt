@@ -63,13 +63,14 @@ open class WebViewFragment : Fragment() {
         mLoadingWebViewState = webViewParams.mLoadingWebViewState
         if (mLoadingWebViewState == LoadingWebViewState.HorizontalProgressBarLoadingStyle) {
             webViewParams.mLoadingViewConfig = HorizontalProgressBarLoadingConfigImpl()
-        } else {
+        } else if (webViewParams.mLoadingWebViewState == LoadingWebViewState.ProgressBarLoadingStyle) {
             webViewParams.mLoadingViewConfig = ProgressLoadingConfigImpl()
         }
         when (mLoadingWebViewState) {
             is LoadingWebViewState.NotLoading -> {
             }
             is LoadingWebViewState.ProgressBarLoadingStyle,
+            LoadingWebViewState.CustomLoadingStyle,
             LoadingWebViewState.HorizontalProgressBarLoadingStyle -> {
                 mLoadingViewConfig = webViewParams.mLoadingViewConfig
                 mLoadingView = mLoadingViewConfig?.getLoadingView(frameLayout.context)
@@ -174,7 +175,10 @@ open class WebViewFragment : Fragment() {
     }
 
     fun onProgressChanged(view: WebView?, newProgress: Int) {
-        if (mLoadingWebViewState == LoadingWebViewState.HorizontalProgressBarLoadingStyle) {
+        if (mLoadingWebViewState ==
+            LoadingWebViewState.HorizontalProgressBarLoadingStyle ||
+            mLoadingWebViewState == LoadingWebViewState.CustomLoadingStyle
+        ) {
             mLoadingViewConfig?.setProgress(newProgress)
         }
         if (mLoadingWebViewState != LoadingWebViewState.NotLoading) {

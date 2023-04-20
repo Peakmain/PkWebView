@@ -1,6 +1,7 @@
 package com.peakmain.pkwebview
 
 import android.app.Application
+import com.peakmain.pkwebview.loading.ReplaceLoadingConfigImpl
 import com.peakmain.webview.PkWebViewInit
 import com.peakmain.webview.sealed.LoadingWebViewState
 
@@ -12,9 +13,10 @@ import com.peakmain.webview.sealed.LoadingWebViewState
  */
 class App : Application() {
     override fun onCreate() {
-        super.onCreate()
         PkWebViewInit.Builder(this)
+            .setLoadingView(ReplaceLoadingConfigImpl())
             .setLoadingWebViewState(LoadingWebViewState.HorizontalProgressBarLoadingStyle)
             .build()
+        super.onCreate()
     }
 }
