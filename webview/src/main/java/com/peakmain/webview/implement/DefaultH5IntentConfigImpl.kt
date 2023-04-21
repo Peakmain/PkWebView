@@ -22,23 +22,31 @@ import com.peakmain.webview.interfaces.H5IntentConfig
  * describe：
  */
 class DefaultH5IntentConfigImpl : H5IntentConfig {
-    override fun startActivity(context: Context?, url: String) {
+    override fun startActivity(context: Context?, bean: WebViewConfigBean) {
         context?.startActivity(
             Intent(context, WebViewActivity::class.java)
-                .putExtra(WebViewConstants.LIBRARY_WEB_VIEW, WebViewConfigBean(url))
+                .putExtra(WebViewConstants.LIBRARY_WEB_VIEW, bean)
         )
     }
 
-    override fun startActivityForResult(context: Activity?, url: String, requestCode: Int) {
+    override fun startActivityForResult(
+        context: Activity?,
+        bean: WebViewConfigBean,
+        requestCode: Int
+    ) {
         val intent = Intent(context, WebViewActivity::class.java)
-            .putExtra(WebViewConstants.LIBRARY_WEB_VIEW, WebViewConfigBean(url))
+            .putExtra(WebViewConstants.LIBRARY_WEB_VIEW, bean)
         context?.startActivityForResult(intent, requestCode)
     }
 
-    override fun startActivityForResult(context: Fragment?, url: String, requestCode: Int) {
+    override fun startActivityForResult(
+        context: Fragment?,
+        bean: WebViewConfigBean,
+        requestCode: Int
+    ) {
         if (context == null || context.context == null) return
         val intent = Intent(context.context, WebViewActivity::class.java)
-            .putExtra(WebViewConstants.LIBRARY_WEB_VIEW, WebViewConfigBean(url))
+            .putExtra(WebViewConstants.LIBRARY_WEB_VIEW, bean)
         context.startActivityForResult(intent, requestCode)
     }
 
@@ -46,21 +54,21 @@ class DefaultH5IntentConfigImpl : H5IntentConfig {
     override fun startActivityForResult(
         context: FragmentActivity?,
         launcher: ActivityResultLauncher<Intent>?,
-        url: String
+        bean: WebViewConfigBean
     ) {
         val intent = Intent(context, WebViewActivity::class.java)
-            .putExtra(WebViewConstants.LIBRARY_WEB_VIEW, WebViewConfigBean(url))
+            .putExtra(WebViewConstants.LIBRARY_WEB_VIEW, bean)
         launcher?.launch(intent)
     }
 
     override fun startActivityForResult(
         context: Fragment?,
         launcher: ActivityResultLauncher<Intent>?,
-        url: String
+        bean: WebViewConfigBean
     ) {
         if (context == null || context.context == null) return
         val intent = Intent(context.context, WebViewActivity::class.java)
-            .putExtra(WebViewConstants.LIBRARY_WEB_VIEW, WebViewConfigBean(url))
+            .putExtra(WebViewConstants.LIBRARY_WEB_VIEW, bean)
         launcher?.launch(intent)
     }
 }

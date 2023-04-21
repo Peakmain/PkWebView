@@ -7,6 +7,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.peakmain.webview.bean.ActivityResultBean
+import com.peakmain.webview.bean.WebViewConfigBean
 import com.peakmain.webview.helper.PkStartActivityResultContracts
 
 /**
@@ -16,17 +17,18 @@ import com.peakmain.webview.helper.PkStartActivityResultContracts
  * describe：
  */
 interface H5IntentConfig {
-    fun startActivity(context: Context?, url: String)
-    fun startActivityForResult(context: Activity?, url: String, requestCode: Int)
-    fun startActivityForResult(context: Fragment?, url: String, requestCode: Int)
+    fun startActivity(context: Context?, bean: WebViewConfigBean)
+    fun startActivityForResult(context: Activity?, bean: WebViewConfigBean, requestCode: Int)
+    fun startActivityForResult(context: Fragment?, bean: WebViewConfigBean, requestCode: Int)
     fun startActivityForResult(
         context: FragmentActivity?,
         launcher: ActivityResultLauncher<Intent>?,
-        url: String
+        bean: WebViewConfigBean
     )
+
     fun startActivityForResult(
         context: Fragment?,
         launcher: ActivityResultLauncher<Intent>?,
-        url: String
+        bean: WebViewConfigBean
     )
 }

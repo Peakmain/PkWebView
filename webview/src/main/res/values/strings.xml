@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="loading">加载中…</string>
+
+    <item name="library_status_fake_status_bar_view" type="id"/>
+    <item name="library_status_translucent_view" type="id"/>
+    <string name="meizu_flag_dark_status_bar_icon">MEIZU_FLAG_DARK_STATUS_BAR_ICON</string>
+    <string name="meizuFlags">meizuFlags</string>
 </resources>

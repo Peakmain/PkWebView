@@ -50,7 +50,7 @@ class PkWebViewInit private constructor() {
 
         fun setLoadingView(loadingViewConfig: LoadingViewConfig): Builder {
             P.mLoadingViewConfig = loadingViewConfig
-            P.mLoadingWebViewState=LoadingWebViewState.CustomLoadingStyle
+            P.mLoadingWebViewState = LoadingWebViewState.CustomLoadingStyle
             return this
         }
 

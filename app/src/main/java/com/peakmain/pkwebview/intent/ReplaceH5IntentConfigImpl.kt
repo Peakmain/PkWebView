@@ -8,6 +8,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.peakmain.webview.bean.ActivityResultBean
+import com.peakmain.webview.bean.WebViewConfigBean
 import com.peakmain.webview.interfaces.H5IntentConfig
 
 /**
@@ -17,31 +18,37 @@ import com.peakmain.webview.interfaces.H5IntentConfig
  * describe：
  */
 class ReplaceH5IntentConfigImpl:H5IntentConfig {
-    override fun startActivity(context: Context?, url: String) {
-      Log.e("TAG","ReplaceH5IntentConfigImpl url:$url")
+    override fun startActivity(context: Context?, bean: WebViewConfigBean) {
+        Log.e("TAG","ReplaceH5IntentConfigImpl url:${bean.url}")
     }
 
-    override fun startActivityForResult(context: Activity?, url: String, requestCode: Int) {
+    override fun startActivityForResult(
+        context: Activity?,
+        bean: WebViewConfigBean,
+        requestCode: Int
+    ) {
     }
 
-    override fun startActivityForResult(context: Fragment?, url: String, requestCode: Int) {
-
+    override fun startActivityForResult(
+        context: Fragment?,
+        bean: WebViewConfigBean,
+        requestCode: Int
+    ) {
     }
 
     override fun startActivityForResult(
         context: FragmentActivity?,
         launcher: ActivityResultLauncher<Intent>?,
-        url: String
+        bean: WebViewConfigBean
     ) {
-
     }
 
     override fun startActivityForResult(
         context: Fragment?,
         launcher: ActivityResultLauncher<Intent>?,
-        url: String
+        bean: WebViewConfigBean
     ) {
-
     }
+
 
 }

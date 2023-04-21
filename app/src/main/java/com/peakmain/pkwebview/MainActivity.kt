@@ -9,6 +9,7 @@ import androidx.lifecycle.LifecycleRegistry
 import com.peakmain.pkwebview.intent.ReplaceH5ConfigDecorator
 import com.peakmain.pkwebview.intent.ReplaceH5IntentConfigImpl
 import com.peakmain.webview.H5Utils
+import com.peakmain.webview.bean.WebViewConfigBean
 import com.peakmain.webview.helper.PkStartActivityResultContracts
 
 class MainActivity : AppCompatActivity() {
@@ -16,7 +17,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val launcher = registerForActivityResult(StartActivityForResult()) {
-            Log.e("TAG","收到结果:${it.resultCode}")
+            Log.e("TAG", "收到结果:${it.resultCode}")
         }
         findViewById<TextView>(R.id.tv_webview).setOnClickListener {
             /*H5Utils()
@@ -24,7 +25,8 @@ class MainActivity : AppCompatActivity() {
             H5Utils()
                 .startActivityForResult(
                     this, launcher,
-                    "https://qa-xbu-activity.at-our.com/mallIndex")
+                    WebViewConfigBean("https://qa-xbu-activity.at-our.com/mallIndex")
+                )
         }
     }
 

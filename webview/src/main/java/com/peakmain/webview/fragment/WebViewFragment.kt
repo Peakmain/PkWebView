@@ -2,7 +2,9 @@ package com.peakmain.webview.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -12,8 +14,10 @@ import android.view.ViewGroup
 import android.webkit.ValueCallback
 import android.webkit.WebView
 import android.widget.FrameLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.peakmain.webview.activity.WebViewActivity
+import com.peakmain.webview.bean.WebViewConfigBean
 import com.peakmain.webview.constants.WebViewConstants
 import com.peakmain.webview.implement.loading.HorizontalProgressBarLoadingConfigImpl
 import com.peakmain.webview.implement.loading.ProgressLoadingConfigImpl
@@ -21,6 +25,8 @@ import com.peakmain.webview.interfaces.LoadingViewConfig
 import com.peakmain.webview.manager.WebViewManager
 import com.peakmain.webview.manager.WebViewPool
 import com.peakmain.webview.sealed.LoadingWebViewState
+import com.peakmain.webview.sealed.StatusBarState
+import com.peakmain.webview.utils.StatusBarUtils
 import com.peakmain.webview.view.PkWebView
 
 /**
@@ -39,6 +45,16 @@ open class WebViewFragment : Fragment() {
     private var mLoadingViewConfig: LoadingViewConfig? = null
     private var mLoadingView: View? = null
     private lateinit var mLoadingWebViewState: LoadingWebViewState
+    private val mWebViewConfigBean by lazy {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+            arguments?.getParcelable(
+                WebViewConstants.LIBRARY_WEB_VIEW,
+                WebViewConfigBean::class.java
+            )
+        else
+            arguments?.getParcelable(WebViewConstants.LIBRARY_WEB_VIEW) as WebViewConfigBean?
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -51,10 +67,43 @@ open class WebViewFragment : Fragment() {
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
             initView(frameLayout)
+
+            initStatus()
             addLoadingView(frameLayout)
             return frameLayout
         }
         return null
+    }
+
+    private fun initStatus() {
+        if (mWebViewConfigBean == null) return
+        when (mWebViewConfigBean!!.statusBarState) {
+            is StatusBarState.LightModeState -> {
+                if (activity == null) return
+                StatusBarUtils.setColor(
+                    activity,
+                    Color.parseColor("#ffffff"),
+                    0
+                )
+                StatusBarUtils.setLightMode(activity)
+            }
+            is StatusBarState.DartModeState -> {
+                if (activity == null) return
+                StatusBarUtils.setColor(
+                    activity,
+                    Color.parseColor("#000000"),
+                    0
+                )
+                StatusBarUtils.setDarkMode(activity)
+            }
+            is StatusBarState.StatusColorState -> {
+                StatusBarUtils.setColor(
+                    activity,
+                    mWebViewConfigBean!!.statusBarColor,
+                    0
+                )
+            }
+        }
     }
 
     private fun addLoadingView(frameLayout: FrameLayout) {
@@ -115,7 +164,7 @@ open class WebViewFragment : Fragment() {
     }
 
     private fun getWebViewUrl(): String? {
-        return arguments?.getString(WebViewConstants.LIBRARY_WEB_VIEW_URL)
+        return mWebViewConfigBean?.url
     }
 
 

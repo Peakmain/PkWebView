@@ -8,5 +8,5 @@ package com.peakmain.webview.constants
  */
 object WebViewConstants {
     const val LIBRARY_WEB_VIEW = "LIBRARY_WEB_VIEW"
-    const val LIBRARY_WEB_VIEW_URL = "LIBRARY_WEB_VIEW_URL"
+
 }
