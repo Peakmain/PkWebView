@@ -11,11 +11,11 @@ import android.os.Parcelable
  */
 sealed class StatusBarState : Parcelable {
     /**
-     * 白色的背景，黑色的字体
+     * 黑色的字体
      */
     object LightModeState : StatusBarState()
     /**
-     * 黑色的背景，白色的字体
+     * 白色的字体
      */
 
     object DartModeState : StatusBarState()

@@ -21,19 +21,20 @@ import java.io.Serializable
 
 data class WebViewConfigBean(
     var url: String? = null,
-    var statusBarColor: Int = Color.WHITE,
-    var statusBarState: StatusBarState = StatusBarState.LightModeState
+    var statusBarState: StatusBarState = StatusBarState.LightModeState,
+    var statusBarColor: Int = Color.WHITE
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
+        parcel.readParcelable(StatusBarState::class.java.classLoader)!!,
         parcel.readInt(),
-        parcel.readParcelable(StatusBarState::class.java.classLoader)!!
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(url)
-        parcel.writeInt(statusBarColor)
         parcel.writeParcelable(statusBarState, flags)
+        parcel.writeInt(statusBarColor)
+
     }
 
     override fun describeContents(): Int {

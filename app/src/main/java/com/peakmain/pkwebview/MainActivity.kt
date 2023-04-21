@@ -1,5 +1,6 @@
 package com.peakmain.pkwebview
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
@@ -11,6 +12,7 @@ import com.peakmain.pkwebview.intent.ReplaceH5IntentConfigImpl
 import com.peakmain.webview.H5Utils
 import com.peakmain.webview.bean.WebViewConfigBean
 import com.peakmain.webview.helper.PkStartActivityResultContracts
+import com.peakmain.webview.sealed.StatusBarState
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,12 +22,12 @@ class MainActivity : AppCompatActivity() {
             Log.e("TAG", "收到结果:${it.resultCode}")
         }
         findViewById<TextView>(R.id.tv_webview).setOnClickListener {
-            /*H5Utils()
-                .startActivity(this, "https://qa-xbu-activity.at-our.com/mallIndex")*/
             H5Utils()
                 .startActivityForResult(
                     this, launcher,
-                    WebViewConfigBean("https://qa-xbu-activity.at-our.com/mallIndex")
+                    WebViewConfigBean(
+                        "https://qa-xbu-activity.at-our.com/mallIndex"
+                    )
                 )
         }
     }

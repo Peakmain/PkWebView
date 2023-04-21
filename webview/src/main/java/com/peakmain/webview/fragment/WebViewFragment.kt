@@ -67,44 +67,13 @@ open class WebViewFragment : Fragment() {
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
             initView(frameLayout)
-
-            initStatus()
             addLoadingView(frameLayout)
             return frameLayout
         }
         return null
     }
 
-    private fun initStatus() {
-        if (mWebViewConfigBean == null) return
-        when (mWebViewConfigBean!!.statusBarState) {
-            is StatusBarState.LightModeState -> {
-                if (activity == null) return
-                StatusBarUtils.setColor(
-                    activity,
-                    Color.parseColor("#ffffff"),
-                    0
-                )
-                StatusBarUtils.setLightMode(activity)
-            }
-            is StatusBarState.DartModeState -> {
-                if (activity == null) return
-                StatusBarUtils.setColor(
-                    activity,
-                    Color.parseColor("#000000"),
-                    0
-                )
-                StatusBarUtils.setDarkMode(activity)
-            }
-            is StatusBarState.StatusColorState -> {
-                StatusBarUtils.setColor(
-                    activity,
-                    mWebViewConfigBean!!.statusBarColor,
-                    0
-                )
-            }
-        }
-    }
+
 
     private fun addLoadingView(frameLayout: FrameLayout) {
         mGroup = frameLayout

@@ -7,13 +7,16 @@ import android.text.TextUtils
 import android.view.KeyEvent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModel
 import com.peakmain.webview.BuildConfig
 import com.peakmain.webview.R
 import com.peakmain.webview.bean.WebViewConfigBean
 import com.peakmain.webview.constants.WebViewConstants
 import com.peakmain.webview.fragment.WebViewFragment
 import com.peakmain.webview.helper.WebViewHelper
+import com.peakmain.webview.sealed.StatusBarState
 import com.peakmain.webview.utils.StatusBarUtils
+import com.peakmain.webview.viewmodel.WebViewModel
 
 /**
  * author ：Peakmain
@@ -34,10 +37,18 @@ internal class WebViewActivity : BaseWebViewActivity() {
             intent.extras?.getParcelable(WebViewConstants.LIBRARY_WEB_VIEW) as WebViewConfigBean?
     }
     var mWebViewFragment: WebViewFragment? = null
-
+    lateinit var mWebViewModel: WebViewModel
     override fun initView() {
+        if (!::mWebViewModel.isInitialized) {
+            mWebViewModel = WebViewModel()
+        }
+        mWebViewModel.initStatusBar(this, mWebViewConfigBean)
+        initFragment()
+    }
+
+    private fun initFragment() {
         val bundle = Bundle()
-        bundle.putParcelable(WebViewConstants.LIBRARY_WEB_VIEW,mWebViewConfigBean)
+        bundle.putParcelable(WebViewConstants.LIBRARY_WEB_VIEW, mWebViewConfigBean)
         mWebViewFragment = WebViewFragment()
         mWebViewFragment!!.arguments = bundle
         supportFragmentManager.beginTransaction().replace(R.id.root, mWebViewFragment!!)
@@ -47,10 +58,10 @@ internal class WebViewActivity : BaseWebViewActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-     /*   val url = intent.getEx(WebViewConstants.LIBRARY_WEB_VIEW)
-        if (mWebViewFragment != null && !TextUtils.isEmpty(url)) {
-            mWebViewFragment!!.loadUrl(intent.getStringExtra(WebViewConstants.LIBRARY_WEB_VIEW_URL)!!)
-        }*/
+        /*   val url = intent.getEx(WebViewConstants.LIBRARY_WEB_VIEW)
+           if (mWebViewFragment != null && !TextUtils.isEmpty(url)) {
+               mWebViewFragment!!.loadUrl(intent.getStringExtra(WebViewConstants.LIBRARY_WEB_VIEW_URL)!!)
+           }*/
     }
 
     private fun canGoBack(): Boolean {
