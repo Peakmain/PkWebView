@@ -19,12 +19,9 @@ import com.peakmain.webview.helper.WebViewHelper
  * mail:2726449200@qq.com
  * describe：
  */
-internal class WebViewActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.layout_activity_web_view)
-        initView()
-    }
+internal class WebViewActivity : BaseWebViewActivity() {
+
+    override fun getLayoutId(): Int = R.layout.layout_activity_web_view
     private val mWebViewConfigBean by lazy {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
             intent.extras?.getSerializable(
@@ -36,7 +33,7 @@ internal class WebViewActivity : AppCompatActivity() {
     }
     var mWebViewFragment: WebViewFragment? = null
 
-    private fun initView() {
+    override fun initView() {
         val bundle = Bundle()
         if (!TextUtils.isEmpty(mWebViewConfigBean?.url)) {
             bundle.putString(WebViewConstants.LIBRARY_WEB_VIEW_URL, mWebViewConfigBean?.url)
@@ -87,5 +84,6 @@ internal class WebViewActivity : AppCompatActivity() {
 
 
     fun onReceivedTitle(title: String) {
+
     }
 }

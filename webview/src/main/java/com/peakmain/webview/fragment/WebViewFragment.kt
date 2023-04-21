@@ -168,8 +168,8 @@ open class WebViewFragment : Fragment() {
 
     fun onReceivedTitle(view: WebView?, title: String) {
         if (activity != null && activity is WebViewActivity) {
-            val activity = activity as WebViewActivity
-            activity.onReceivedTitle(title)
+            val activity = activity as WebViewActivity?
+            activity?.onReceivedTitle(title)
         }
     }
 
