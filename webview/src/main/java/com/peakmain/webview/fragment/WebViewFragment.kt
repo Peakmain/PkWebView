@@ -15,8 +15,8 @@ import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import com.peakmain.webview.activity.WebViewActivity
 import com.peakmain.webview.constants.WebViewConstants
-import com.peakmain.webview.implement.HorizontalProgressBarLoadingConfigImpl
-import com.peakmain.webview.implement.ProgressLoadingConfigImpl
+import com.peakmain.webview.implement.loading.HorizontalProgressBarLoadingConfigImpl
+import com.peakmain.webview.implement.loading.ProgressLoadingConfigImpl
 import com.peakmain.webview.interfaces.LoadingViewConfig
 import com.peakmain.webview.manager.WebViewManager
 import com.peakmain.webview.manager.WebViewPool
@@ -133,15 +133,14 @@ open class WebViewFragment : Fragment() {
         WebViewPool.instance.releaseWebView(mWebView)
         mWebView = null
         WebViewManager.instance.unRegister()
-        /* mLoadingView?.apply {
-             (parent as ViewGroup?)?.removeView(this)
-         }*/
         super.onDestroy()
     }
 
     fun onPageStarted(view: WebView?, url: String?) {
         mStartTime = System.currentTimeMillis()
-        if (mLoadingWebViewState != LoadingWebViewState.NotLoading) {
+        if (mLoadingWebViewState != LoadingWebViewState.NotLoading
+            && mLoadingViewConfig?.isShowLoading() == false
+        ) {
             mLoadingViewConfig?.showLoading(view?.context)
         }
     }

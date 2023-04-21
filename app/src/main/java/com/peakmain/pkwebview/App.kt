@@ -14,7 +14,7 @@ import com.peakmain.webview.sealed.LoadingWebViewState
 class App : Application() {
     override fun onCreate() {
         PkWebViewInit.Builder(this)
-            .setLoadingView(ReplaceLoadingConfigImpl())
+            //.setLoadingView(ReplaceLoadingConfigImpl())
             .setLoadingWebViewState(LoadingWebViewState.HorizontalProgressBarLoadingStyle)
             .build()
         super.onCreate()

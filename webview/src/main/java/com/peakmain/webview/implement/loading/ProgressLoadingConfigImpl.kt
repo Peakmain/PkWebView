@@ -1,4 +1,4 @@
-package com.peakmain.webview.implement
+package com.peakmain.webview.implement.loading
 
 import android.content.Context
 import android.view.View
@@ -19,9 +19,7 @@ class ProgressLoadingConfigImpl : LoadingViewConfig {
     }
 
     override fun getLoadingView(context: Context): View {
-        if (!::mAppProgressLoadingView.isInitialized) {
-            mAppProgressLoadingView = AppProgressLoadingView(context)
-        }
+        initProgressLoadingView(context)
         isShowLoading = true
         return mAppProgressLoadingView
 
@@ -34,10 +32,14 @@ class ProgressLoadingConfigImpl : LoadingViewConfig {
     }
 
     override fun showLoading(context: Context?) {
+        initProgressLoadingView(context)
+        isShowLoading = true
+        mAppProgressLoadingView.visibility = View.VISIBLE
+    }
+
+    private fun initProgressLoadingView(context: Context?) {
         if (!::mAppProgressLoadingView.isInitialized && context != null) {
             mAppProgressLoadingView = AppProgressLoadingView(context)
         }
-        isShowLoading=true
-        mAppProgressLoadingView.visibility = View.VISIBLE
     }
 }

@@ -1,12 +1,15 @@
-package com.peakmain.webview.implement
+package com.peakmain.webview.implement.loading
 
 import android.content.Context
 import android.graphics.Color
+import android.util.TypedValue
+import android.util.TypedValue.COMPLEX_UNIT_DIP
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.FrameLayout.LayoutParams
 import android.widget.ProgressBar
+import androidx.annotation.Dimension.DP
 import com.peakmain.webview.interfaces.LoadingViewConfig
 
 /**
@@ -33,7 +36,12 @@ class HorizontalProgressBarLoadingConfigImpl : LoadingViewConfig {
         }
         if (!::mProgressBar.isInitialized) {
             mProgressBar = ProgressBar(context, null, android.R.attr.progressBarStyleHorizontal)
-            mProgressBar.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, 10)
+            val height = TypedValue.applyDimension(
+                COMPLEX_UNIT_DIP,
+                10f,
+                context.applicationContext.resources.displayMetrics
+            ).toInt()
+            mProgressBar.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, height)
             mFrameLayout.addView(mProgressBar)
         }
         isShowLoading = true
