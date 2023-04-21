@@ -95,6 +95,6 @@ internal class WebViewActivity : BaseWebViewActivity() {
 
 
     fun onReceivedTitle(title: String) {
-
+        mTvTitle?.text = title
     }
 }

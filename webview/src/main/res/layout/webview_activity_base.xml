@@ -13,36 +13,46 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:elevation="@dimen/dimen_4">
-        <!-- 左边是返回 -->
-        <ImageButton
-            android:id="@+id/web_view_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="@dimen/dimen_10"
-            android:src="@drawable/ic_web_view_back" />
 
-        <TextView
-            android:id="@+id/web_view_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="标题"
-            android:textColor="#272a2b"
-            android:textSize="@dimen/font_size_16"
-            android:textStyle="bold" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:paddingLeft="@dimen/dimen_10"
+            android:paddingRight="@dimen/dimen_10"
+            android:layout_height="match_parent">
+            <!-- 左边是返回 -->
+            <ImageButton
+                android:id="@+id/web_view_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_web_view_back" />
 
-        <TextView
-            android:id="@+id/web_view_menu_right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="@dimen/dimen_10"
-            android:text="右边按钮"
-            android:textColor="#003A40"
-            android:textSize="@dimen/font_size_12" />
+            <TextView
+                android:id="@+id/web_view_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:paddingLeft="@dimen/dimen_10"
+                android:paddingRight="@dimen/dimen_10"
+                android:textColor="#272a2b"
+                android:textSize="@dimen/font_size_16"
+                android:textStyle="bold"
+                tools:text="标题" />
+
+            <TextView
+                android:id="@+id/web_view_menu_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:text="右边按钮"
+                android:textColor="#003A40"
+                android:textSize="@dimen/font_size_12" />
+        </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 
 
