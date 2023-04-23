@@ -51,6 +51,7 @@
                 android:layout_gravity="right|center"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:text="右边按钮"
+                android:visibility="gone"
                 android:textColor="#003A40"
                 android:textSize="@dimen/font_size_12" />
         </LinearLayout>

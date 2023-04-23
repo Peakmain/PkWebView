@@ -1,7 +1,9 @@
 package com.peakmain.pkwebview
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
@@ -34,9 +36,17 @@ class MainActivity : AppCompatActivity() {
                         activity?.showToolbar(true)
                     /*    activity?.setOnClickListener({
                             activity.finish()
-                        }){
-                            Toast.makeText(it.context,"点击右边",Toast.LENGTH_LONG).show()
+                        }) {
+                            Toast.makeText(it.context, "点击右边", Toast.LENGTH_LONG).show()
                         }*/
+                        activity?.setToolbarStyle { toolbar, ivLeft, tvTitle, tvRight ->
+                            toolbar?.setBackgroundColor(Color.TRANSPARENT)
+                          /*  ivLeft?.setImageResource()
+                            tvTitle?.apply {
+                                setTextColor(Color.RED)
+                            }
+                            tvRight?.visibility = View.VISIBLE*/
+                        }
                     }
                 }
                 .startActivityForResult(

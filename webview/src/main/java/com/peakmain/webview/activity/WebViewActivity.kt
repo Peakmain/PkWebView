@@ -40,13 +40,14 @@ class WebViewActivity : BaseWebViewActivity() {
         if (!::mWebViewModel.isInitialized) {
             mWebViewModel = WebViewModel()
         }
-        mWebViewToolbar?.visibility = if (mH5UtilsParams.isShowToolBar) View.VISIBLE else View.GONE
+        mWebViewToolbar?.get()?.visibility =
+            if (mH5UtilsParams.isShowToolBar) View.VISIBLE else View.GONE
         initFragment()
         initListener()
     }
 
     private fun initListener() {
-        mIvBack?.setOnClickListener {
+        mIvBack?.get()?.setOnClickListener {
             exit()
         }
     }
@@ -104,11 +105,12 @@ class WebViewActivity : BaseWebViewActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        clear()
     }
 
 
     fun onReceivedTitle(title: String) {
-        mTvTitle?.text = title
+        mTvTitle?.get()?.text = title
         mH5UtilsParams.apply {
             updateStatusBar?.invoke(title, this@WebViewActivity)
             updateToolBarBar?.invoke(title, this@WebViewActivity)
@@ -127,7 +129,7 @@ class WebViewActivity : BaseWebViewActivity() {
     }
 
     fun showToolbar(isShowToolbar: Boolean) {
-        mWebViewToolbar?.visibility = if (isShowToolbar) View.VISIBLE else View.GONE
+        mWebViewToolbar?.get()?.visibility = if (isShowToolbar) View.VISIBLE else View.GONE
     }
 
     fun shouldOverrideUrlLoading(view: WebView, url: String) {

@@ -8,6 +8,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.peakmain.webview.R
+import org.w3c.dom.Text
+import java.lang.ref.WeakReference
 
 /**
  * author ：Peakmain
@@ -16,10 +18,10 @@ import com.peakmain.webview.R
  * describe：
  */
 abstract class BaseWebViewActivity : AppCompatActivity() {
-    protected var mIvBack: ImageButton? = null
-    protected var mTvTitle: TextView? = null
-    protected var mTvRightText: TextView? = null
-    protected var mWebViewToolbar: Toolbar? = null
+    protected var mIvBack: WeakReference<ImageButton>? = null
+    protected var mTvTitle: WeakReference<TextView>? = null
+    protected var mTvRightText: WeakReference<TextView>? = null
+    protected var mWebViewToolbar: WeakReference<Toolbar>? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.webview_activity_base)
@@ -27,24 +29,35 @@ abstract class BaseWebViewActivity : AppCompatActivity() {
         initView()
     }
 
+    fun clear() {
+        mIvBack = null
+        mTvRightText = null
+        mTvTitle = null
+        mWebViewToolbar = null
+    }
+
+    fun setToolbarStyle(block: ((Toolbar?, ImageButton?, TextView?, TextView?) -> Unit)? = null) {
+        block?.invoke(mWebViewToolbar?.get(), mIvBack?.get(), mTvTitle?.get(), mTvRightText?.get())
+    }
+
     fun setOnClickListener(
         leftListener: ((View) -> Unit)? = null,
         rightListener: ((View) -> Unit)? = null
     ) {
-        mIvBack?.setOnClickListener {
+        mIvBack?.get()?.setOnClickListener {
             leftListener?.invoke(it)
         }
-        mTvRightText?.setOnClickListener{
+        mTvRightText?.get()?.setOnClickListener {
             rightListener?.invoke(it)
         }
     }
 
     private fun setView() {
         LayoutInflater.from(this).inflate(getLayoutId(), findViewById(R.id.layout_content))
-        mIvBack = findViewById(R.id.web_view_back)
-        mTvTitle = findViewById(R.id.web_view_title)
-        mTvRightText = findViewById(R.id.web_view_menu_right)
-        mWebViewToolbar = findViewById(R.id.web_view_toolbar)
+        mIvBack = WeakReference(findViewById(R.id.web_view_back))
+        mTvTitle = WeakReference(findViewById(R.id.web_view_title))
+        mTvRightText = WeakReference(findViewById(R.id.web_view_menu_right))
+        mWebViewToolbar = WeakReference(findViewById(R.id.web_view_toolbar))
     }
 
     abstract fun getLayoutId(): Int
