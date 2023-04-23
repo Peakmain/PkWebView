@@ -6,9 +6,9 @@ import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.peakmain.webview.bean.ActivityResultBean
 import com.peakmain.webview.bean.WebViewConfigBean
 import com.peakmain.webview.interfaces.H5IntentConfig
+import com.peakmain.webview.manager.H5UtilsParams
 
 /**
  * author ：Peakmain
@@ -18,6 +18,7 @@ import com.peakmain.webview.interfaces.H5IntentConfig
  */
 abstract class AbstractH5IntentConfigDecorator(private val decoratorConfig: H5IntentConfig) :
     H5IntentConfig {
+    val params = H5UtilsParams.instance
     override fun startActivity(context: Context?, bean: WebViewConfigBean) {
         decoratorConfig.startActivity(context, bean)
     }

@@ -12,13 +12,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:elevation="@dimen/dimen_4">
+        android:elevation="@dimen/dimen_4"
+        android:visibility="invisible">
 
         <LinearLayout
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:paddingLeft="@dimen/dimen_10"
-            android:paddingRight="@dimen/dimen_10"
-            android:layout_height="match_parent">
+            android:paddingRight="@dimen/dimen_10">
             <!-- 左边是返回 -->
             <ImageButton
                 android:id="@+id/web_view_back"
@@ -32,9 +33,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:gravity="center"
                 android:layout_weight="1"
                 android:ellipsize="end"
+                android:gravity="center"
                 android:maxLines="1"
                 android:paddingLeft="@dimen/dimen_10"
                 android:paddingRight="@dimen/dimen_10"

@@ -1,21 +1,18 @@
 package com.peakmain.webview.activity
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.KeyEvent
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModel
-import com.peakmain.webview.BuildConfig
+import android.view.View
+import android.webkit.WebView
 import com.peakmain.webview.R
 import com.peakmain.webview.bean.WebViewConfigBean
 import com.peakmain.webview.constants.WebViewConstants
 import com.peakmain.webview.fragment.WebViewFragment
-import com.peakmain.webview.helper.WebViewHelper
+import com.peakmain.webview.manager.H5UtilsParams
 import com.peakmain.webview.sealed.StatusBarState
-import com.peakmain.webview.utils.StatusBarUtils
 import com.peakmain.webview.viewmodel.WebViewModel
 
 /**
@@ -24,7 +21,7 @@ import com.peakmain.webview.viewmodel.WebViewModel
  * mail:2726449200@qq.com
  * describe：
  */
-internal class WebViewActivity : BaseWebViewActivity() {
+class WebViewActivity : BaseWebViewActivity() {
 
     override fun getLayoutId(): Int = R.layout.layout_activity_web_view
     private val mWebViewConfigBean by lazy {
@@ -38,12 +35,28 @@ internal class WebViewActivity : BaseWebViewActivity() {
     }
     var mWebViewFragment: WebViewFragment? = null
     lateinit var mWebViewModel: WebViewModel
+    private val mH5UtilsParams = H5UtilsParams.instance
     override fun initView() {
         if (!::mWebViewModel.isInitialized) {
             mWebViewModel = WebViewModel()
         }
-        mWebViewModel.initStatusBar(this, mWebViewConfigBean)
+        mWebViewToolbar?.visibility = if (mH5UtilsParams.isShowToolBar) View.VISIBLE else View.GONE
         initFragment()
+        initListener()
+    }
+
+    private fun initListener() {
+        mIvBack?.setOnClickListener {
+            exit()
+        }
+    }
+
+    private fun exit() {
+        if (!canGoBack()) {
+            finish()
+            return
+        }
+        webViewGoBack()
     }
 
     private fun initFragment() {
@@ -96,5 +109,27 @@ internal class WebViewActivity : BaseWebViewActivity() {
 
     fun onReceivedTitle(title: String) {
         mTvTitle?.text = title
+        mH5UtilsParams.apply {
+            updateStatusBar?.invoke(title, this@WebViewActivity)
+            updateToolBarBar?.invoke(title, this@WebViewActivity)
+        }
+    }
+
+    fun updateStateBar(
+        statusBarState: StatusBarState = StatusBarState.LightModeState,
+        statusBarColor: Int = Color.WHITE
+    ) {
+        mWebViewConfigBean?.run {
+            this.statusBarState = statusBarState
+            this.statusBarColor = statusBarColor
+        }
+        mWebViewModel.initStatusBar(this, mWebViewConfigBean)
+    }
+
+    fun showToolbar(isShowToolbar: Boolean) {
+        mWebViewToolbar?.visibility = if (isShowToolbar) View.VISIBLE else View.GONE
+    }
+
+    fun shouldOverrideUrlLoading(view: WebView, url: String) {
     }
 }

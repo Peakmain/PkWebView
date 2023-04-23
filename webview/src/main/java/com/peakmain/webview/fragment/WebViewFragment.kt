@@ -176,8 +176,10 @@ open class WebViewFragment : Fragment() {
     }
 
     fun shouldOverrideUrlLoading(view: WebView, url: String) {
-
-
+        if (activity != null && activity is WebViewActivity) {
+            val activity = activity as WebViewActivity?
+            activity?.shouldOverrideUrlLoading(view,url)
+        }
     }
 
     fun onReceivedError(view: WebView?, err: Int, des: String?, failingUrl: String?) {
@@ -268,17 +270,6 @@ open class WebViewFragment : Fragment() {
         }
     }
 
-
-    /**
-     * 外链处理
-     *
-     * @param view view
-     * @param url  url
-     * @return boolean 不再需要被处理则返回true
-     */
-    protected fun onWebPageUrlLoading(view: WebView?, url: String?): Boolean {
-        return false
-    }
 
 
     companion object {

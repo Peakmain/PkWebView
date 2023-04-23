@@ -1,6 +1,7 @@
 package com.peakmain.webview.viewmodel
 
 import android.app.Activity
+import android.view.View
 import androidx.lifecycle.ViewModel
 import com.peakmain.webview.bean.WebViewConfigBean
 import com.peakmain.webview.sealed.StatusBarState
@@ -38,6 +39,9 @@ class WebViewModel : ViewModel() {
                     webViewConfigBean.statusBarColor,
                     0
                 )
+            }
+            is StatusBarState.NoStatusModeState -> {
+                StatusBarUtils.hideStatusBar(activity)
             }
         }
     }

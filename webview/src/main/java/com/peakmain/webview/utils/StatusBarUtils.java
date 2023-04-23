@@ -50,6 +50,11 @@ public class StatusBarUtils {
         activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         activity.getWindow().setStatusBarColor(calculateStatusColor(color, statusBarAlpha));
+        View contentView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
+        int paddingTop = contentView.getPaddingTop();
+        if(paddingTop<0){
+            contentView.setPadding(0,-paddingTop, 0, 0);
+        }
     }
 
 
@@ -333,7 +338,11 @@ public class StatusBarUtils {
             needOffsetView.setTag(TAG_KEY_HAVE_SET_OFFSET, true);
         }
     }
-
+    public static void hideStatusBar(Activity activity){
+        setTransparentForWindow(activity);
+        View contentView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
+        contentView.setPadding(0,-getStatusBarHeight(activity),0,0);
+    }
     /**
      * 为 fragment 头部是 ImageView 的设置状态栏透明
      *
@@ -385,6 +394,7 @@ public class StatusBarUtils {
 
     /**
      * 白底黑字
+     *
      * @param activity activity
      */
     @TargetApi(Build.VERSION_CODES.M)
@@ -393,12 +403,13 @@ public class StatusBarUtils {
         setMeizuStatusBarDarkIcon(activity, true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             View decorView = activity.getWindow().getDecorView();
-            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR |decorView.getSystemUiVisibility() );
+            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | decorView.getSystemUiVisibility());
         }
     }
 
     /**
      * 黑底白字
+     *
      * @param activity activity
      */
     @TargetApi(Build.VERSION_CODES.M)
@@ -407,7 +418,7 @@ public class StatusBarUtils {
         setMeizuStatusBarDarkIcon(activity, false);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             View decorView = activity.getWindow().getDecorView();
-            decorView.setSystemUiVisibility(~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR &decorView.getSystemUiVisibility() );
+            decorView.setSystemUiVisibility(~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR & decorView.getSystemUiVisibility());
 
         }
     }
@@ -537,6 +548,7 @@ public class StatusBarUtils {
                 .getDecorView()
                 .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     }
+
 
     /**
      * 使状态栏透明

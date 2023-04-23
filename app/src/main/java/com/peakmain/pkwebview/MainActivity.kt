@@ -1,17 +1,13 @@
 package com.peakmain.pkwebview
 
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.LifecycleRegistry
-import com.peakmain.pkwebview.intent.ReplaceH5ConfigDecorator
-import com.peakmain.pkwebview.intent.ReplaceH5IntentConfigImpl
 import com.peakmain.webview.H5Utils
 import com.peakmain.webview.bean.WebViewConfigBean
-import com.peakmain.webview.helper.PkStartActivityResultContracts
 import com.peakmain.webview.sealed.StatusBarState
 
 class MainActivity : AppCompatActivity() {
@@ -23,6 +19,26 @@ class MainActivity : AppCompatActivity() {
         }
         findViewById<TextView>(R.id.tv_webview).setOnClickListener {
             H5Utils()
+                .isShowToolBar(false)
+                .updateStatusBar { title, activity ->
+                    if (title.contains("商城")) {
+                        activity?.updateStateBar(StatusBarState.NoStatusModeState)
+                    } else {
+                        activity?.updateStateBar()
+                    }
+                }
+                .updateToolBar { title, activity ->
+                    if (title.contains("商城")) {
+                        activity?.showToolbar(false)
+                    } else {
+                        activity?.showToolbar(true)
+                    /*    activity?.setOnClickListener({
+                            activity.finish()
+                        }){
+                            Toast.makeText(it.context,"点击右边",Toast.LENGTH_LONG).show()
+                        }*/
+                    }
+                }
                 .startActivityForResult(
                     this, launcher,
                     WebViewConfigBean(
