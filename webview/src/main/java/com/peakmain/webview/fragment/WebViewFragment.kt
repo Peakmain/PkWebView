@@ -1,20 +1,22 @@
 package com.peakmain.webview.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.ValueCallback
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
+import android.webkit.WebViewClient.*
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
+import com.peakmain.webview.R
 import com.peakmain.webview.activity.WebViewActivity
 import com.peakmain.webview.bean.WebViewConfigBean
 import com.peakmain.webview.constants.WebViewConstants
@@ -25,6 +27,8 @@ import com.peakmain.webview.manager.H5UtilsParams
 import com.peakmain.webview.manager.WebViewManager
 import com.peakmain.webview.manager.WebViewPool
 import com.peakmain.webview.sealed.LoadingWebViewState
+import com.peakmain.webview.utils.LogWebViewUtils
+import com.peakmain.webview.utils.WebViewUtils
 import com.peakmain.webview.view.PkWebView
 
 /**
@@ -53,7 +57,7 @@ open class WebViewFragment : Fragment() {
         else
             arguments?.getParcelable(WebViewConstants.LIBRARY_WEB_VIEW) as WebViewConfigBean?
     }
-
+    private var mNoNetworkView: View? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -166,7 +170,7 @@ open class WebViewFragment : Fragment() {
 
     fun onPageFinished(view: WebView, url: String) {
         mEndTime = System.currentTimeMillis()
-        Log.e("TAG", "消耗的时间:${(mEndTime - mStartTime) / 1000}")
+        LogWebViewUtils.e("消耗的时间:${(mEndTime - mStartTime) / 1000}")
         if (mLoadingWebViewState != LoadingWebViewState.NotLoading) {
             mLoadingViewConfig?.let {
                 if (it.isShowLoading()) {
@@ -184,7 +188,54 @@ open class WebViewFragment : Fragment() {
     }
 
     fun onReceivedError(view: WebView?, err: Int, des: String?, failingUrl: String?) {
+        val context = context ?: return
+        WebViewUtils.instance.checkNetworkInfo(context, {
+            //当前没有网
+            LogWebViewUtils.e("当前没有网络")
+            showNoNetworkView(context, failingUrl)
+        }) {
+            when (err) {
+                ERROR_HOST_LOOKUP, ERROR_CONNECT, ERROR_TIMEOUT, ERROR_IO ->
+                    showNoNetworkView(context, failingUrl)
+            }
+        }
+    }
 
+    private fun showNoNetworkView(context: Context, failingUrl: String?) {
+        if (mNoNetworkView == null) {
+            mNoNetworkView = View.inflate(context, R.layout.webview_no_network, null)
+            addStatusView(mNoNetworkView)
+            mNoNetworkView?.setOnClickListener {
+                loadUrl2WebView(failingUrl)
+                hideStatusView(mNoNetworkView)
+            }
+        }
+        mNoNetworkView?.visibility = View.VISIBLE
+        if (activity == null) return
+        (activity as WebViewActivity).showToolbar(isShowToolbar = false, notifyTitle = false)
+
+    }
+
+    private fun addStatusView(statusView: View?) {
+        if (statusView == null) return
+        if (statusView.parent != mGroup) {
+            mGroup?.addView(
+                statusView,
+                -1,
+                FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT,
+                    FrameLayout.LayoutParams.MATCH_PARENT
+                )
+            )
+        }
+
+    }
+
+    private fun hideStatusView(statusView: View?) {
+        if (statusView == null) return
+        if (statusView.visibility == View.VISIBLE) {
+            statusView.visibility = View.INVISIBLE
+        }
     }
 
     fun onReceivedTitle(view: WebView?, title: String) {
@@ -203,6 +254,9 @@ open class WebViewFragment : Fragment() {
         }
         if (mLoadingWebViewState != LoadingWebViewState.NotLoading) {
             mLoadingViewConfig?.let {
+                if (!it.isShowLoading() && view?.context != null) {
+                    it.showLoading(view.context)
+                }
                 if (newProgress == 100 && it.isShowLoading()) {
                     it.hideLoading()
                 }

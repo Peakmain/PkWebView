@@ -1,23 +1,26 @@
 package com.peakmain.webview.callback
 
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
-import android.util.Log
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
+import androidx.core.content.ContextCompat
+import androidx.core.content.PackageManagerCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.peakmain.webview.fragment.WebViewFragment
+import com.peakmain.webview.utils.LogWebViewUtils
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
-import java.lang.ref.WeakReference
 import java.util.concurrent.*
+import java.util.jar.Manifest
 
 /**
  * author ：Peakmain
@@ -31,7 +34,7 @@ class DefaultWebViewClientCallback : WebViewClientCallback {
         ConcurrentHashMap<String, Future<WebResourceResponse>>()
 
     override fun onPageFinished(view: WebView, url: String, fragment: WebViewFragment?) {
-        Log.e("TAG", "再次來到onPageFinished")
+        LogWebViewUtils.e("再次來到onPageFinished")
     }
 
     override fun shouldOverrideUrlLoading(
@@ -75,6 +78,8 @@ class DefaultWebViewClientCallback : WebViewClientCallback {
         url: String?,
         fragment: WebViewFragment?
     ) {
+        LogWebViewUtils.e("错误码：$err,错误信息:$des,错误url:$url")
+
 
     }
 
@@ -132,7 +137,7 @@ class DefaultWebViewClientCallback : WebViewClientCallback {
 
 
     override fun onPageStarted(view: WebView, url: String, fragment: WebViewFragment?) {
-        Log.e("TAG", "再次來到onPageStart")
+        LogWebViewUtils.e("再次來到onPageStart")
     }
 
 }

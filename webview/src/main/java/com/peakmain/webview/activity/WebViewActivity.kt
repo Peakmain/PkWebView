@@ -24,6 +24,7 @@ import com.peakmain.webview.viewmodel.WebViewModel
 class WebViewActivity : BaseWebViewActivity() {
 
     override fun getLayoutId(): Int = R.layout.layout_activity_web_view
+    private var isNotifyTitle: Boolean = true
     private val mWebViewConfigBean by lazy {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
             intent.extras?.getParcelable(
@@ -112,9 +113,11 @@ class WebViewActivity : BaseWebViewActivity() {
 
     fun onReceivedTitle(title: String) {
         mTvTitle?.get()?.text = title
-        mH5UtilsParams.apply {
-            updateStatusBar?.invoke(title, this@WebViewActivity)
-            updateToolBarBar?.invoke(title, this@WebViewActivity)
+        if(isNotifyTitle){
+            mH5UtilsParams.apply {
+                updateStatusBar?.invoke(title, this@WebViewActivity)
+                updateToolBarBar?.invoke(title, this@WebViewActivity)
+            }
         }
     }
 
@@ -129,7 +132,8 @@ class WebViewActivity : BaseWebViewActivity() {
         mWebViewModel.initStatusBar(this, mWebViewConfigBean)
     }
 
-    fun showToolbar(isShowToolbar: Boolean) {
+    fun showToolbar(isShowToolbar: Boolean, notifyTitle: Boolean = true) {
+        this.isNotifyTitle = notifyTitle
         mWebViewToolbar?.get()?.visibility = if (isShowToolbar) View.VISIBLE else View.GONE
     }
 

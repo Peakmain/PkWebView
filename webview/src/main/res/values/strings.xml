@@ -6,4 +6,6 @@
     <item name="library_status_translucent_view" type="id"/>
     <string name="meizu_flag_dark_status_bar_icon">MEIZU_FLAG_DARK_STATUS_BAR_ICON</string>
     <string name="meizuFlags">meizuFlags</string>
+    <string name="webview_network_error">网络遇到了一些问题</string>
+    <string name="web_view_please_retry">请点击页面重试</string>
 </resources>
