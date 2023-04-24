@@ -1,5 +1,7 @@
 package com.peakmain.pkwebview
 
+import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import com.peakmain.webview.callback.WebViewClientCallback
 import com.peakmain.webview.fragment.WebViewFragment
@@ -10,7 +12,7 @@ import com.peakmain.webview.fragment.WebViewFragment
  * mail:2726449200@qq.com
  * describe：
  */
-class ReplaceWebViewClient:WebViewClientCallback {
+class ReplaceWebViewClient : WebViewClientCallback {
     override fun onPageStarted(view: WebView, url: String, fragment: WebViewFragment?) {
 
     }
@@ -24,7 +26,7 @@ class ReplaceWebViewClient:WebViewClientCallback {
         url: String,
         fragment: WebViewFragment?
     ): Boolean {
-       return false
+        return false
     }
 
     override fun onReceivedError(
@@ -34,5 +36,12 @@ class ReplaceWebViewClient:WebViewClientCallback {
         url: String?,
         fragment: WebViewFragment?
     ) {
+    }
+
+    override fun shouldInterceptRequest(
+        view: WebView?,
+        request: WebResourceRequest
+    ): WebResourceResponse? {
+        return null
     }
 }

@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tv_webview).setOnClickListener {
             H5Utils()
                 .isShowToolBar(false)
-                .setLoadingWebViewState(LoadingWebViewState.ProgressBarLoadingStyle)
+                //.setLoadingWebViewState(LoadingWebViewState.ProgressBarLoadingStyle)
                 .updateStatusBar { title, activity ->
                     if (title.contains("商城")) {
                         activity?.updateStateBar(StatusBarState.NoStatusModeState)

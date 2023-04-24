@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.ValueCallback
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
@@ -278,5 +279,9 @@ open class WebViewFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+    }
+
+    fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest) {
+
     }
 }

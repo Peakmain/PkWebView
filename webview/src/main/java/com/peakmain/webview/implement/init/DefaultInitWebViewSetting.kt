@@ -12,7 +12,7 @@ import com.peakmain.webview.interfaces.InitWebViewSetting
  * mail:2726449200@qq.com
  * describe：
  */
-class DefaultInitWebViewSetting :InitWebViewSetting{
+class DefaultInitWebViewSetting : InitWebViewSetting {
     override fun initWebViewSetting(webView: WebView, userAgent: String?) {
         val webSettings: WebSettings = webView.settings
         WebView.setWebContentsDebuggingEnabled(true)
@@ -31,7 +31,7 @@ class DefaultInitWebViewSetting :InitWebViewSetting{
             setSupportMultipleWindows(false)
             setSupportZoom(false)
             builtInZoomControls = false
-            //cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
+            cacheMode = WebSettings.LOAD_NO_CACHE
         }
         if (!TextUtils.isEmpty(userAgent)) {
             webSettings.userAgentString = userAgent

@@ -1,15 +1,23 @@
 package com.peakmain.webview.callback
 
-import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.net.http.SslError
 import android.util.Log
-import android.webkit.*
-import androidx.core.content.ContextCompat.startActivity
-import com.peakmain.webview.callback.WebViewClientCallback
+import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
+import android.webkit.WebView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.peakmain.webview.fragment.WebViewFragment
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.lang.ref.WeakReference
+import java.util.concurrent.*
 
 /**
  * author ：Peakmain
@@ -18,6 +26,10 @@ import com.peakmain.webview.fragment.WebViewFragment
  * describe：
  */
 class DefaultWebViewClientCallback : WebViewClientCallback {
+    private val mExecutorService: ExecutorService = Executors.newFixedThreadPool(5)
+    private val mFutureMap =
+        ConcurrentHashMap<String, Future<WebResourceResponse>>()
+
     override fun onPageFinished(view: WebView, url: String, fragment: WebViewFragment?) {
         Log.e("TAG", "再次來到onPageFinished")
     }
@@ -64,6 +76,58 @@ class DefaultWebViewClientCallback : WebViewClientCallback {
         fragment: WebViewFragment?
     ) {
 
+    }
+
+    override fun shouldInterceptRequest(
+        view: WebView?,
+        request: WebResourceRequest
+    ): WebResourceResponse? {
+        if (view == null || !isImageType(request.url.toString())) return null
+        val url = request.url.toString()
+        var response: WebResourceResponse? = null
+        if (mFutureMap.containsKey(url)) {
+            return try {
+                mFutureMap[url]?.get()
+            } catch (e: Exception) {
+                if (e !is CancellationException) {
+                    e.printStackTrace()
+                }
+                mFutureMap.remove(url)
+                null
+            }
+        }
+        try {
+            val future =
+                mExecutorService.submit(Callable<WebResourceResponse> {
+                    Glide.with(view.context)
+                        .asBitmap()
+                        .load(request.url.toString())
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .dontTransform()
+                        .submit()
+                        .get()
+                        .also { bitmap ->
+                            val outStream = ByteArrayOutputStream()
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outStream)
+                            val inputStream = ByteArrayInputStream(outStream.toByteArray())
+                            response = WebResourceResponse("image/png", "UTF-8", inputStream)
+                            response?.setStatusCodeAndReasonPhrase(200, "OK")
+                            response?.responseHeaders = HashMap<String, String>()
+                        }
+                    response
+                })
+            mFutureMap.putIfAbsent(url, future)
+            response = future.get()
+            mFutureMap.remove(url)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            mFutureMap.remove(url)
+        }
+        return response
+    }
+
+    private fun isImageType(url: String): Boolean {
+        return url.matches(Regex(".*\\.(png|jpe?g|gif|webp|bmp)$", RegexOption.IGNORE_CASE))
     }
 
 
