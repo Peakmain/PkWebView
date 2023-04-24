@@ -106,6 +106,7 @@ class WebViewActivity : BaseWebViewActivity() {
     override fun onDestroy() {
         super.onDestroy()
         clear()
+        mH5UtilsParams.clear()
     }
 
 

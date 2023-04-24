@@ -2,7 +2,6 @@ package com.peakmain.webview.fragment
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -14,7 +13,6 @@ import android.view.ViewGroup
 import android.webkit.ValueCallback
 import android.webkit.WebView
 import android.widget.FrameLayout
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.peakmain.webview.activity.WebViewActivity
 import com.peakmain.webview.bean.WebViewConfigBean
@@ -22,11 +20,10 @@ import com.peakmain.webview.constants.WebViewConstants
 import com.peakmain.webview.implement.loading.HorizontalProgressBarLoadingConfigImpl
 import com.peakmain.webview.implement.loading.ProgressLoadingConfigImpl
 import com.peakmain.webview.interfaces.LoadingViewConfig
+import com.peakmain.webview.manager.H5UtilsParams
 import com.peakmain.webview.manager.WebViewManager
 import com.peakmain.webview.manager.WebViewPool
 import com.peakmain.webview.sealed.LoadingWebViewState
-import com.peakmain.webview.sealed.StatusBarState
-import com.peakmain.webview.utils.StatusBarUtils
 import com.peakmain.webview.view.PkWebView
 
 /**
@@ -45,6 +42,7 @@ open class WebViewFragment : Fragment() {
     private var mLoadingViewConfig: LoadingViewConfig? = null
     private var mLoadingView: View? = null
     private lateinit var mLoadingWebViewState: LoadingWebViewState
+    private val mH5UtilsParams = H5UtilsParams.instance
     private val mWebViewConfigBean by lazy {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
             arguments?.getParcelable(
@@ -74,11 +72,11 @@ open class WebViewFragment : Fragment() {
     }
 
 
-
     private fun addLoadingView(frameLayout: FrameLayout) {
         mGroup = frameLayout
         val webViewParams = mWebView?.getWebViewParams() ?: return
-        mLoadingWebViewState = webViewParams.mLoadingWebViewState
+        mLoadingWebViewState =
+            mH5UtilsParams.mLoadingWebViewState ?: webViewParams.mLoadingWebViewState
         if (mLoadingWebViewState == LoadingWebViewState.HorizontalProgressBarLoadingStyle) {
             webViewParams.mLoadingViewConfig = HorizontalProgressBarLoadingConfigImpl()
         } else if (webViewParams.mLoadingWebViewState == LoadingWebViewState.ProgressBarLoadingStyle) {
@@ -90,7 +88,9 @@ open class WebViewFragment : Fragment() {
             is LoadingWebViewState.ProgressBarLoadingStyle,
             LoadingWebViewState.CustomLoadingStyle,
             LoadingWebViewState.HorizontalProgressBarLoadingStyle -> {
-                mLoadingViewConfig = webViewParams.mLoadingViewConfig
+
+                mLoadingViewConfig =
+                    mH5UtilsParams.mLoadingViewConfig ?: webViewParams.mLoadingViewConfig
                 mLoadingView = mLoadingViewConfig?.getLoadingView(frameLayout.context)
                 mLoadingView?.visibility = View.VISIBLE
                 if (mLoadingView?.parent != frameLayout) {
@@ -178,7 +178,7 @@ open class WebViewFragment : Fragment() {
     fun shouldOverrideUrlLoading(view: WebView, url: String) {
         if (activity != null && activity is WebViewActivity) {
             val activity = activity as WebViewActivity?
-            activity?.shouldOverrideUrlLoading(view,url)
+            activity?.shouldOverrideUrlLoading(view, url)
         }
     }
 
@@ -269,7 +269,6 @@ open class WebViewFragment : Fragment() {
             }
         }
     }
-
 
 
     companion object {

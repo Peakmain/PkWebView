@@ -10,6 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts.StartActivityFo
 import androidx.appcompat.app.AppCompatActivity
 import com.peakmain.webview.H5Utils
 import com.peakmain.webview.bean.WebViewConfigBean
+import com.peakmain.webview.sealed.LoadingWebViewState
 import com.peakmain.webview.sealed.StatusBarState
 
 class MainActivity : AppCompatActivity() {
@@ -22,6 +23,7 @@ class MainActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tv_webview).setOnClickListener {
             H5Utils()
                 .isShowToolBar(false)
+                .setLoadingWebViewState(LoadingWebViewState.ProgressBarLoadingStyle)
                 .updateStatusBar { title, activity ->
                     if (title.contains("商城")) {
                         activity?.updateStateBar(StatusBarState.NoStatusModeState)
