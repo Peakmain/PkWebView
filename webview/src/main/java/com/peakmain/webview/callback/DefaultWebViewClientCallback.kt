@@ -1,18 +1,12 @@
 package com.peakmain.webview.callback
 
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.net.Uri
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
-import androidx.core.content.ContextCompat
-import androidx.core.content.PackageManagerCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.peakmain.webview.fragment.WebViewFragment
@@ -20,7 +14,6 @@ import com.peakmain.webview.utils.LogWebViewUtils
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.util.concurrent.*
-import java.util.jar.Manifest
 
 /**
  * author ：Peakmain

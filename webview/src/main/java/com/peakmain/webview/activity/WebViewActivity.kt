@@ -7,12 +7,14 @@ import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
 import android.webkit.WebView
+import androidx.activity.viewModels
 import com.peakmain.webview.R
 import com.peakmain.webview.bean.WebViewConfigBean
 import com.peakmain.webview.constants.WebViewConstants
 import com.peakmain.webview.fragment.WebViewFragment
 import com.peakmain.webview.manager.H5UtilsParams
 import com.peakmain.webview.sealed.StatusBarState
+import com.peakmain.webview.utils.LogWebViewUtils
 import com.peakmain.webview.viewmodel.WebViewModel
 
 /**
@@ -35,12 +37,9 @@ class WebViewActivity : BaseWebViewActivity() {
             intent.extras?.getParcelable(WebViewConstants.LIBRARY_WEB_VIEW) as WebViewConfigBean?
     }
     var mWebViewFragment: WebViewFragment? = null
-    lateinit var mWebViewModel: WebViewModel
+    private val mWebViewModel: WebViewModel by viewModels()
     private val mH5UtilsParams = H5UtilsParams.instance
     override fun initView() {
-        if (!::mWebViewModel.isInitialized) {
-            mWebViewModel = WebViewModel()
-        }
         mWebViewToolbar?.get()?.visibility =
             if (mH5UtilsParams.isShowToolBar) View.VISIBLE else View.GONE
         initFragment()

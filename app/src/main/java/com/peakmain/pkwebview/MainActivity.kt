@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
                 .startActivityForResult(
                     this, launcher,
                     WebViewConfigBean(
-                        "https://qa-xbu-activity.at-our.com/mallIndex"
+                        "http://xbu-activity.yaduo.com/mallIndex"
                     )
                 )
         }

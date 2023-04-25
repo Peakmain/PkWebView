@@ -3,7 +3,6 @@ package com.peakmain.webview.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -18,6 +17,7 @@ import android.webkit.WebViewClient.*
 import android.widget.FrameLayout
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.peakmain.webview.R
 import com.peakmain.webview.activity.WebViewActivity
 import com.peakmain.webview.bean.WebViewConfigBean
@@ -33,6 +33,7 @@ import com.peakmain.webview.sealed.LoadingWebViewState
 import com.peakmain.webview.utils.LogWebViewUtils
 import com.peakmain.webview.utils.WebViewUtils
 import com.peakmain.webview.view.PkWebView
+import com.peakmain.webview.viewmodel.WebViewFragmentViewModel
 
 /**
  * author ：Peakmain
@@ -60,6 +61,7 @@ open class WebViewFragment : Fragment() {
         else
             arguments?.getParcelable(WebViewConstants.LIBRARY_WEB_VIEW) as WebViewConfigBean?
     }
+    private val mViewModel by viewModels<WebViewFragmentViewModel>()
     private var mNoNetworkView: View? = null
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -90,20 +92,13 @@ open class WebViewFragment : Fragment() {
         } else if (webViewParams.mLoadingWebViewState == LoadingWebViewState.ProgressBarLoadingStyle) {
             webViewParams.mLoadingViewConfig = ProgressLoadingConfigImpl()
         }
-        when (mLoadingWebViewState) {
-            is LoadingWebViewState.NotLoading -> {
-            }
-            is LoadingWebViewState.ProgressBarLoadingStyle,
-            LoadingWebViewState.CustomLoadingStyle,
-            LoadingWebViewState.HorizontalProgressBarLoadingStyle -> {
-
-                mLoadingViewConfig =
-                    mH5UtilsParams.mLoadingViewConfig ?: webViewParams.mLoadingViewConfig
-                mLoadingView = mLoadingViewConfig?.getLoadingView(frameLayout.context)
-                mLoadingView?.visibility = View.VISIBLE
-                if (mLoadingView?.parent != frameLayout) {
-                    frameLayout.addView(mLoadingView, -1)
-                }
+        mViewModel.addLoadingView(mLoadingWebViewState){
+            mLoadingViewConfig =
+                mH5UtilsParams.mLoadingViewConfig ?: webViewParams.mLoadingViewConfig
+            mLoadingView = mLoadingViewConfig?.getLoadingView(frameLayout.context)
+            mLoadingView?.visibility = View.VISIBLE
+            if (mLoadingView?.parent != frameLayout) {
+                frameLayout.addView(mLoadingView, -1)
             }
         }
 
@@ -117,15 +112,9 @@ open class WebViewFragment : Fragment() {
             //不显示滚动条
             isHorizontalScrollBarEnabled = false
             isVerticalScrollBarEnabled = false
-            addWebView(fragmentView, this)
+            mViewModel.addWebView(fragmentView, this)
         }
         loadUrl2WebView(null)
-    }
-
-    private fun addWebView(fragmentView: FrameLayout?, pkWebView: PkWebView) {
-        if (fragmentView != null && fragmentView.childCount <= 0) {
-            fragmentView.addView(pkWebView)
-        }
     }
 
     private fun loadUrl2WebView(oldUrl: String?) {
@@ -156,128 +145,53 @@ open class WebViewFragment : Fragment() {
     }
 
     override fun onDestroy() {
-        WebViewPool.instance.releaseWebView(mWebView)
+        mViewModel.onDestroy(mWebView)
         mWebView = null
-        WebViewManager.instance.unRegister()
         super.onDestroy()
     }
 
     fun onPageStarted(view: WebView?, url: String?) {
         mStartTime = System.currentTimeMillis()
-        if (mLoadingWebViewState != LoadingWebViewState.NotLoading
-            && mLoadingViewConfig?.isShowLoading() == false
-        ) {
-            mLoadingViewConfig?.showLoading(view?.context)
-        }
+        mViewModel.showLoading(view, mLoadingWebViewState, mLoadingViewConfig)
     }
 
     fun onPageFinished(view: WebView, url: String) {
         mEndTime = System.currentTimeMillis()
         LogWebViewUtils.e("消耗的时间:${(mEndTime - mStartTime) / 1000}")
-        if (mLoadingWebViewState != LoadingWebViewState.NotLoading) {
-            mLoadingViewConfig?.let {
-                if (it.isShowLoading()) {
-                    it.hideLoading()
-                }
-            }
-        }
+        mViewModel.hideLoading(mLoadingWebViewState, mLoadingViewConfig)
     }
 
     fun shouldOverrideUrlLoading(view: WebView, url: String) {
-        if (activity != null && activity is WebViewActivity) {
-            val activity = activity as WebViewActivity?
-            activity?.shouldOverrideUrlLoading(view, url)
-        }
+        mViewModel.shouldOverrideUrlLoading(activity, view, url)
     }
 
     fun onReceivedError(view: WebView?, err: Int, des: String?, failingUrl: String?) {
         val context = context ?: return
         val webViewParams = mWebView?.getWebViewParams()
-        WebViewUtils.instance.checkNetworkInfo(context, {
+        WebViewUtils.instance.checkNetworkInfo(context.applicationContext, {
             //当前没有网
             LogWebViewUtils.e("当前没有网络")
-            showNoNetWorkView(webViewParams, context, failingUrl)
+            showNoNetwork(webViewParams, failingUrl)
         }) {
             when (err) {
                 ERROR_HOST_LOOKUP, ERROR_CONNECT, ERROR_TIMEOUT, ERROR_IO ->
-                    showNoNetWorkView(webViewParams, context, failingUrl)
+                    showNoNetwork(webViewParams, failingUrl)
             }
         }
     }
 
-    private fun showNoNetWorkView(
+    private fun showNoNetwork(
         webViewParams: WebViewController.WebViewParams?,
-        context: Context,
         failingUrl: String?
     ) {
-        if (webViewParams == null)
-            showNoNetworkViewById(context, failingUrl, R.layout.webview_no_network)
-        else
-            showNoNetworkViewByParams(context, failingUrl, webViewParams)
-    }
-
-    private fun showNoNetworkViewByParams(
-        context: Context,
-        failingUrl: String?,
-        webViewParams: WebViewController.WebViewParams
-    ) {
-        val noNetWorkView = webViewParams.mNoNetWorkView
-        val noNetWorkViewId = webViewParams.mNoNetWorkViewId
-        val netWorkViewBlock = webViewParams.mNetWorkViewBlock
-        if (noNetWorkView == null && noNetWorkViewId != 0) {
-            showNoNetworkViewById(context, failingUrl, noNetWorkViewId)
-            netWorkViewBlock?.invoke(mNoNetworkView, mWebView, failingUrl)
-        } else if (noNetWorkView != null && noNetWorkViewId == 0) {
-            mNoNetworkView = noNetWorkView
-            showNoNetworkViewById(context, failingUrl, 0)
+        mViewModel.showNoNetWorkView(webViewParams, activity, failingUrl, mWebView, mGroup) {
+            mWebView?.reload()
         }
     }
 
-    private fun showNoNetworkViewById(
-        context: Context,
-        failingUrl: String?,
-        @LayoutRes layoutId: Int
-    ) {
-
-        if (mNoNetworkView == null && layoutId != 0) {
-            mNoNetworkView = View.inflate(context, layoutId, null)
-        }
-        addStatusView(mNoNetworkView)
-        mNoNetworkView?.setOnClickListener {
-            loadUrl2WebView(failingUrl)
-            hideStatusView(mNoNetworkView)
-        }
-        mNoNetworkView?.visibility = View.VISIBLE
-        if (activity == null) return
-        (activity as WebViewActivity).isNotifyTitle(false)
-
-    }
-
-    private fun addStatusView(statusView: View?) {
-        if (statusView == null) return
-        if (statusView.parent != mGroup) {
-            statusView.layoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT
-            )
-            mGroup?.addView(statusView)
-        }
-
-    }
-
-    private fun hideStatusView(statusView: View?) {
-        if (statusView == null) return
-        if (statusView.visibility == View.VISIBLE) {
-            statusView.visibility = View.INVISIBLE
-        }
-        (activity as WebViewActivity).isNotifyTitle(true)
-    }
 
     fun onReceivedTitle(view: WebView?, title: String) {
-        if (activity != null && activity is WebViewActivity) {
-            val activity = activity as WebViewActivity?
-            activity?.onReceivedTitle(title)
-        }
+        mViewModel.onReceivedTitle(activity, view, title)
     }
 
     fun onProgressChanged(view: WebView?, newProgress: Int) {
