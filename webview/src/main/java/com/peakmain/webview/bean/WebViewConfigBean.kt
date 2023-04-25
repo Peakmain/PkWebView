@@ -3,9 +3,7 @@ package com.peakmain.webview.bean
 import android.graphics.Color
 import android.os.Parcel
 import android.os.Parcelable
-import androidx.annotation.ColorInt
 import com.peakmain.webview.sealed.StatusBarState
-import java.io.Serializable
 
 /**
  * author ：Peakmain

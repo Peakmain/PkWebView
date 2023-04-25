@@ -1,6 +1,5 @@
 package com.peakmain.webview
 
-import android.os.Build.VERSION_CODES.P
 import com.peakmain.webview.abstracts.AbstractH5IntentConfigDecorator
 import com.peakmain.webview.activity.WebViewActivity
 import com.peakmain.webview.implement.DefaultH5IntentConfigImpl

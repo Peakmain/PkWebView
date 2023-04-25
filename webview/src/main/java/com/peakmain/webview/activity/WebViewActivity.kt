@@ -14,7 +14,6 @@ import com.peakmain.webview.constants.WebViewConstants
 import com.peakmain.webview.fragment.WebViewFragment
 import com.peakmain.webview.manager.H5UtilsParams
 import com.peakmain.webview.sealed.StatusBarState
-import com.peakmain.webview.utils.LogWebViewUtils
 import com.peakmain.webview.viewmodel.WebViewModel
 
 /**

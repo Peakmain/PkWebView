@@ -3,16 +3,12 @@ package com.peakmain.webview.implement
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.Lifecycle
 import com.peakmain.webview.activity.WebViewActivity
-import com.peakmain.webview.bean.ActivityResultBean
 import com.peakmain.webview.bean.WebViewConfigBean
 import com.peakmain.webview.constants.WebViewConstants
-import com.peakmain.webview.helper.PkStartActivityResultContracts
 import com.peakmain.webview.interfaces.H5IntentConfig
 
 /**

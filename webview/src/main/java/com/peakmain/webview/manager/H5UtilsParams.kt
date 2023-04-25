@@ -1,7 +1,6 @@
 package com.peakmain.webview.manager
 
 import com.peakmain.webview.activity.WebViewActivity
-import com.peakmain.webview.implement.loading.ProgressLoadingConfigImpl
 import com.peakmain.webview.interfaces.LoadingViewConfig
 import com.peakmain.webview.sealed.LoadingWebViewState
 

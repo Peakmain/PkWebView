@@ -1,7 +1,6 @@
 package com.peakmain.webview.fragment
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -15,11 +14,8 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient.*
 import android.widget.FrameLayout
-import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.peakmain.webview.R
-import com.peakmain.webview.activity.WebViewActivity
 import com.peakmain.webview.bean.WebViewConfigBean
 import com.peakmain.webview.constants.WebViewConstants
 import com.peakmain.webview.implement.loading.HorizontalProgressBarLoadingConfigImpl
@@ -114,14 +110,11 @@ open class WebViewFragment : Fragment() {
             isVerticalScrollBarEnabled = false
             mViewModel.addWebView(fragmentView, this)
         }
-        loadUrl2WebView(null)
+        loadUrl2WebView()
     }
 
-    private fun loadUrl2WebView(oldUrl: String?) {
-        var curUrl = oldUrl
-        if (TextUtils.isEmpty(curUrl)) {
-            curUrl = getWebViewUrl()
-        }
+    private fun loadUrl2WebView() {
+        val curUrl = getWebViewUrl()
         if (!TextUtils.isEmpty(curUrl)) {
             mWebView?.loadUrl(curUrl!!)
         } else {

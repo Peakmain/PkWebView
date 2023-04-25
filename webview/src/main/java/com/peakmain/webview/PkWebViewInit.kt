@@ -2,7 +2,6 @@ package com.peakmain.webview
 
 import android.content.Context
 import android.view.View
-import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
 import com.peakmain.webview.callback.WebViewChromeClientCallback
 import com.peakmain.webview.callback.WebViewClientCallback

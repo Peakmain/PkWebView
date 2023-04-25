@@ -1,7 +1,6 @@
 package com.peakmain.webview.implement.loading
 
 import android.content.Context
-import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ClipDrawable
 import android.graphics.drawable.GradientDrawable
@@ -30,7 +29,7 @@ class HorizontalProgressBarLoadingConfigImpl : LoadingViewConfig {
         return isShowLoading
     }
 
-    override fun getLoadingView(context: Context): View? {
+    override fun getLoadingView(context: Context): View {
         if (!::mFrameLayout.isInitialized) {
             mFrameLayout = FrameLayout(context)
             mFrameLayout.setBackgroundColor(Color.WHITE)

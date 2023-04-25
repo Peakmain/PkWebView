@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.peakmain.webview.R
-import org.w3c.dom.Text
 import java.lang.ref.WeakReference
 
 /**

@@ -1,6 +1,5 @@
 package com.peakmain.webview.viewmodel
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.view.View
 import android.webkit.WebView

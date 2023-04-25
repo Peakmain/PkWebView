@@ -6,9 +6,7 @@ import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
-import android.view.View
 import androidx.core.content.ContextCompat
-import com.peakmain.webview.R
 
 /**
  * author ：Peakmain

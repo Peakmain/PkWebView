@@ -2,7 +2,6 @@ package com.peakmain.webview.sealed
 
 import android.os.Parcel
 import android.os.Parcelable
-import java.lang.Thread.State
 
 /**
  * author ：Peakmain

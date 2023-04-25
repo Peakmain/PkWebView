@@ -6,9 +6,7 @@ import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.peakmain.webview.bean.ActivityResultBean
 import com.peakmain.webview.bean.WebViewConfigBean
-import com.peakmain.webview.helper.PkStartActivityResultContracts
 
 /**
  * author ：Peakmain

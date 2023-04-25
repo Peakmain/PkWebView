@@ -4,11 +4,11 @@ import android.content.Context
 import android.view.View
 import com.peakmain.webview.R
 import com.peakmain.webview.callback.DefaultWebViewChromeClientCallback
-import com.peakmain.webview.callback.WebViewClientCallback
 import com.peakmain.webview.callback.DefaultWebViewClientCallback
 import com.peakmain.webview.callback.WebViewChromeClientCallback
-import com.peakmain.webview.implement.loading.ProgressLoadingConfigImpl
+import com.peakmain.webview.callback.WebViewClientCallback
 import com.peakmain.webview.implement.init.DefaultInitWebViewSetting
+import com.peakmain.webview.implement.loading.ProgressLoadingConfigImpl
 import com.peakmain.webview.interfaces.InitWebViewSetting
 import com.peakmain.webview.interfaces.LoadingViewConfig
 import com.peakmain.webview.sealed.LoadingWebViewState

@@ -1,7 +1,6 @@
 package com.peakmain.webview.viewmodel
 
 import android.app.Activity
-import android.view.View
 import androidx.lifecycle.ViewModel
 import com.peakmain.webview.bean.WebViewConfigBean
 import com.peakmain.webview.sealed.StatusBarState
