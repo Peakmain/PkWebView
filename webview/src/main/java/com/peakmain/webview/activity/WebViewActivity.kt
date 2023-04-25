@@ -113,7 +113,7 @@ class WebViewActivity : BaseWebViewActivity() {
 
     fun onReceivedTitle(title: String) {
         mTvTitle?.get()?.text = title
-        if(isNotifyTitle){
+        if (isNotifyTitle) {
             mH5UtilsParams.apply {
                 updateStatusBar?.invoke(title, this@WebViewActivity)
                 updateToolBarBar?.invoke(title, this@WebViewActivity)
@@ -132,9 +132,12 @@ class WebViewActivity : BaseWebViewActivity() {
         mWebViewModel.initStatusBar(this, mWebViewConfigBean)
     }
 
-    fun showToolbar(isShowToolbar: Boolean, notifyTitle: Boolean = true) {
-        this.isNotifyTitle = notifyTitle
+    fun showToolbar(isShowToolbar: Boolean) {
         mWebViewToolbar?.get()?.visibility = if (isShowToolbar) View.VISIBLE else View.GONE
+    }
+
+    fun isNotifyTitle(isNotifyTitle: Boolean) {
+        this.isNotifyTitle = isNotifyTitle
     }
 
     fun shouldOverrideUrlLoading(view: WebView, url: String) {

@@ -1,6 +1,9 @@
 package com.peakmain.webview
 
 import android.content.Context
+import android.view.View
+import androidx.annotation.IdRes
+import androidx.annotation.LayoutRes
 import com.peakmain.webview.callback.WebViewChromeClientCallback
 import com.peakmain.webview.callback.WebViewClientCallback
 import com.peakmain.webview.interfaces.InitWebViewSetting
@@ -56,6 +59,26 @@ class PkWebViewInit private constructor() {
 
         fun setLoadingWebViewState(loadingWebViewState: LoadingWebViewState): Builder {
             P.mLoadingWebViewState = loadingWebViewState
+            return this
+        }
+
+        fun setNoNetWorkView(
+            view: View,
+            noNetWorkViewBlock: ((View?, View?, String?) -> Unit)? = null
+        ): Builder {
+            P.mNoNetWorkView = view
+            P.mNoNetWorkViewId = 0
+            P.mNetWorkViewBlock = noNetWorkViewBlock
+            return this
+        }
+
+        fun setNoNetWorkView(
+            @LayoutRes viewIdRes: Int,
+            noNetWorkViewBlock: ((View?, View?, String?) -> Unit)?
+        ):Builder {
+            P.mNoNetWorkView = null
+            P.mNoNetWorkViewId = viewIdRes
+            P.mNetWorkViewBlock = noNetWorkViewBlock
             return this
         }
 

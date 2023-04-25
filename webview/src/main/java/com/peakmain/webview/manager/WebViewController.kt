@@ -1,6 +1,8 @@
 package com.peakmain.webview.manager
 
 import android.content.Context
+import android.view.View
+import com.peakmain.webview.R
 import com.peakmain.webview.callback.DefaultWebViewChromeClientCallback
 import com.peakmain.webview.callback.WebViewClientCallback
 import com.peakmain.webview.callback.DefaultWebViewClientCallback
@@ -17,7 +19,7 @@ import com.peakmain.webview.sealed.LoadingWebViewState
  * mail:2726449200@qq.com
  * describe：
  */
- class WebViewController {
+class WebViewController {
     var P: WebViewParams? = null
         private set
 
@@ -35,8 +37,11 @@ import com.peakmain.webview.sealed.LoadingWebViewState
 
         //默认不显示Loading
         var mLoadingWebViewState: LoadingWebViewState = LoadingWebViewState.NotLoading
-        var mLoadingViewConfig: LoadingViewConfig
-                = ProgressLoadingConfigImpl()
+        var mLoadingViewConfig: LoadingViewConfig = ProgressLoadingConfigImpl()
+        var mNoNetWorkView: View? = null
+        var mNoNetWorkViewId: Int = R.layout.webview_no_network
+        var mNetWorkViewBlock: ((View?, View?, String?) -> Unit)? = null
+
         fun apply(controller: WebViewController, P: WebViewParams) {
             controller.P = P
         }

@@ -3,6 +3,7 @@ package com.peakmain.webview.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -15,6 +16,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient.*
 import android.widget.FrameLayout
+import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.peakmain.webview.R
 import com.peakmain.webview.activity.WebViewActivity
@@ -24,6 +26,7 @@ import com.peakmain.webview.implement.loading.HorizontalProgressBarLoadingConfig
 import com.peakmain.webview.implement.loading.ProgressLoadingConfigImpl
 import com.peakmain.webview.interfaces.LoadingViewConfig
 import com.peakmain.webview.manager.H5UtilsParams
+import com.peakmain.webview.manager.WebViewController
 import com.peakmain.webview.manager.WebViewManager
 import com.peakmain.webview.manager.WebViewPool
 import com.peakmain.webview.sealed.LoadingWebViewState
@@ -189,44 +192,75 @@ open class WebViewFragment : Fragment() {
 
     fun onReceivedError(view: WebView?, err: Int, des: String?, failingUrl: String?) {
         val context = context ?: return
+        val webViewParams = mWebView?.getWebViewParams()
         WebViewUtils.instance.checkNetworkInfo(context, {
             //当前没有网
             LogWebViewUtils.e("当前没有网络")
-            showNoNetworkView(context, failingUrl)
+            showNoNetWorkView(webViewParams, context, failingUrl)
         }) {
             when (err) {
                 ERROR_HOST_LOOKUP, ERROR_CONNECT, ERROR_TIMEOUT, ERROR_IO ->
-                    showNoNetworkView(context, failingUrl)
+                    showNoNetWorkView(webViewParams, context, failingUrl)
             }
         }
     }
 
-    private fun showNoNetworkView(context: Context, failingUrl: String?) {
-        if (mNoNetworkView == null) {
-            mNoNetworkView = View.inflate(context, R.layout.webview_no_network, null)
-            addStatusView(mNoNetworkView)
-            mNoNetworkView?.setOnClickListener {
-                loadUrl2WebView(failingUrl)
-                hideStatusView(mNoNetworkView)
-            }
+    private fun showNoNetWorkView(
+        webViewParams: WebViewController.WebViewParams?,
+        context: Context,
+        failingUrl: String?
+    ) {
+        if (webViewParams == null)
+            showNoNetworkViewById(context, failingUrl, R.layout.webview_no_network)
+        else
+            showNoNetworkViewByParams(context, failingUrl, webViewParams)
+    }
+
+    private fun showNoNetworkViewByParams(
+        context: Context,
+        failingUrl: String?,
+        webViewParams: WebViewController.WebViewParams
+    ) {
+        val noNetWorkView = webViewParams.mNoNetWorkView
+        val noNetWorkViewId = webViewParams.mNoNetWorkViewId
+        val netWorkViewBlock = webViewParams.mNetWorkViewBlock
+        if (noNetWorkView == null && noNetWorkViewId != 0) {
+            showNoNetworkViewById(context, failingUrl, noNetWorkViewId)
+            netWorkViewBlock?.invoke(mNoNetworkView, mWebView, failingUrl)
+        } else if (noNetWorkView != null && noNetWorkViewId == 0) {
+            mNoNetworkView = noNetWorkView
+            showNoNetworkViewById(context, failingUrl, 0)
+        }
+    }
+
+    private fun showNoNetworkViewById(
+        context: Context,
+        failingUrl: String?,
+        @LayoutRes layoutId: Int
+    ) {
+
+        if (mNoNetworkView == null && layoutId != 0) {
+            mNoNetworkView = View.inflate(context, layoutId, null)
+        }
+        addStatusView(mNoNetworkView)
+        mNoNetworkView?.setOnClickListener {
+            loadUrl2WebView(failingUrl)
+            hideStatusView(mNoNetworkView)
         }
         mNoNetworkView?.visibility = View.VISIBLE
         if (activity == null) return
-        (activity as WebViewActivity).showToolbar(isShowToolbar = false, notifyTitle = false)
+        (activity as WebViewActivity).isNotifyTitle(false)
 
     }
 
     private fun addStatusView(statusView: View?) {
         if (statusView == null) return
         if (statusView.parent != mGroup) {
-            mGroup?.addView(
-                statusView,
-                -1,
-                FrameLayout.LayoutParams(
-                    FrameLayout.LayoutParams.MATCH_PARENT,
-                    FrameLayout.LayoutParams.MATCH_PARENT
-                )
+            statusView.layoutParams = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
             )
+            mGroup?.addView(statusView)
         }
 
     }
@@ -236,6 +270,7 @@ open class WebViewFragment : Fragment() {
         if (statusView.visibility == View.VISIBLE) {
             statusView.visibility = View.INVISIBLE
         }
+        (activity as WebViewActivity).isNotifyTitle(true)
     }
 
     fun onReceivedTitle(view: WebView?, title: String) {
