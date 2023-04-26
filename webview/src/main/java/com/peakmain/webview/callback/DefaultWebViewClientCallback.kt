@@ -39,23 +39,24 @@ class DefaultWebViewClientCallback : WebViewClientCallback {
         //处理电话功能
         if (url.startsWith("tel")) {
             try {
-                val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                 activity?.startActivity(intent)
                 return true
             } catch (ex: ActivityNotFoundException) {
                 ex.printStackTrace()
             }
-        } else if (url.startsWith("mailto:")) {
+        }
+        if (url.startsWith("mailto:")) {
             if (activity != null) {
-                val i = Intent(Intent.ACTION_SEND)
-                i.setType("plain/text").putExtra(Intent.EXTRA_EMAIL, arrayOf(url))
-                activity.startActivity(i)
+                val emailUri = Uri.parse(url)
+                val emailIntent = Intent(Intent.ACTION_SENDTO, emailUri)
+                activity.startActivity(emailIntent)
                 return true
             }
             return true
         }
         // 对支付宝和微信的支付页面点击做特殊处理
-        else if (url.contains("alipays://platformapi") || url.contains("weixin://wap/pay?")) {
+        if (url.contains("alipays://platformapi") || url.contains("weixin://wap/pay?")) {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             activity?.startActivity(intent)
             return true

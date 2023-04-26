@@ -29,7 +29,8 @@ class H5Utils(decoratorConfig: H5IntentConfig = DefaultH5IntentConfigImpl()) :
         params.updateToolBarBar = updateToolBarBar
         return this
     }
-    fun setLoadingView(loadingViewConfig: LoadingViewConfig):H5Utils {
+
+    fun setLoadingView(loadingViewConfig: LoadingViewConfig): H5Utils {
         params.mLoadingViewConfig = loadingViewConfig
         params.mLoadingWebViewState = LoadingWebViewState.CustomLoadingStyle
         return this

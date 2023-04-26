@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
                             Toast.makeText(it.context, "点击右边", Toast.LENGTH_LONG).show()
                         }*/
                         activity?.setToolbarStyle { toolbar, ivLeft, tvTitle, tvRight ->
-                            toolbar?.setBackgroundColor(Color.TRANSPARENT)
+                            //toolbar?.setBackgroundColor(Color.TRANSPARENT)
                           /*  ivLeft?.setImageResource()
                             tvTitle?.apply {
                                 setTextColor(Color.RED)
@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
                 .startActivityForResult(
                     this, launcher,
                     WebViewConfigBean(
-                        "https://qa-xbu-activity.at-our.com/mallIndex"
+                        "http://xbu-activity.yaduo.com/mallIndex"
                     )
                 )
         }

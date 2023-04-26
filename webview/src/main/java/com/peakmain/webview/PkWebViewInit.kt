@@ -74,7 +74,7 @@ class PkWebViewInit private constructor() {
         fun setNoNetWorkView(
             @LayoutRes viewIdRes: Int,
             noNetWorkViewBlock: ((View?, View?, String?) -> Unit)?
-        ):Builder {
+        ): Builder {
             P.mNoNetWorkView = null
             P.mNoNetWorkViewId = viewIdRes
             P.mNetWorkViewBlock = noNetWorkViewBlock
@@ -94,6 +94,11 @@ class PkWebViewInit private constructor() {
          */
         fun setWebViewCount(count: Int): Builder {
             P.mWebViewCount = count
+            return this
+        }
+
+        fun setEventKey(eventKey: String): Builder {
+            P.mEventKey = eventKey
             return this
         }
 

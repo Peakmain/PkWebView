@@ -21,10 +21,11 @@ import com.peakmain.webview.constants.WebViewConstants
 import com.peakmain.webview.implement.loading.HorizontalProgressBarLoadingConfigImpl
 import com.peakmain.webview.implement.loading.ProgressLoadingConfigImpl
 import com.peakmain.webview.interfaces.LoadingViewConfig
-import com.peakmain.webview.manager.H5UtilsParams
-import com.peakmain.webview.manager.WebViewController
+import com.peakmain.webview.manager.*
+import com.peakmain.webview.manager.WebViewHandle
 import com.peakmain.webview.manager.WebViewManager
 import com.peakmain.webview.manager.WebViewPool
+import com.peakmain.webview.sealed.HandleResult
 import com.peakmain.webview.sealed.LoadingWebViewState
 import com.peakmain.webview.utils.LogWebViewUtils
 import com.peakmain.webview.utils.WebViewUtils
@@ -58,7 +59,8 @@ open class WebViewFragment : Fragment() {
             arguments?.getParcelable(WebViewConstants.LIBRARY_WEB_VIEW) as WebViewConfigBean?
     }
     private val mViewModel by viewModels<WebViewFragmentViewModel>()
-    private var mNoNetworkView: View? = null
+    private var mWebViewHandle: WebViewHandle? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -81,6 +83,7 @@ open class WebViewFragment : Fragment() {
     private fun addLoadingView(frameLayout: FrameLayout) {
         mGroup = frameLayout
         val webViewParams = mWebView?.getWebViewParams() ?: return
+        mWebViewHandle = WebViewHandle(mWebView,webViewParams.mEventKey)
         mLoadingWebViewState =
             mH5UtilsParams.mLoadingWebViewState ?: webViewParams.mLoadingWebViewState
         if (mLoadingWebViewState == LoadingWebViewState.HorizontalProgressBarLoadingStyle) {
@@ -88,7 +91,7 @@ open class WebViewFragment : Fragment() {
         } else if (webViewParams.mLoadingWebViewState == LoadingWebViewState.ProgressBarLoadingStyle) {
             webViewParams.mLoadingViewConfig = ProgressLoadingConfigImpl()
         }
-        mViewModel.addLoadingView(mLoadingWebViewState){
+        mViewModel.addLoadingView(mLoadingWebViewState) {
             mLoadingViewConfig =
                 mH5UtilsParams.mLoadingViewConfig ?: webViewParams.mLoadingViewConfig
             mLoadingView = mLoadingViewConfig?.getLoadingView(frameLayout.context)
@@ -154,8 +157,9 @@ open class WebViewFragment : Fragment() {
         mViewModel.hideLoading(mLoadingWebViewState, mLoadingViewConfig)
     }
 
-    fun shouldOverrideUrlLoading(view: WebView, url: String) {
+    fun shouldOverrideUrlLoading(view: WebView, url: String): HandleResult {
         mViewModel.shouldOverrideUrlLoading(activity, view, url)
+        return mWebViewHandle?.handleUrl(url) ?: HandleResult.NotConsume
     }
 
     fun onReceivedError(view: WebView?, err: Int, des: String?, failingUrl: String?) {

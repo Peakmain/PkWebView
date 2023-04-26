@@ -41,7 +41,7 @@ class WebViewController {
         var mNoNetWorkView: View? = null
         var mNoNetWorkViewId: Int = R.layout.webview_no_network
         var mNetWorkViewBlock: ((View?, View?, String?) -> Unit)? = null
-
+        var mEventKey: String = "param"
         fun apply(controller: WebViewController, P: WebViewParams) {
             controller.P = P
         }
