@@ -24,7 +24,8 @@ data class WebViewConfigBean(
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
-        parcel.readParcelable(StatusBarState::class.java.classLoader)!!,
+        parcel.readParcelable(StatusBarState::class.java.classLoader)
+            ?: StatusBarState.LightModeState,
         parcel.readInt(),
     )
 
