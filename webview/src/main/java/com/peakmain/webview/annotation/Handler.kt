@@ -9,7 +9,7 @@ import java.lang.annotation.RetentionPolicy
  * mail:2726449200@qq.com
  * describe：
  */
-@Target(AnnotationTarget.TYPE)
+@Target(AnnotationTarget.TYPE, AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class Handler(
     /**

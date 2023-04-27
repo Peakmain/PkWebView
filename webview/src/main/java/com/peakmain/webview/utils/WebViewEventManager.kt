@@ -23,7 +23,7 @@ internal class WebViewEventManager private constructor() {
         }
     }
 
-    fun registerEntities(vararg entities: Class<Any>) {
+    fun registerEntities(vararg entities: Class<*>) {
         if (mHandleMap.isEmpty()) {
             entities.forEach {
                 addEntity(it)
@@ -31,14 +31,14 @@ internal class WebViewEventManager private constructor() {
         }
     }
 
-    private fun addEntity(entity: Class<Any>) {
+    private fun addEntity(entity: Class<*>) {
         val handler = entity.getAnnotation(Handler::class.java) ?: return
         val authorities = handler.authority
         val scheme = handler.scheme
         for (authority in authorities) {
             val methods = entity.methods ?: break
             for (method in methods) {
-                val handlerMethod = method.getAnnotation(HandlerMethod::class.java) ?: return
+                val handlerMethod = method.getAnnotation(HandlerMethod::class.java) ?: continue
                 mHandleMap[format(
                     "%s://%s%s", scheme, authority, handlerMethod.path
                 )] = method

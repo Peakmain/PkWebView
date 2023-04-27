@@ -16,7 +16,7 @@ data class WebViewEvent(
 )
 
 data class WebViewModel(
-    val status: Int = 1,
-    val data: HashMap<String, String>,
-    val callId: String = "" //用于给前端的协议
+    var status: Int = 1,
+    var data: HashMap<String, String>?,
+    var callId: String = "" //用于给前端的协议
 )

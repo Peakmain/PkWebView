@@ -10,6 +10,8 @@ import com.peakmain.webview.interfaces.LoadingViewConfig
 import com.peakmain.webview.manager.WebViewController
 import com.peakmain.webview.manager.WebViewPool
 import com.peakmain.webview.sealed.LoadingWebViewState
+import com.peakmain.webview.utils.WebViewEventManager
+import kotlin.reflect.KClass
 
 /**
  * author ：Peakmain
@@ -114,6 +116,11 @@ class PkWebViewInit private constructor() {
             P.apply(pkWebViewInit.mWebViewController, P)
             mPkWebViewInit = pkWebViewInit
             return pkWebViewInit
+        }
+
+        fun registerEntities(vararg entities: Class<*>): Builder {
+           WebViewEventManager.instance.registerEntities(*entities)
+            return this
         }
     }
 

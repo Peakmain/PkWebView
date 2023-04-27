@@ -2,6 +2,7 @@ package com.peakmain.webview
 
 import android.webkit.WebView
 import com.peakmain.webview.utils.EncodeUtils
+import com.peakmain.webview.utils.LogWebViewUtils
 
 /**
  * author ：Peakmain
@@ -18,10 +19,10 @@ class WebViewJsUtils private constructor() {
 
     fun executeJs(webView: WebView?, method: String, vararg datas: String): Boolean {
         if (webView == null) return false
-        val sb = StringBuffer()
+        val sb = StringBuilder()
         if (datas.isNotEmpty()) {
-            datas.forEachIndexed{index, s ->
-                if(index>0){
+            datas.forEachIndexed { index, s ->
+                if (index > 0) {
                     sb.append(", ")
                 }
                 sb.append("'")
@@ -29,5 +30,11 @@ class WebViewJsUtils private constructor() {
                     .append("'");
             }
         }
+        val jsCode = String.format("Prius.%s(%s)", method, sb.toString())
+        webView.evaluateJavascript(jsCode) { result ->
+            // 处理执行结果
+            LogWebViewUtils.e("executeJs:$result")
+        }
+        return true
     }
 }

@@ -16,15 +16,14 @@ import android.webkit.WebViewClient.*
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.peakmain.webview.WebViewJsUtils
 import com.peakmain.webview.bean.WebViewConfigBean
+import com.peakmain.webview.bean.WebViewModel
 import com.peakmain.webview.constants.WebViewConstants
 import com.peakmain.webview.implement.loading.HorizontalProgressBarLoadingConfigImpl
 import com.peakmain.webview.implement.loading.ProgressLoadingConfigImpl
 import com.peakmain.webview.interfaces.LoadingViewConfig
 import com.peakmain.webview.manager.*
-import com.peakmain.webview.manager.WebViewHandle
-import com.peakmain.webview.manager.WebViewManager
-import com.peakmain.webview.manager.WebViewPool
 import com.peakmain.webview.sealed.HandleResult
 import com.peakmain.webview.sealed.LoadingWebViewState
 import com.peakmain.webview.utils.LogWebViewUtils
@@ -78,7 +77,22 @@ open class WebViewFragment : Fragment() {
         }
         return null
     }
-
+/*
+    fun executeDoneJS(webView: WebView?, data: String?): Boolean {
+        val model = WebViewModel()
+        model.status=1
+        if (model.data == null) {
+            model.data=HashMap()
+        }
+        model.data!!["scanResult"] = scanResult
+        model.setCallId("qrcode/scan")
+        return WebViewJsUtils.instance.executeJs(
+            webView,
+            "onCallbackDone",
+            data
+        )
+    }
+*/
 
     private fun addLoadingView(frameLayout: FrameLayout) {
         mGroup = frameLayout
