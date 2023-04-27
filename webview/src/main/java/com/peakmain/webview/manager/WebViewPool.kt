@@ -3,6 +3,7 @@ package com.peakmain.webview.manager
 import android.view.ViewGroup
 import com.peakmain.webview.implement.WebViewChromeClientImpl
 import com.peakmain.webview.implement.WebViewClientImpl
+import com.peakmain.webview.utils.WebViewEventManager
 import com.peakmain.webview.view.PkWebView
 
 /**
@@ -36,6 +37,11 @@ internal class WebViewPool private constructor() {
         for (i in 0 until WEB_VIEW_COUNT) {
             mWebViewPool[i] = createWebView(params, mUserAgent)
         }
+        registerEntities(params)
+    }
+
+    private fun registerEntities(params: WebViewController.WebViewParams) {
+        params.mEntities?.let { WebViewEventManager.instance.registerEntities(*it) }
     }
 
     /**

@@ -1,8 +1,9 @@
 package com.peakmain.webview
 
 import android.webkit.WebView
+import com.peakmain.webview.bean.WebViewModel
 import com.peakmain.webview.utils.EncodeUtils
-import com.peakmain.webview.utils.LogWebViewUtils
+import com.peakmain.webview.utils.GsonUtils
 
 /**
  * author ：Peakmain
@@ -10,11 +11,33 @@ import com.peakmain.webview.utils.LogWebViewUtils
  * mail:2726449200@qq.com
  * describe：
  */
-class WebViewJsUtils private constructor() {
+class WebViewJsUtils private constructor(val jsNameSpace: String) {
     companion object {
-        val instance by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
-            WebViewJsUtils()
+        @Volatile
+        private var mInstance: WebViewJsUtils? = null
+        fun getInstance(jsNameSpace: String = "Prius"): WebViewJsUtils {
+            return mInstance ?: synchronized(this) {
+                mInstance ?: WebViewJsUtils(jsNameSpace).also {
+                    mInstance = it
+                }
+            }
         }
+
+    }
+
+    fun executeJs(
+        webView: WebView?,
+        method: String,
+        status: Int,
+        data: HashMap<String, String>,
+        callId: String
+    ): Boolean {
+        val webViewModel = WebViewModel(status, data, callId)
+        return executeJs(webView, method, GsonUtils.toJson(webViewModel))
+    }
+
+    fun executeJs(webView: WebView?, method: String, webViewModel: WebViewModel): Boolean {
+        return executeJs(webView, method, GsonUtils.toJson(webViewModel))
     }
 
     fun executeJs(webView: WebView?, method: String, vararg datas: String): Boolean {
@@ -31,10 +54,7 @@ class WebViewJsUtils private constructor() {
             }
         }
         val jsCode = String.format("Prius.%s(%s)", method, sb.toString())
-        webView.evaluateJavascript(jsCode) { result ->
-            // 处理执行结果
-            LogWebViewUtils.e("executeJs:$result")
-        }
+        webView.evaluateJavascript(jsCode, null)
         return true
     }
 }

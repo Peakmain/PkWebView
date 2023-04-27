@@ -2,7 +2,12 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
 }
-
+Properties properties = new Properties()
+properties.load(project.rootProject.file("local.properties").newDataInputStream())
+def userAgent = properties.getProperty("userAgent")
+def path = properties.getProperty("path")
+def scheme = properties.getProperty("scheme")
+def url = properties.getProperty("url")
 android {
     namespace 'com.peakmain.pkwebview'
     compileSdk 33
@@ -18,9 +23,22 @@ android {
     }
 
     buildTypes {
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "com.peakmain.pkwebview.config.Config", "config",
+                    " new com.peakmain.pkwebview.config.Config($userAgent,${path},$scheme,$url)"
+            buildConfigField "String", "path", path
+            buildConfigField "String", "scheme", scheme
+        }
+        debug {
+            minifyEnabled false
+
+            buildConfigField "com.peakmain.pkwebview.config.Config", "config",
+                    " new com.peakmain.pkwebview.config.Config($userAgent,${path},$scheme,$url)"
+            buildConfigField "String", "path", path
+            buildConfigField "String", "scheme", scheme
         }
     }
     compileOptions {

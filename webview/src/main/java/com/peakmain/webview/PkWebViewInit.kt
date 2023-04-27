@@ -10,8 +10,6 @@ import com.peakmain.webview.interfaces.LoadingViewConfig
 import com.peakmain.webview.manager.WebViewController
 import com.peakmain.webview.manager.WebViewPool
 import com.peakmain.webview.sealed.LoadingWebViewState
-import com.peakmain.webview.utils.WebViewEventManager
-import kotlin.reflect.KClass
 
 /**
  * author ：Peakmain
@@ -99,11 +97,10 @@ class PkWebViewInit private constructor() {
             return this
         }
 
-        fun setEventKey(eventKey: String): Builder {
-            P.mEventKey = eventKey
+        fun setEventParamsKey(eventKey: String): Builder {
+            P.mEventParamsKey = eventKey
             return this
         }
-
         fun build() {
             if (mPkWebViewInit == null) {
                 create()
@@ -119,7 +116,7 @@ class PkWebViewInit private constructor() {
         }
 
         fun registerEntities(vararg entities: Class<*>): Builder {
-           WebViewEventManager.instance.registerEntities(*entities)
+            P.mEntities = entities
             return this
         }
     }
