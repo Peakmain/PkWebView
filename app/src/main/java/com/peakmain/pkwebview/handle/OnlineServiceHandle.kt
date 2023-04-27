@@ -25,10 +25,8 @@ class OnlineServiceHandle {
         if (webView == null || model == null) return HandleResult.Consumed
         LogWebViewUtils.e("webView.getUrl():" + webView.url)
         val data = model.data
-        val version = data!!["version"]
-        data["version"] = "10"
-        model.callId = "onlineService/webPolicyAlert"
-        WebViewJsUtils.getInstance().executeJs(webView, GsonUtils.toJson(model));
+        model.callId = ""
+        //WebViewJsUtils.getInstance().executeJs(webView, GsonUtils.toJson(model));
         //保存数据
         return HandleResult.Consumed
     }
