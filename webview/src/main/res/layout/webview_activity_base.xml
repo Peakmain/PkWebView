@@ -51,9 +51,9 @@
                 android:layout_gravity="right|center"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:text="右边按钮"
-                android:visibility="gone"
                 android:textColor="#003A40"
-                android:textSize="@dimen/font_size_12" />
+                android:textSize="@dimen/font_size_12"
+                android:visibility="gone" />
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 
@@ -63,6 +63,11 @@
         android:layout_width="match_parent"
         android:layout_height="1px" />
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:background="@color/amber_100"
+        android:visibility="gone"
+        android:layout_height="300dp" />
 
     <FrameLayout
         android:id="@+id/layout_content"

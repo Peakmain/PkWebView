@@ -22,6 +22,7 @@ class DefaultH5IntentConfigImpl : H5IntentConfig {
         context?.startActivity(
             Intent(context, WebViewActivity::class.java)
                 .putExtra(WebViewConstants.LIBRARY_WEB_VIEW, bean)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         )
     }
 

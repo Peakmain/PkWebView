@@ -1,6 +1,8 @@
 package com.peakmain.webview.manager
 
+import android.net.Uri
 import com.peakmain.webview.activity.WebViewActivity
+import com.peakmain.webview.bean.WebViewEvent
 import com.peakmain.webview.interfaces.LoadingViewConfig
 import com.peakmain.webview.sealed.LoadingWebViewState
 
@@ -16,7 +18,7 @@ class H5UtilsParams private constructor() {
     var updateStatusBar: ((String, WebViewActivity?) -> Unit)? = null
     var mLoadingWebViewState: LoadingWebViewState? = null
     var mLoadingViewConfig: LoadingViewConfig? = null
-
+    var mHandleUrlParamsBlock: ((Uri?, WebViewEvent,String?) -> Unit)?=null
     companion object {
         val instance by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
             H5UtilsParams()

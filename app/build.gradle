@@ -8,6 +8,7 @@ def userAgent = properties.getProperty("userAgent")
 def path = properties.getProperty("path")
 def scheme = properties.getProperty("scheme")
 def url = properties.getProperty("url")
+def jumpWherePath = properties.getProperty("jumpWherePath")
 android {
     namespace 'com.peakmain.pkwebview'
     compileSdk 33
@@ -31,6 +32,7 @@ android {
                     " new com.peakmain.pkwebview.config.Config($userAgent,${path},$scheme,$url)"
             buildConfigField "String", "path", path
             buildConfigField "String", "scheme", scheme
+            buildConfigField "String", "jumpWherePath", jumpWherePath
         }
         debug {
             minifyEnabled false
@@ -39,6 +41,7 @@ android {
                     " new com.peakmain.pkwebview.config.Config($userAgent,${path},$scheme,$url)"
             buildConfigField "String", "path", path
             buildConfigField "String", "scheme", scheme
+            buildConfigField "String", "jumpWherePath", jumpWherePath
         }
     }
     compileOptions {

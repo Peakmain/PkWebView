@@ -2,6 +2,7 @@ package com.peakmain.webview.bean
 
 import android.content.Context
 import android.webkit.WebView
+import com.peakmain.pkwebview.bean.NewHybridModel
 
 /**
  * author ：Peakmain
@@ -12,9 +13,9 @@ import android.webkit.WebView
 data class WebViewEvent(
     var webView: WebView?,
     var context: Context?,
-    var webViewModel: WebViewModel? = null
+    var webViewModel: WebViewModel? = null,
+    var newHybridModel: NewHybridModel?=null
 )
-
 data class WebViewModel(
     var status: Int = 1,
     var data: HashMap<String, String>?,

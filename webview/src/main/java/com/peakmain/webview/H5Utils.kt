@@ -1,7 +1,9 @@
 package com.peakmain.webview
 
+import android.net.Uri
 import com.peakmain.webview.abstracts.AbstractH5IntentConfigDecorator
 import com.peakmain.webview.activity.WebViewActivity
+import com.peakmain.webview.bean.WebViewEvent
 import com.peakmain.webview.implement.DefaultH5IntentConfigImpl
 import com.peakmain.webview.interfaces.H5IntentConfig
 import com.peakmain.webview.interfaces.LoadingViewConfig
@@ -38,6 +40,11 @@ class H5Utils(decoratorConfig: H5IntentConfig = DefaultH5IntentConfigImpl()) :
 
     fun setLoadingWebViewState(loadingWebViewState: LoadingWebViewState): H5Utils {
         params.mLoadingWebViewState = loadingWebViewState
+        return this
+    }
+
+    fun handleUrlParams(block: ((Uri?, WebViewEvent,String?) -> Unit)? = null): H5Utils {
+        params.mHandleUrlParamsBlock = block
         return this
     }
 }

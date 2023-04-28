@@ -79,7 +79,7 @@ open class WebViewFragment : Fragment() {
     private fun addLoadingView(frameLayout: FrameLayout) {
         mGroup = frameLayout
         val webViewParams = mWebView?.getWebViewParams() ?: return
-        mWebViewHandle = WebViewHandle(mWebView,webViewParams.mEventParamsKey)
+        mWebViewHandle = WebViewHandle(mWebView,mH5UtilsParams.mHandleUrlParamsBlock)
         mLoadingWebViewState =
             mH5UtilsParams.mLoadingWebViewState ?: webViewParams.mLoadingWebViewState
         if (mLoadingWebViewState == LoadingWebViewState.HorizontalProgressBarLoadingStyle) {
