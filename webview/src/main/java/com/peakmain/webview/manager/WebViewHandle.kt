@@ -4,6 +4,7 @@ import android.net.Uri
 import android.text.TextUtils
 import android.webkit.WebView
 import com.peakmain.webview.bean.WebViewEvent
+import com.peakmain.webview.callback.HandleUrlParamsCallback
 import com.peakmain.webview.sealed.HandleResult
 import com.peakmain.webview.utils.LogWebViewUtils
 import com.peakmain.webview.utils.WebViewEventManager
@@ -16,7 +17,7 @@ import com.peakmain.webview.utils.WebViewEventManager
  */
 internal class WebViewHandle(
     val webView: WebView?,
-    private val handleUrlParamsBlock: ((Uri?, WebViewEvent,String?) -> Unit)?
+    private val handleUrlParamsCallback: HandleUrlParamsCallback<out WebViewEvent>?
 ) {
     private val mWebViewEventManager: WebViewEventManager = WebViewEventManager.instance
 
@@ -50,19 +51,14 @@ internal class WebViewHandle(
         if (!TextUtils.isEmpty(scheme) || !TextUtils.isEmpty(authority)) {
             //http://www.example.com:8080/index.html
             val cmdUri = String.format("%s://%s%s", scheme, authority, path)
-            val event = WebViewEvent(webView, webView?.context)
             LogWebViewUtils.e("PkWebView cmdUri:$cmdUri")
-            handleUrlParamsBlock?.invoke(url, event,path)
-           /* val params = url.getQueryParameter(eventKey)
-            if (!TextUtils.isEmpty(params)) {
-                val decodeParam: String =
-                    EncodeUtils.decode(params!!.replace(" ", "+"))
-                LogWebViewUtils.e("PkWebView decodeParam:$decodeParam")
-                val webViewModel: WebViewModel =
-                    GsonUtils.fromJson(decodeParam, WebViewModel::class.java)
-                event.webViewModel = webViewModel
-            }*/
-            return mWebViewEventManager.execute(cmdUri, event)
+            if (handleUrlParamsCallback != null) {
+                val event = handleUrlParamsCallback.handleUrlParamsCallback(url, path)
+                event.webView = webView
+                event.context = webView?.context
+                return mWebViewEventManager.execute(cmdUri, event)
+            }
+            return mWebViewEventManager.execute(cmdUri, WebViewEvent(webView, webView?.context))
         }
         return HandleResult.NotConsume
     }

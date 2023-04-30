@@ -2,6 +2,7 @@ package com.peakmain.pkwebview.handle
 
 import android.text.TextUtils
 import com.peakmain.pkwebview.BuildConfig
+import com.peakmain.pkwebview.bean.WebViewModelEvent
 import com.peakmain.webview.H5Utils
 import com.peakmain.webview.annotation.Handler
 import com.peakmain.webview.annotation.HandlerMethod
@@ -19,7 +20,7 @@ import java.net.URLDecoder
 @Handler(scheme = BuildConfig.scheme, authority = ["page"])
 class PageActionHandle {
     @HandlerMethod(path = BuildConfig.jumpWherePath)
-    fun gotoWhere(event: WebViewEvent): HandleResult {
+    fun gotoWhere(event: WebViewModelEvent): HandleResult {
         val context = event.context
         val newHybridData = event.newHybridModel?.data
         if(newHybridData!=null&& !TextUtils.isEmpty(newHybridData.data.url) ){

@@ -1,6 +1,7 @@
 package com.peakmain.pkwebview.handle
 
 import com.peakmain.pkwebview.BuildConfig
+import com.peakmain.pkwebview.bean.WebViewModelEvent
 import com.peakmain.webview.WebViewJsUtils
 import com.peakmain.webview.annotation.Handler
 import com.peakmain.webview.annotation.HandlerMethod
@@ -18,7 +19,7 @@ import com.peakmain.webview.utils.LogWebViewUtils
 @Handler(scheme = BuildConfig.scheme, authority = ["onlineService"])
 class OnlineServiceHandle {
     @HandlerMethod(path = BuildConfig.path)
-    fun webPolicyAlert(event: WebViewEvent): HandleResult {
+    fun webPolicyAlert(event: WebViewModelEvent): HandleResult {
         val context = event.context
         val model = event.webViewModel
         val webView = event.webView

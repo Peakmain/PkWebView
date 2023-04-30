@@ -46,7 +46,7 @@ internal class WebViewEventManager private constructor() {
         }
     }
 
-    fun execute(cmdUri: String, event: WebViewEvent?): HandleResult {
+    fun <T : WebViewEvent> execute(cmdUri: String, event: T?): HandleResult {
         val method = mHandleMap[cmdUri] ?: return HandleResult.NotConsume
         val clazz = method.declaringClass
         val obj = clazz.newInstance()

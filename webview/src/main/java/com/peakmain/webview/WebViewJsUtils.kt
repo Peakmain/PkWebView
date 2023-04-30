@@ -1,9 +1,9 @@
 package com.peakmain.webview
 
 import android.webkit.WebView
-import com.peakmain.webview.bean.WebViewModel
 import com.peakmain.webview.utils.EncodeUtils
 import com.peakmain.webview.utils.GsonUtils
+import com.peakmain.webview.viewmodel.WebViewModel
 
 /**
  * author ：Peakmain
@@ -25,7 +25,7 @@ class WebViewJsUtils private constructor(val jsNameSpace: String) {
 
     }
 
-    fun executeJs(
+/*    fun executeJs(
         webView: WebView?,
         method: String,
         status: Int,
@@ -34,7 +34,7 @@ class WebViewJsUtils private constructor(val jsNameSpace: String) {
     ): Boolean {
         val webViewModel = WebViewModel(status, data, callId)
         return executeJs(webView, method, GsonUtils.toJson(webViewModel))
-    }
+    }*/
 
     fun executeJs(webView: WebView?, method: String, webViewModel: WebViewModel): Boolean {
         return executeJs(webView, method, GsonUtils.toJson(webViewModel))

@@ -1,19 +1,14 @@
 package com.peakmain.pkwebview
 
 import android.os.Bundle
-import android.text.TextUtils
 import android.util.Log
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
-import com.peakmain.pkwebview.bean.NewHybridModel
+import com.peakmain.pkwebview.implements.HandlerUrlParamsImpl
 import com.peakmain.webview.H5Utils
 import com.peakmain.webview.bean.WebViewConfigBean
-import com.peakmain.webview.bean.WebViewModel
 import com.peakmain.webview.sealed.StatusBarState
-import com.peakmain.webview.utils.EncodeUtils
-import com.peakmain.webview.utils.GsonUtils
-import com.peakmain.webview.utils.LogWebViewUtils
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,25 +48,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
-                .handleUrlParams { url, event, path ->
-                    val params = url?.getQueryParameter("param")
-                    if (!TextUtils.isEmpty(params)) {
-                        val decodeParam: String =
-                            EncodeUtils.decode(params!!.replace(" ", "+"))
-                        LogWebViewUtils.e("PkWebView decodeParam:$decodeParam")
-                        if (TextUtils.equals("/jumpToWhere", path)) {
-                            val newHybridModel: NewHybridModel = GsonUtils.fromJson(
-                                decodeParam,
-                                NewHybridModel::class.java
-                            )
-                            event.newHybridModel=newHybridModel
-                        } else {
-                            val webViewModel: WebViewModel =
-                                GsonUtils.fromJson(decodeParam, WebViewModel::class.java)
-                            event.webViewModel = webViewModel
-                        }
-                    }
-                }
+                .setHandleUrlParamsCallback(HandlerUrlParamsImpl())
                 .startActivityForResult(
                     this, launcher,
                     WebViewConfigBean(
