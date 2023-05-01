@@ -1,6 +1,6 @@
 package com.peakmain.webview.manager
 
-import android.net.Uri
+import android.view.View
 import com.peakmain.webview.activity.WebViewActivity
 import com.peakmain.webview.bean.WebViewEvent
 import com.peakmain.webview.callback.HandleUrlParamsCallback
@@ -20,6 +20,9 @@ class H5UtilsParams private constructor() {
     var mLoadingWebViewState: LoadingWebViewState? = null
     var mLoadingViewConfig: LoadingViewConfig? = null
     var mHandleUrlParamsCallback: HandleUrlParamsCallback<out WebViewEvent>? = null
+    var mHeadContentView: View? = null
+    var mHeadContentViewId: Int=0
+    var mHeadViewBlock: ((View) -> Unit)?=null
 
     companion object {
         val instance by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {

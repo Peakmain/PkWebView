@@ -1,6 +1,7 @@
 package com.peakmain.webview
 
-import android.net.Uri
+import android.view.View
+import androidx.annotation.LayoutRes
 import com.peakmain.webview.abstracts.AbstractH5IntentConfigDecorator
 import com.peakmain.webview.activity.WebViewActivity
 import com.peakmain.webview.bean.WebViewEvent
@@ -50,6 +51,20 @@ class H5Utils(decoratorConfig: H5IntentConfig = DefaultH5IntentConfigImpl()) :
         HandleUrlParamsCallback<out WebViewEvent>
     ): H5Utils {
         params.mHandleUrlParamsCallback = handleUrlParamsCallback
+        return this
+    }
+
+    fun setHeadContentView(view: View?, block: ((View) -> Unit)? = null): H5Utils {
+        params.mHeadContentView = view
+        params.mHeadContentViewId = 0
+        params.mHeadViewBlock = block
+        return this
+    }
+
+    fun setHeadContentView(@LayoutRes viewIdRes: Int, block: ((View) -> Unit)? = null): H5Utils {
+        params.mHeadContentView = null
+        params.mHeadContentViewId = viewIdRes
+        params.mHeadViewBlock = block
         return this
     }
 }

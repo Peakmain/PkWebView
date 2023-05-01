@@ -43,7 +43,10 @@ class WebViewActivity : BaseWebViewActivity() {
             if (mH5UtilsParams.isShowToolBar) View.VISIBLE else View.GONE
         initFragment()
         initListener()
+        mWebViewModel
+        mWebViewModel.initTopContent(this, mHeadContentFrameLayout, mH5UtilsParams)
     }
+
 
     private fun initListener() {
         mIvBack?.get()?.setOnClickListener {
@@ -68,14 +71,6 @@ class WebViewActivity : BaseWebViewActivity() {
             .commitAllowingStateLoss()
     }
 
-
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        /*   val url = intent.getEx(WebViewConstants.LIBRARY_WEB_VIEW)
-           if (mWebViewFragment != null && !TextUtils.isEmpty(url)) {
-               mWebViewFragment!!.loadUrl(intent.getStringExtra(WebViewConstants.LIBRARY_WEB_VIEW_URL)!!)
-           }*/
-    }
 
     private fun canGoBack(): Boolean {
         return mWebViewFragment != null && mWebViewFragment!!.canGoBack()

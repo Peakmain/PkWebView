@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="44dp"
+    android:layout_marginTop="@dimen/dimen_25"
+    android:background="#f6f6f6"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/dimen_12"
+    android:paddingEnd="@dimen/dimen_12">
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        app:srcCompat="@drawable/ic_web_view_back" />
+
+
+    <EditText
+        android:id="@+id/et_search"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="@dimen/dimen_8"
+        android:layout_weight="1"
+        android:backgroundTint="@color/white"
+        android:ellipsize="end"
+        android:focusable="false"
+        android:hint="搜索地点、酒店名"
+        android:maxLines="1"
+        android:paddingStart="@dimen/dimen_12"
+        android:singleLine="true"
+        android:textColor="#FF272A2B"
+        android:textColorHint="#A9AAAA"
+        android:textSize="@dimen/font_size_14"
+        android:transitionName="search" />
+
+
+</LinearLayout>
+

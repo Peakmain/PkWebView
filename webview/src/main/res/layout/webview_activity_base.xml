@@ -64,10 +64,10 @@
         android:layout_height="1px" />
 
     <FrameLayout
+        android:id="@+id/fl_top_content"
         android:layout_width="match_parent"
-        android:background="@color/amber_100"
-        android:visibility="gone"
-        android:layout_height="300dp" />
+        android:layout_height="wrap_content"
+        android:visibility="invisible" />
 
     <FrameLayout
         android:id="@+id/layout_content"

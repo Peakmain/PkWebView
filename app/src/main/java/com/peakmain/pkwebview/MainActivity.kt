@@ -31,8 +31,10 @@ class MainActivity : AppCompatActivity() {
                 .updateToolBar { title, activity ->
                     if (title.contains("商城")) {
                         activity?.showToolbar(false)
+                        activity?.showHeadView(true)
                     } else {
                         activity?.showToolbar(true)
+                        activity?.showHeadView(false)
                         /*    activity?.setOnClickListener({
                                 activity.finish()
                             }) {
@@ -47,6 +49,9 @@ class MainActivity : AppCompatActivity() {
                               tvRight?.visibility = View.VISIBLE*/
                         }
                     }
+                }
+                .setHeadContentView(R.layout.hotel_list_head) {
+
                 }
                 .setHandleUrlParamsCallback(HandlerUrlParamsImpl())
                 .startActivityForResult(
