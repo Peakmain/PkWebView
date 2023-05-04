@@ -97,10 +97,6 @@ class PkWebViewInit private constructor() {
             return this
         }
 
-        fun setEventParamsKey(eventKey: String): Builder {
-            P.mEventParamsKey = eventKey
-            return this
-        }
         fun build() {
             if (mPkWebViewInit == null) {
                 create()
