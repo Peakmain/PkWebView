@@ -22,22 +22,24 @@ import com.peakmain.webview.interfaces.LoadingViewConfig
  * describe：
  */
 class HorizontalProgressBarLoadingConfigImpl : LoadingViewConfig {
-    private lateinit var mProgressBar: ProgressBar
-    private lateinit var mFrameLayout: FrameLayout
+    private var mProgressBar: ProgressBar? = null
+    private var mFrameLayout: FrameLayout? = null
     private var isShowLoading = false
     override fun isShowLoading(): Boolean {
         return isShowLoading
     }
 
-    override fun getLoadingView(context: Context): View {
-        if (!::mFrameLayout.isInitialized) {
+    override fun getLoadingView(context: Context): View? {
+        if (mFrameLayout == null) {
             mFrameLayout = FrameLayout(context)
-            mFrameLayout.setBackgroundColor(Color.WHITE)
-            mFrameLayout.layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
-            )
+            mFrameLayout?.apply {
+                setBackgroundColor(Color.WHITE)
+                layoutParams = ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
+                )
+            }
         }
-        if (!::mProgressBar.isInitialized) {
+        if (mProgressBar == null) {
             mProgressBar = ProgressBar(context, null, android.R.attr.progressBarStyleHorizontal)
 
             val height = TypedValue.applyDimension(
@@ -45,7 +47,7 @@ class HorizontalProgressBarLoadingConfigImpl : LoadingViewConfig {
                 5f,
                 context.applicationContext.resources.displayMetrics
             ).toInt()
-            mProgressBar.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, height)
+            mProgressBar?.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, height)
 
             // 创建一个从#FF5722到#CDDC39的水平渐变
             val colors = intArrayOf(Color.parseColor("#FF5722"), Color.parseColor("#CDDC39"))
@@ -65,10 +67,8 @@ class HorizontalProgressBarLoadingConfigImpl : LoadingViewConfig {
             scaleDrawable.level = 10000
 
             // 将ScaleDrawable设置为进度条的Drawable
-            mProgressBar.progressDrawable = scaleDrawable
-
-
-            mFrameLayout.addView(mProgressBar)
+            mProgressBar?.progressDrawable = scaleDrawable
+            mFrameLayout?.addView(mProgressBar)
         }
         isShowLoading = true
         return mFrameLayout
@@ -76,16 +76,22 @@ class HorizontalProgressBarLoadingConfigImpl : LoadingViewConfig {
 
     override fun hideLoading() {
         isShowLoading = false
-        mFrameLayout.visibility = View.GONE
-        mProgressBar.progress = 0
+        mFrameLayout?.visibility = View.GONE
+        mProgressBar?.progress = 0
     }
 
     override fun showLoading(context: Context?) {
         isShowLoading = true
-        mFrameLayout.visibility = View.VISIBLE
+        mFrameLayout?.visibility = View.VISIBLE
     }
 
     override fun setProgress(progress: Int) {
-        mProgressBar.progress = progress
+        mProgressBar?.progress = progress
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mFrameLayout = null
+        mProgressBar = null
     }
 }

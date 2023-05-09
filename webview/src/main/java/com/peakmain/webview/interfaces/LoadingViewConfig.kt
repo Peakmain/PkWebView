@@ -18,4 +18,7 @@ interface LoadingViewConfig {
     fun setProgress(progress: Int){
 
     }
+    fun onDestroy(){
+
+    }
 }
