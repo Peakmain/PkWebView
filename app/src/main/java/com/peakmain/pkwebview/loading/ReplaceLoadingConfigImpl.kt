@@ -40,4 +40,8 @@ class ReplaceLoadingConfigImpl : LoadingViewConfig {
         isShowLoading=true
         mAppProgressLoadingView.visibility = View.VISIBLE
     }
+
+    override fun onDestroy() {
+
+    }
 }

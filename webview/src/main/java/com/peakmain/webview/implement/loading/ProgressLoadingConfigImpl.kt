@@ -12,13 +12,13 @@ import com.peakmain.webview.view.AppProgressLoadingView
  * describe：
  */
 class ProgressLoadingConfigImpl : LoadingViewConfig {
-    private lateinit var mAppProgressLoadingView: AppProgressLoadingView
+    private var mAppProgressLoadingView: AppProgressLoadingView? = null
     private var isShowLoading: Boolean = false
     override fun isShowLoading(): Boolean {
         return isShowLoading
     }
 
-    override fun getLoadingView(context: Context): View {
+    override fun getLoadingView(context: Context): View? {
         initProgressLoadingView(context)
         isShowLoading = true
         return mAppProgressLoadingView
@@ -28,17 +28,21 @@ class ProgressLoadingConfigImpl : LoadingViewConfig {
 
     override fun hideLoading() {
         isShowLoading = false
-        mAppProgressLoadingView.visibility = View.GONE
+        mAppProgressLoadingView?.visibility = View.GONE
     }
 
     override fun showLoading(context: Context?) {
         initProgressLoadingView(context)
         isShowLoading = true
-        mAppProgressLoadingView.visibility = View.VISIBLE
+        mAppProgressLoadingView?.visibility = View.VISIBLE
+    }
+
+    override fun onDestroy() {
+        mAppProgressLoadingView = null
     }
 
     private fun initProgressLoadingView(context: Context?) {
-        if (!::mAppProgressLoadingView.isInitialized && context != null) {
+        if (mAppProgressLoadingView == null && context != null) {
             mAppProgressLoadingView = AppProgressLoadingView(context)
         }
     }
