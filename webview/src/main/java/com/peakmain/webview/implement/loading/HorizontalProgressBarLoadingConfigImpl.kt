@@ -90,7 +90,6 @@ class HorizontalProgressBarLoadingConfigImpl : LoadingViewConfig {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         mFrameLayout = null
         mProgressBar = null
     }
