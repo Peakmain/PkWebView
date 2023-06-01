@@ -150,7 +150,7 @@ open class WebViewFragment : Fragment() {
 
     fun onPageFinished(view: WebView, url: String) {
         mEndTime = System.currentTimeMillis()
-        LogWebViewUtils.e("消耗的时间:${(mEndTime - mStartTime) / 1000}")
+        LogWebViewUtils.e("消耗的时间:${(mEndTime - mStartTime)}ms")
         mViewModel.hideLoading(mLoadingWebViewState, mLoadingViewConfig)
     }
 

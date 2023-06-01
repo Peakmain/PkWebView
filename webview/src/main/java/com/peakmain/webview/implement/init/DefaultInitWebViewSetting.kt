@@ -1,5 +1,6 @@
 package com.peakmain.webview.implement.init
 
+import android.os.Build
 import android.text.TextUtils
 import android.webkit.CookieManager
 import android.webkit.WebSettings
@@ -32,6 +33,10 @@ class DefaultInitWebViewSetting : InitWebViewSetting {
             setSupportZoom(false)
             builtInZoomControls = false
             cacheMode = WebSettings.LOAD_NO_CACHE
+            allowFileAccess = true
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                safeBrowsingEnabled = true
+            }
         }
         if (!TextUtils.isEmpty(userAgent)) {
             webSettings.userAgentString = userAgent
