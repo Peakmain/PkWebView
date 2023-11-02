@@ -101,7 +101,7 @@ open class WebViewFragment : Fragment() {
 
 
     private fun initView(fragmentView: FrameLayout?) {
-        mWebView = WebViewPool.instance.getWebView()
+        mWebView = WebViewPool.instance.getWebView(context)
         WebViewManager.instance.register(this)
         mWebView?.apply {
             //不显示滚动条

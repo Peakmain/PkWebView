@@ -1,6 +1,6 @@
 package com.peakmain.webview.manager
 
-import android.content.Context
+import android.app.Application
 import android.view.View
 import com.peakmain.webview.R
 import com.peakmain.webview.callback.DefaultWebViewChromeClientCallback
@@ -24,7 +24,7 @@ class WebViewController {
         private set
 
 
-    class WebViewParams(val context: Context) {
+    class WebViewParams(val application: Application) {
 
 
         var mWebViewCount: Int = 3

@@ -1,6 +1,8 @@
 package com.peakmain.webview
 
+import android.app.Application
 import android.content.Context
+import android.os.Looper
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.peakmain.webview.callback.WebViewChromeClientCallback
@@ -24,12 +26,12 @@ class PkWebViewInit private constructor() {
         WebViewPool.instance.initWebViewPool(mWebViewController.P)
     }
 
-    class Builder constructor(context: Context) {
+    class Builder constructor(application: Application) {
         private val P: WebViewController.WebViewParams
         private var mPkWebViewInit: PkWebViewInit? = null
 
         init {
-            P = WebViewController.WebViewParams(context)
+            P = WebViewController.WebViewParams(application)
         }
 
         /**
@@ -98,10 +100,13 @@ class PkWebViewInit private constructor() {
         }
 
         fun build() {
-            if (mPkWebViewInit == null) {
-                create()
+            Looper.myQueue().addIdleHandler {
+                if (mPkWebViewInit == null) {
+                    create()
+                }
+                mPkWebViewInit!!.initPool()
+                false
             }
-            mPkWebViewInit!!.initPool()
         }
 
         private fun create(): PkWebViewInit {

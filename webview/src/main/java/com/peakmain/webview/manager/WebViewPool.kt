@@ -1,5 +1,7 @@
 package com.peakmain.webview.manager
 
+import android.content.Context
+import android.content.MutableContextWrapper
 import android.view.ViewGroup
 import com.peakmain.webview.implement.WebViewChromeClientImpl
 import com.peakmain.webview.implement.WebViewClientImpl
@@ -47,11 +49,13 @@ internal class WebViewPool private constructor() {
     /**
      * 获取webView
      */
-    fun getWebView(): PkWebView? {
+    fun getWebView(context: Context?): PkWebView? {
         checkIsInitialized()
         for (i in 0 until WEB_VIEW_COUNT) {
             if (mWebViewPool[i] != null) {
                 val webView = mWebViewPool[i]
+                val contextWrapper = webView?.context as MutableContextWrapper?
+                contextWrapper?.baseContext=context
                 mWebViewPool[i] = null
                 return webView
             }
@@ -89,7 +93,7 @@ internal class WebViewPool private constructor() {
     private fun createWebView(
         params: WebViewController.WebViewParams, userAgent: String
     ): PkWebView {
-        val webView = PkWebView(params.context)
+        val webView = PkWebView(MutableContextWrapper(params.application))
         webView.setWebViewParams(params)
         params.apply {
             mWebViewSetting.initWebViewSetting(webView, userAgent)

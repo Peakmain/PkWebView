@@ -27,7 +27,7 @@ class OnlineServiceHandle {
         LogWebViewUtils.e("webView.getUrl():" + webView.url)
         val data = model.data
         model.callId = ""
-        //WebViewJsUtils.getInstance().executeJs(webView, GsonUtils.toJson(model));
+        WebViewJsUtils.getInstance().executeJs(webView, GsonUtils.toJson(model));
         //保存数据
         return HandleResult.Consumed
     }
