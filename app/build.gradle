@@ -9,7 +9,7 @@ def path = properties.getProperty("path")
 def scheme = properties.getProperty("scheme")
 def url = properties.getProperty("url")
 def jumpWherePath = properties.getProperty("jumpWherePath")
-if(userAgent==null){
+/*if(userAgent==null){
     userAgent="Android"
 }
 if(path==null){
@@ -23,7 +23,7 @@ if(url==null){
 }
 if(jumpWherePath==null){
     jumpWherePath="/jumpToWhere"
-}
+}*/
 android {
     namespace 'com.peakmain.pkwebview'
     compileSdk 33
