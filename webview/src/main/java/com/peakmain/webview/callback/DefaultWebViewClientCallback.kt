@@ -10,6 +10,7 @@ import android.webkit.WebView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.peakmain.webview.fragment.WebViewFragment
+import com.peakmain.webview.manager.InterceptRequestManager
 import com.peakmain.webview.utils.LogWebViewUtils
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -22,9 +23,7 @@ import java.util.concurrent.*
  * describe：
  */
 class DefaultWebViewClientCallback : WebViewClientCallback {
-    private val mExecutorService: ExecutorService = Executors.newFixedThreadPool(5)
-    private val mFutureMap =
-        ConcurrentHashMap<String, Future<WebResourceResponse>>()
+
 
     override fun onPageFinished(view: WebView, url: String, fragment: WebViewFragment?) {
         LogWebViewUtils.e("再次來到onPageFinished")
@@ -33,7 +32,7 @@ class DefaultWebViewClientCallback : WebViewClientCallback {
     override fun shouldOverrideUrlLoading(
         view: WebView,
         url: String,
-        fragment: WebViewFragment?
+        fragment: WebViewFragment?,
     ): Boolean? {
         val activity = fragment?.activity
         //处理电话功能
@@ -70,7 +69,7 @@ class DefaultWebViewClientCallback : WebViewClientCallback {
         err: Int,
         des: String?,
         url: String?,
-        fragment: WebViewFragment?
+        fragment: WebViewFragment?,
     ) {
         LogWebViewUtils.e("错误码：$err,错误信息:$des,错误url:$url")
 
@@ -79,50 +78,16 @@ class DefaultWebViewClientCallback : WebViewClientCallback {
 
     override fun shouldInterceptRequest(
         view: WebView?,
-        request: WebResourceRequest
+        request: WebResourceRequest,
     ): WebResourceResponse? {
-        if (view == null || !isImageType(request.url.toString())) return null
-        val url = request.url.toString()
-        var response: WebResourceResponse? = null
-        if (mFutureMap.containsKey(url)) {
-            return try {
-                mFutureMap[url]?.get()
-            } catch (e: Exception) {
-                if (e !is CancellationException) {
-                    e.printStackTrace()
-                }
-                mFutureMap.remove(url)
+        return view?.run {
+            if (isImageType(request.url.toString())) {
+                InterceptRequestManager.instance.loadImage(this, request)
+            } else {
                 null
             }
         }
-        try {
-            val future =
-                mExecutorService.submit(Callable<WebResourceResponse> {
-                    Glide.with(view.context)
-                        .asBitmap()
-                        .load(request.url.toString())
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .dontTransform()
-                        .submit()
-                        .get()
-                        .also { bitmap ->
-                            val outStream = ByteArrayOutputStream()
-                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outStream)
-                            val inputStream = ByteArrayInputStream(outStream.toByteArray())
-                            response = WebResourceResponse("image/png", "UTF-8", inputStream)
-                            response?.setStatusCodeAndReasonPhrase(200, "OK")
-                            response?.responseHeaders = HashMap<String, String>()
-                        }
-                    response
-                })
-            mFutureMap.putIfAbsent(url, future)
-            response = future.get()
-            mFutureMap.remove(url)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            mFutureMap.remove(url)
-        }
-        return response
+
     }
 
     private fun isImageType(url: String): Boolean {

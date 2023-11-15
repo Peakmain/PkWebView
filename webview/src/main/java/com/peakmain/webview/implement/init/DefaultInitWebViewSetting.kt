@@ -32,7 +32,7 @@ class DefaultInitWebViewSetting : InitWebViewSetting {
             setSupportMultipleWindows(false)
             setSupportZoom(false)
             builtInZoomControls = false
-            cacheMode = WebSettings.LOAD_NO_CACHE
+            cacheMode = WebSettings.LOAD_DEFAULT
             allowFileAccess = true
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 safeBrowsingEnabled = true
