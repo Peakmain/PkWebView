@@ -16,6 +16,7 @@ import android.webkit.WebViewClient.*
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.peakmain.webview.annotation.CacheMode
 import com.peakmain.webview.bean.WebViewConfigBean
 import com.peakmain.webview.constants.WebViewConstants
 import com.peakmain.webview.implement.loading.HorizontalProgressBarLoadingConfigImpl
@@ -61,7 +62,7 @@ open class WebViewFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         context?.let {
             val frameLayout = FrameLayout(it)
@@ -102,11 +103,15 @@ open class WebViewFragment : Fragment() {
 
     private fun initView(fragmentView: FrameLayout?) {
         mWebView = WebViewPool.instance.getWebView(context)
+
         WebViewManager.instance.register(this)
         mWebView?.apply {
             //不显示滚动条
             isHorizontalScrollBarEnabled = false
             isVerticalScrollBarEnabled = false
+            if(mH5UtilsParams.mCacheMode!=CacheMode.LOAD_NO_CACHE){
+                settings.cacheMode = mH5UtilsParams.mCacheMode
+            }
             mViewModel.addWebView(fragmentView, this)
         }
         loadUrl2WebView()
@@ -176,7 +181,7 @@ open class WebViewFragment : Fragment() {
 
     private fun showNoNetwork(
         webViewParams: WebViewController.WebViewParams?,
-        failingUrl: String?
+        failingUrl: String?,
     ) {
         mViewModel.showNoNetWorkView(webViewParams, activity, failingUrl, mWebView, mGroup) {
             mWebView?.reload()
@@ -215,7 +220,7 @@ open class WebViewFragment : Fragment() {
     fun openFileInput(
         fileUploadCallbackFirst: ValueCallback<Uri>?,
         fileUploadCallbackSecond: ValueCallback<Array<Uri>>?,
-        acceptType: String?
+        acceptType: String?,
     ) {
         if (mFileUploadCallbackFirst != null) {
             mFileUploadCallbackFirst!!.onReceiveValue(null)

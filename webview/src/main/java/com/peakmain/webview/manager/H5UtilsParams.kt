@@ -1,6 +1,7 @@
 package com.peakmain.webview.manager
 
 import android.view.View
+import android.webkit.WebSettings
 import com.peakmain.webview.activity.WebViewActivity
 import com.peakmain.webview.bean.WebViewEvent
 import com.peakmain.webview.callback.HandleUrlParamsCallback
@@ -14,6 +15,7 @@ import com.peakmain.webview.sealed.LoadingWebViewState
  * describe：
  */
 class H5UtilsParams private constructor() {
+    var mCacheMode: Int = WebSettings.LOAD_NO_CACHE
     var updateToolBarBar: ((String, WebViewActivity?) -> Unit)? = null
     var isShowToolBar: Boolean = true
     var updateStatusBar: ((String, WebViewActivity?) -> Unit)? = null
@@ -21,8 +23,8 @@ class H5UtilsParams private constructor() {
     var mLoadingViewConfig: LoadingViewConfig? = null
     var mHandleUrlParamsCallback: HandleUrlParamsCallback<out WebViewEvent>? = null
     var mHeadContentView: View? = null
-    var mHeadContentViewId: Int=0
-    var mHeadViewBlock: ((View) -> Unit)?=null
+    var mHeadContentViewId: Int = 0
+    var mHeadViewBlock: ((View) -> Unit)? = null
 
     companion object {
         val instance by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
@@ -36,5 +38,6 @@ class H5UtilsParams private constructor() {
         updateToolBarBar = null
         mLoadingViewConfig = null
         mLoadingWebViewState = null
+        mCacheMode = WebSettings.LOAD_DEFAULT
     }
 }

@@ -4,6 +4,8 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.peakmain.webview.abstracts.AbstractH5IntentConfigDecorator
 import com.peakmain.webview.activity.WebViewActivity
+import com.peakmain.webview.annotation.CacheMode
+import com.peakmain.webview.annotation.CacheModeState
 import com.peakmain.webview.bean.WebViewEvent
 import com.peakmain.webview.callback.HandleUrlParamsCallback
 import com.peakmain.webview.implement.DefaultH5IntentConfigImpl
@@ -45,10 +47,14 @@ class H5Utils(decoratorConfig: H5IntentConfig = DefaultH5IntentConfigImpl()) :
         return this
     }
 
+    fun setWebViewCacheMode(@CacheModeState cacheMode: Int = CacheMode.LOAD_NO_CACHE): H5Utils {
+        params.mCacheMode = cacheMode
+        return this
+    }
 
     fun setHandleUrlParamsCallback(
         handleUrlParamsCallback:
-        HandleUrlParamsCallback<out WebViewEvent>
+        HandleUrlParamsCallback<out WebViewEvent>,
     ): H5Utils {
         params.mHandleUrlParamsCallback = handleUrlParamsCallback
         return this

@@ -2,19 +2,13 @@ package com.peakmain.webview.callback
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.peakmain.webview.fragment.WebViewFragment
 import com.peakmain.webview.manager.InterceptRequestManager
 import com.peakmain.webview.utils.LogWebViewUtils
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.util.concurrent.*
 
 /**
  * author ：Peakmain
@@ -80,18 +74,27 @@ class DefaultWebViewClientCallback : WebViewClientCallback {
         view: WebView?,
         request: WebResourceRequest,
     ): WebResourceResponse? {
+        val url = request.url
+        if (url == null || request.isForMainFrame) return null
+        if (!request.method.equals("GET", true)){
+            return null
+        }
+        if (url.scheme != "https" && url.scheme != "http") {
+            return null
+        }
+
         return view?.run {
-            if (isImageType(request.url.toString())) {
-                InterceptRequestManager.instance.loadImage(this, request)
-            } else {
+            if (isCacheType(url.toString())) {
+                InterceptRequestManager.instance.getWebResourceResponse(this,request)
+            }else{
                 null
             }
         }
 
     }
 
-    private fun isImageType(url: String): Boolean {
-        return url.matches(Regex(".*\\.(png|jpe?g|gif|webp|bmp)$", RegexOption.IGNORE_CASE))
+    private fun isCacheType(url: String): Boolean {
+        return url.matches(Regex(".*\\.(png|jpe?g|gif|webp|bmp|js|css)$", RegexOption.IGNORE_CASE))
     }
 
 

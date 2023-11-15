@@ -9,6 +9,7 @@ import com.peakmain.webview.callback.WebViewChromeClientCallback
 import com.peakmain.webview.callback.WebViewClientCallback
 import com.peakmain.webview.interfaces.InitWebViewSetting
 import com.peakmain.webview.interfaces.LoadingViewConfig
+import com.peakmain.webview.manager.InterceptRequestManager
 import com.peakmain.webview.manager.WebViewController
 import com.peakmain.webview.manager.WebViewPool
 import com.peakmain.webview.sealed.LoadingWebViewState
@@ -32,6 +33,7 @@ class PkWebViewInit private constructor() {
 
         init {
             P = WebViewController.WebViewParams(application)
+            InterceptRequestManager.instance.init(application)
         }
 
         /**
