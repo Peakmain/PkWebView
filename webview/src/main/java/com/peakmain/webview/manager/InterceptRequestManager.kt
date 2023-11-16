@@ -33,55 +33,10 @@ import java.util.concurrent.Future
  */
 class InterceptRequestManager private constructor() {
     private lateinit var mApplication: Application
-    private val mExecutorService: ExecutorService = Executors.newFixedThreadPool(5)
-    private val mFutureMap =
-        ConcurrentHashMap<String, Future<WebResourceResponse>>()
     private val webViewResourceCacheDir by lazy {
         File(mApplication.cacheDir, "PkWebView")
     }
-    fun loadImage(view: WebView, request: WebResourceRequest): WebResourceResponse? {
-        val url = request.url.toString()
-        var response: WebResourceResponse? = null
-        if (mFutureMap.containsKey(url)) {
-            return try {
-                mFutureMap[url]?.get()
-            } catch (e: Exception) {
-                if (e !is CancellationException) {
-                    e.printStackTrace()
-                }
-                mFutureMap.remove(url)
-                null
-            }
-        }
-        try {
-            val future =
-                mExecutorService.submit(Callable<WebResourceResponse> {
-                    Glide.with(view.context)
-                        .asBitmap()
-                        .load(request.url.toString())
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .dontTransform()
-                        .submit()
-                        .get()
-                        .also { bitmap ->
-                            val outStream = ByteArrayOutputStream()
-                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outStream)
-                            val inputStream = ByteArrayInputStream(outStream.toByteArray())
-                            response = WebResourceResponse("image/png", "UTF-8", inputStream)
-                            response?.setStatusCodeAndReasonPhrase(200, "OK")
-                            response?.responseHeaders = HashMap<String, String>()
-                        }
-                    response
-                })
-            mFutureMap.putIfAbsent(url, future)
-            response = future.get()
-            mFutureMap.remove(url)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            mFutureMap.remove(url)
-        }
-        return null
-    }
+
     private val mOkHttpClient by lazy {
         OkHttpClient.Builder().cache(Cache(webViewResourceCacheDir, 500L * 1024 * 1024))
             .followRedirects(false)

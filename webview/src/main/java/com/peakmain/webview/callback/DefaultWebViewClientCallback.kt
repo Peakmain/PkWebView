@@ -84,9 +84,7 @@ class DefaultWebViewClientCallback : WebViewClientCallback {
         }
         var response: WebResourceResponse? = null
         view?.run {
-            if (isImageCacheType(url.toString())) {
-                response = InterceptRequestManager.instance.loadImage(this, request)
-            } else if (isH5CacheType(url.toString())) {
+            if (isCacheType(url.toString())) {
                 InterceptRequestManager.instance.getWebResourceResponse(request) {
                     response = it
                 }
@@ -97,19 +95,14 @@ class DefaultWebViewClientCallback : WebViewClientCallback {
         return response
     }
 
-    private fun isH5CacheType(url: String): Boolean {
-        val lowerUrl = url.lowercase()
-        return lowerUrl.endsWith(".js") || lowerUrl.endsWith(".css")
-                || lowerUrl.endsWith(".svg")
-                || lowerUrl.endsWith(".woff") || lowerUrl.endsWith(".woff2")
-                || lowerUrl.endsWith(".ttf") || lowerUrl.endsWith(".otf") || lowerUrl.endsWith(".eot")
-    }
-
-    private fun isImageCacheType(url: String): Boolean {
+    private fun isCacheType(url: String): Boolean {
         val lowerUrl = url.lowercase()
         return lowerUrl.endsWith(".png") || lowerUrl.endsWith(".jpg") || lowerUrl.endsWith(".jpeg")
                 || lowerUrl.endsWith(".gif") || lowerUrl.endsWith(".webp") || lowerUrl.endsWith(".bmp")
-
+                || lowerUrl.endsWith(".js") || lowerUrl.endsWith(".css")
+                || lowerUrl.endsWith(".svg")
+                || lowerUrl.endsWith(".woff") || lowerUrl.endsWith(".woff2")
+                || lowerUrl.endsWith(".ttf") || lowerUrl.endsWith(".otf") || lowerUrl.endsWith(".eot")
     }
 
     override fun onPageStarted(view: WebView, url: String, fragment: WebViewFragment?) {
