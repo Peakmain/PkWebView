@@ -5,8 +5,10 @@ import android.webkit.WebSettings
 import com.peakmain.webview.activity.WebViewActivity
 import com.peakmain.webview.bean.WebViewEvent
 import com.peakmain.webview.callback.HandleUrlParamsCallback
+import com.peakmain.webview.fragment.WebViewFragment
 import com.peakmain.webview.interfaces.LoadingViewConfig
 import com.peakmain.webview.sealed.LoadingWebViewState
+import com.peakmain.webview.view.PkWebView
 
 /**
  * author ：Peakmain
@@ -25,6 +27,7 @@ class H5UtilsParams private constructor() {
     var mHeadContentView: View? = null
     var mHeadContentViewId: Int = 0
     var mHeadViewBlock: ((View) -> Unit)? = null
+    var mExecuteJsPair: Triple<String, String,((PkWebView?,WebViewFragment?) -> Unit)?>? = null
 
     companion object {
         val instance by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
@@ -39,5 +42,6 @@ class H5UtilsParams private constructor() {
         mLoadingViewConfig = null
         mLoadingWebViewState = null
         mCacheMode = WebSettings.LOAD_DEFAULT
+        mExecuteJsPair = null
     }
 }

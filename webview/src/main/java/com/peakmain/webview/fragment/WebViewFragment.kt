@@ -16,6 +16,7 @@ import android.webkit.WebViewClient.*
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.peakmain.webview.WebViewJsUtils
 import com.peakmain.webview.annotation.CacheMode
 import com.peakmain.webview.bean.WebViewConfigBean
 import com.peakmain.webview.constants.WebViewConstants
@@ -25,10 +26,13 @@ import com.peakmain.webview.interfaces.LoadingViewConfig
 import com.peakmain.webview.manager.*
 import com.peakmain.webview.sealed.HandleResult
 import com.peakmain.webview.sealed.LoadingWebViewState
+import com.peakmain.webview.utils.EncodeUtils
+import com.peakmain.webview.utils.GsonUtils
 import com.peakmain.webview.utils.LogWebViewUtils
 import com.peakmain.webview.utils.WebViewUtils
 import com.peakmain.webview.view.PkWebView
 import com.peakmain.webview.viewmodel.WebViewFragmentViewModel
+import com.peakmain.webview.viewmodel.WebViewModel
 
 /**
  * author ：Peakmain
@@ -100,6 +104,13 @@ open class WebViewFragment : Fragment() {
 
     }
 
+    fun executeJs(webView: WebView?, method: String, data: String): Boolean {
+        return WebViewJsUtils.getInstance().executeJs(webView, method, data)
+    }
+
+    fun executeJs(webView: WebView?, method: String, vararg datas: String): Boolean {
+        return WebViewJsUtils.getInstance().executeJs(webView, method, datas = datas)
+    }
 
     private fun initView(fragmentView: FrameLayout?) {
         mWebView = WebViewPool.instance.getWebView(context)
@@ -109,10 +120,11 @@ open class WebViewFragment : Fragment() {
             //不显示滚动条
             isHorizontalScrollBarEnabled = false
             isVerticalScrollBarEnabled = false
-            if(mH5UtilsParams.mCacheMode!=CacheMode.LOAD_NO_CACHE){
+            if (mH5UtilsParams.mCacheMode != CacheMode.LOAD_NO_CACHE) {
                 settings.cacheMode = mH5UtilsParams.mCacheMode
             }
             mViewModel.addWebView(fragmentView, this)
+
         }
         loadUrl2WebView()
     }
@@ -157,6 +169,10 @@ open class WebViewFragment : Fragment() {
         mEndTime = System.currentTimeMillis()
         LogWebViewUtils.e("消耗的时间:${(mEndTime - mStartTime)}ms")
         mViewModel.hideLoading(mLoadingWebViewState, mLoadingViewConfig)
+        mH5UtilsParams.mExecuteJsPair?.also {
+            executeJs(mWebView, it.first, it.second)
+            it.third?.invoke(mWebView,this)
+        }
     }
 
     fun shouldOverrideUrlLoading(view: WebView, url: String): HandleResult {

@@ -22,6 +22,7 @@ import java.util.concurrent.Future
  */
 class InterceptRequestManager private constructor() {
     private lateinit var mApplication: Application
+
     private val webViewResourceCacheDir by lazy {
         File(mApplication.cacheDir, "PkWebView")
     }

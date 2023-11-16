@@ -1,8 +1,10 @@
 package com.peakmain.webview
 
+import android.text.TextUtils
 import android.webkit.WebView
 import com.peakmain.webview.utils.EncodeUtils
 import com.peakmain.webview.utils.GsonUtils
+import com.peakmain.webview.utils.LogWebViewUtils
 import com.peakmain.webview.viewmodel.WebViewModel
 
 /**
@@ -25,19 +27,19 @@ class WebViewJsUtils private constructor(val jsNameSpace: String) {
 
     }
 
-/*    fun executeJs(
-        webView: WebView?,
-        method: String,
-        status: Int,
-        data: HashMap<String, String>,
-        callId: String
-    ): Boolean {
-        val webViewModel = WebViewModel(status, data, callId)
-        return executeJs(webView, method, GsonUtils.toJson(webViewModel))
-    }*/
+    /*    fun executeJs(
+            webView: WebView?,
+            method: String,
+            status: Int,
+            data: HashMap<String, String>,
+            callId: String
+        ): Boolean {
+            val webViewModel = WebViewModel(status, data, callId)
+            return executeJs(webView, method, GsonUtils.toJson(webViewModel))
+        }*/
 
-    fun executeJs(webView: WebView?, method: String, webViewModel: WebViewModel): Boolean {
-        return executeJs(webView, method, GsonUtils.toJson(webViewModel))
+    fun executeJs(webView: WebView?, method: String, data: String): Boolean {
+        return executeJs(webView, method, datas = arrayOf(data))
     }
 
     fun executeJs(webView: WebView?, method: String, vararg datas: String): Boolean {
@@ -53,7 +55,7 @@ class WebViewJsUtils private constructor(val jsNameSpace: String) {
                     .append("'");
             }
         }
-        val jsCode = String.format("Prius.%s(%s)", method, sb.toString())
+        val jsCode = String.format("%s.%s(%s)", jsNameSpace, method, sb.toString())
         webView.evaluateJavascript(jsCode, null)
         return true
     }

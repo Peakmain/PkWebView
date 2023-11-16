@@ -1,6 +1,7 @@
 package com.peakmain.webview
 
 import android.view.View
+import android.webkit.WebView
 import androidx.annotation.LayoutRes
 import com.peakmain.webview.abstracts.AbstractH5IntentConfigDecorator
 import com.peakmain.webview.activity.WebViewActivity
@@ -8,10 +9,12 @@ import com.peakmain.webview.annotation.CacheMode
 import com.peakmain.webview.annotation.CacheModeState
 import com.peakmain.webview.bean.WebViewEvent
 import com.peakmain.webview.callback.HandleUrlParamsCallback
+import com.peakmain.webview.fragment.WebViewFragment
 import com.peakmain.webview.implement.DefaultH5IntentConfigImpl
 import com.peakmain.webview.interfaces.H5IntentConfig
 import com.peakmain.webview.interfaces.LoadingViewConfig
 import com.peakmain.webview.sealed.LoadingWebViewState
+import com.peakmain.webview.view.PkWebView
 
 /**
  * author ：Peakmain
@@ -71,6 +74,11 @@ class H5Utils(decoratorConfig: H5IntentConfig = DefaultH5IntentConfigImpl()) :
         params.mHeadContentView = null
         params.mHeadContentViewId = viewIdRes
         params.mHeadViewBlock = block
+        return this
+    }
+
+    fun executeJs(methodName: String, data: String, block: ((PkWebView?,WebViewFragment?) -> Unit)? = null): H5Utils {
+        params.mExecuteJsPair = Triple(methodName, data, block)
         return this
     }
 }
