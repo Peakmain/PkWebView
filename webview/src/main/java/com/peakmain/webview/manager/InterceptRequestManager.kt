@@ -1,14 +1,25 @@
 package com.peakmain.webview.manager
 
 import android.app.Application
+import android.graphics.Bitmap
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import okhttp3.Cache
+import okhttp3.Call
+import okhttp3.Callback
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.Response
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.IOException
+import java.util.concurrent.Callable
+import java.util.concurrent.CancellationException
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -22,9 +33,54 @@ import java.util.concurrent.Future
  */
 class InterceptRequestManager private constructor() {
     private lateinit var mApplication: Application
-
+    private val mExecutorService: ExecutorService = Executors.newFixedThreadPool(5)
+    private val mFutureMap =
+        ConcurrentHashMap<String, Future<WebResourceResponse>>()
     private val webViewResourceCacheDir by lazy {
         File(mApplication.cacheDir, "PkWebView")
+    }
+    fun loadImage(view: WebView, request: WebResourceRequest): WebResourceResponse? {
+        val url = request.url.toString()
+        var response: WebResourceResponse? = null
+        if (mFutureMap.containsKey(url)) {
+            return try {
+                mFutureMap[url]?.get()
+            } catch (e: Exception) {
+                if (e !is CancellationException) {
+                    e.printStackTrace()
+                }
+                mFutureMap.remove(url)
+                null
+            }
+        }
+        try {
+            val future =
+                mExecutorService.submit(Callable<WebResourceResponse> {
+                    Glide.with(view.context)
+                        .asBitmap()
+                        .load(request.url.toString())
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .dontTransform()
+                        .submit()
+                        .get()
+                        .also { bitmap ->
+                            val outStream = ByteArrayOutputStream()
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outStream)
+                            val inputStream = ByteArrayInputStream(outStream.toByteArray())
+                            response = WebResourceResponse("image/png", "UTF-8", inputStream)
+                            response?.setStatusCodeAndReasonPhrase(200, "OK")
+                            response?.responseHeaders = HashMap<String, String>()
+                        }
+                    response
+                })
+            mFutureMap.putIfAbsent(url, future)
+            response = future.get()
+            mFutureMap.remove(url)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            mFutureMap.remove(url)
+        }
+        return null
     }
     private val mOkHttpClient by lazy {
         OkHttpClient.Builder().cache(Cache(webViewResourceCacheDir, 500L * 1024 * 1024))
@@ -52,41 +108,42 @@ class InterceptRequestManager private constructor() {
         }
     }
 
-    fun getWebResourceResponse(webView: WebView, request: WebResourceRequest): WebResourceResponse? {
+    fun getWebResourceResponse(request: WebResourceRequest, callback: (WebResourceResponse?) -> Unit) {
         val url = request.url.toString()
         val requestBuilder = Request.Builder().url(url).method(request.method, null)
         val requestHeaders = request.requestHeaders
-        requestHeaders.takeIf {
-            !requestHeaders.isNullOrEmpty()
-        }?.forEach {
-            requestBuilder.addHeader(it.key, it.value)
-        }
-        val response = mOkHttpClient.newCall(requestBuilder.build()).execute()
-        if (response.code != 200) return null
-        val body = response.body
-        body?.let {
-            val mimeType = response.header(
-                "content-type", body.contentType()?.type
-            )
-            val encoding = response.header(
-                "content-encoding",
-                "utf-8"
-            )
-            val responseHeaders = mutableMapOf<String, String>()
-            for (header in response.headers) {
-                responseHeaders[header.first] = header.second
+        requestHeaders?.forEach { requestBuilder.addHeader(it.key, it.value) }
+
+        mOkHttpClient.newCall(requestBuilder.build()).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                // 处理网络请求失败的情况
+                callback(null)
             }
-            var message = response.message
-            if (message.isBlank()) {
-                message = "OK"
+
+            override fun onResponse(call: Call, response: Response) {
+                if (!response.isSuccessful) {
+                    callback(null)
+                    return
+                }
+
+                response.body?.let { body ->
+                    val mimeType = response.header("content-type", body.contentType()?.type)
+                    val encoding = response.header("content-encoding", "utf-8")
+
+                    val responseHeaders = mutableMapOf<String, String>()
+                    for (header in response.headers) {
+                        responseHeaders[header.first] = header.second
+                    }
+
+                    val message = if (response.message.isBlank()) "OK" else response.message
+                    val webResourceResponse = WebResourceResponse(mimeType, encoding, body.byteStream())
+                    webResourceResponse.responseHeaders = responseHeaders
+                    webResourceResponse.setStatusCodeAndReasonPhrase(response.code, message)
+
+                    callback(webResourceResponse)
+                } ?: callback(null)
             }
-            val resourceResponse =
-                WebResourceResponse(mimeType, encoding, body.byteStream())
-            resourceResponse.responseHeaders = responseHeaders
-            resourceResponse.setStatusCodeAndReasonPhrase(response.code, message)
-            return resourceResponse
-        }
-        return null
+        })
     }
 
     fun init(application: Application) {

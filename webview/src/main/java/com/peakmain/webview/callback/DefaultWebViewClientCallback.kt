@@ -76,27 +76,41 @@ class DefaultWebViewClientCallback : WebViewClientCallback {
     ): WebResourceResponse? {
         val url = request.url
         if (url == null || request.isForMainFrame) return null
-        if (!request.method.equals("GET", true)){
+        if (!request.method.equals("GET", true)) {
             return null
         }
         if (url.scheme != "https" && url.scheme != "http") {
             return null
         }
-
-        return view?.run {
-            if (isCacheType(url.toString())) {
-                InterceptRequestManager.instance.getWebResourceResponse(this,request)
-            }else{
-                null
+        var response: WebResourceResponse? = null
+        view?.run {
+            if (isImageCacheType(url.toString())) {
+                response = InterceptRequestManager.instance.loadImage(this, request)
+            } else if (isH5CacheType(url.toString())) {
+                InterceptRequestManager.instance.getWebResourceResponse(request) {
+                    response = it
+                }
+            } else {
+                response = null
             }
         }
-
+        return response
     }
 
-    private fun isCacheType(url: String): Boolean {
-        return url.matches(Regex(".*\\.(png|jpe?g|gif|webp|bmp|js|css)$", RegexOption.IGNORE_CASE))
+    private fun isH5CacheType(url: String): Boolean {
+        val lowerUrl = url.lowercase()
+        return lowerUrl.endsWith(".js") || lowerUrl.endsWith(".css")
+                || lowerUrl.endsWith(".svg")
+                || lowerUrl.endsWith(".woff") || lowerUrl.endsWith(".woff2")
+                || lowerUrl.endsWith(".ttf") || lowerUrl.endsWith(".otf") || lowerUrl.endsWith(".eot")
     }
 
+    private fun isImageCacheType(url: String): Boolean {
+        val lowerUrl = url.lowercase()
+        return lowerUrl.endsWith(".png") || lowerUrl.endsWith(".jpg") || lowerUrl.endsWith(".jpeg")
+                || lowerUrl.endsWith(".gif") || lowerUrl.endsWith(".webp") || lowerUrl.endsWith(".bmp")
+
+    }
 
     override fun onPageStarted(view: WebView, url: String, fragment: WebViewFragment?) {
         LogWebViewUtils.e("再次來到onPageStart")

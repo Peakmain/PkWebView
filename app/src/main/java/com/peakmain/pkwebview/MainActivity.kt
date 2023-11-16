@@ -5,11 +5,14 @@ import android.util.Log
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
+import com.peakmain.pkwebview.bean.HotelParams
+import com.peakmain.pkwebview.bean.WebViewModel
 import com.peakmain.pkwebview.implements.HandlerUrlParamsImpl
 import com.peakmain.webview.H5Utils
 import com.peakmain.webview.annotation.CacheMode
 import com.peakmain.webview.bean.WebViewConfigBean
 import com.peakmain.webview.sealed.StatusBarState
+import com.peakmain.webview.utils.GsonUtils
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,6 +21,7 @@ class MainActivity : AppCompatActivity() {
         val launcher = registerForActivityResult(StartActivityForResult()) {
             Log.e("TAG", "收到结果:${it.resultCode}")
         }
+        val webViewModel = getViewModel()
         findViewById<TextView>(R.id.tv_webview).setOnClickListener {
             H5Utils()
                 .isShowToolBar(false)
@@ -52,9 +56,13 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
-              /*  .setHeadContentView(R.layout.hotel_list_head) {
-
+                //第一次执行
+           /*     .executeJs("onCallbackDone", webViewModel) { webView, fragment ->
+                    //第二次执行执行js
                 }*/
+                /*  .setHeadContentView(R.layout.hotel_list_head) {
+
+                  }*/
                 .setHandleUrlParamsCallback(HandlerUrlParamsImpl())
                 .startActivityForResult(
                     this, launcher,
@@ -63,6 +71,14 @@ class MainActivity : AppCompatActivity() {
                     )
                 )
         }
+    }
+
+
+
+    private fun getViewModel(): String {
+        val hashMap = HashMap<String, String>()
+        hashMap["hotelParams"] = GsonUtils.toJson(HotelParams())
+        return GsonUtils.toJson(WebViewModel(1, hashMap, "hotel/params"))
     }
 
 }

@@ -78,6 +78,7 @@ internal class WebViewPool private constructor() {
             stopLoading()
             removeAllViews()
             clearHistory()
+            clearCache(true)
             destroy()
             (parent as ViewGroup?)?.removeView(this)
             for (i in 0 until WEB_VIEW_COUNT) {

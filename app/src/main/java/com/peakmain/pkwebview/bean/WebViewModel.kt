@@ -15,8 +15,9 @@ data class WebViewModelEvent(
     var newHybridModel: NewHybridModel? = null
 ) : WebViewEvent()
 
-data class WebViewModel(
+data class WebViewModel (
     var status: Int = 1,
     var data: HashMap<String, String>?,
     var callId: String = "" //用于给前端的协议
+
 )
