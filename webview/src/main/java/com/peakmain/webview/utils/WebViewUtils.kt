@@ -68,4 +68,25 @@ class WebViewUtils {
                 || lowerUrl.endsWith(".woff") || lowerUrl.endsWith(".woff2")
                 || lowerUrl.endsWith(".ttf") || lowerUrl.endsWith(".otf") || lowerUrl.endsWith(".eot")
     }
+    fun getMimeType(url: String): String {
+        val lowerUrl = url.lowercase()
+        return when {
+            lowerUrl.endsWith(".js") -> "application/javascript"
+            lowerUrl.endsWith(".css") -> "text/css"
+            lowerUrl.endsWith(".png") -> "image/png"
+            lowerUrl.endsWith(".jpg") || lowerUrl.endsWith(".jpeg") -> "image/jpeg"
+            lowerUrl.endsWith(".gif") -> "image/gif"
+            lowerUrl.endsWith(".webp") -> "image/webp"
+            lowerUrl.endsWith(".bmp") -> "image/bmp"
+            lowerUrl.endsWith(".svg") -> "image/svg+xml"
+            lowerUrl.endsWith(".woff") -> "application/font-woff"
+            lowerUrl.endsWith(".woff2") -> "font/woff2"
+            lowerUrl.endsWith(".ttf") -> "application/x-font-ttf"
+            lowerUrl.endsWith(".otf") -> "application/x-font-opentype"
+            lowerUrl.endsWith(".eot") -> "application/vnd.ms-fontobject"
+            // 可以根据需要添加其他文件类型的 MIME 类型
+            else -> "text/plain"
+        }
+    }
+
 }
