@@ -65,9 +65,9 @@ class MainActivity : AppCompatActivity() {
 
                   }*/
                 .setHandleUrlParamsCallback(HandlerUrlParamsImpl())
-                .commonWebResourceResponse("launch.jpg","image/webp"){
+        /*        .commonWebResourceResponse("launch.jpg","image/webp"){
                     WebViewUtils.instance.isImageType(it)
-                }
+                }*/
                 .startActivityForResult(
                     this, launcher,
                     WebViewConfigBean(
@@ -75,13 +75,6 @@ class MainActivity : AppCompatActivity() {
                     )
                 )
         }
-    }
-
-    fun addHeader(url: String): String {
-        var tokenUrl: String = url
-        tokenUrl += "?At-Platform-Type=1" + "&At-App-Version=5.0.0" + "&At-Channel-Id=10000" +
-                "&At-Client-Id=959e8e8c-31da-402f-9e3f-a04f3cfc2ae3" + "&At-Access-Token=" + "&mebId=0"
-        return tokenUrl
     }
 
 
