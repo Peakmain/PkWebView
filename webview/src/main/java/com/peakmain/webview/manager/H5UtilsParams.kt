@@ -27,7 +27,8 @@ class H5UtilsParams private constructor() {
     var mHeadContentView: View? = null
     var mHeadContentViewId: Int = 0
     var mHeadViewBlock: ((View) -> Unit)? = null
-    var mExecuteJsPair: Triple<String, String,((PkWebView?,WebViewFragment?) -> Unit)?>? = null
+    var mExecuteJsPair: Triple<String, String, ((PkWebView?, WebViewFragment?) -> Unit)?>? = null
+    var mCommonWeResourceResponsePair: Triple<String, String, ((String) -> Boolean)?>? = null
 
     companion object {
         val instance by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {

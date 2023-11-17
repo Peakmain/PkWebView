@@ -13,6 +13,7 @@ import com.peakmain.webview.annotation.CacheMode
 import com.peakmain.webview.bean.WebViewConfigBean
 import com.peakmain.webview.sealed.StatusBarState
 import com.peakmain.webview.utils.GsonUtils
+import com.peakmain.webview.utils.WebViewUtils
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,6 +65,9 @@ class MainActivity : AppCompatActivity() {
 
                   }*/
                 .setHandleUrlParamsCallback(HandlerUrlParamsImpl())
+                .commonWebResourceResponse("launch.jpg","image/webp"){
+                    WebViewUtils.instance.isImageType(it)
+                }
                 .startActivityForResult(
                     this, launcher,
                     WebViewConfigBean(
@@ -73,6 +77,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun addHeader(url: String): String {
+        var tokenUrl: String = url
+        tokenUrl += "?At-Platform-Type=1" + "&At-App-Version=5.0.0" + "&At-Channel-Id=10000" +
+                "&At-Client-Id=959e8e8c-31da-402f-9e3f-a04f3cfc2ae3" + "&At-Access-Token=" + "&mebId=0"
+        return tokenUrl
+    }
 
 
     private fun getViewModel(): String {

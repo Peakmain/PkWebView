@@ -1,12 +1,9 @@
 package com.peakmain.webview.manager
 
 import android.app.Application
-import android.graphics.Bitmap
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
-import android.webkit.WebView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.peakmain.webview.utils.WebViewUtils
 import okhttp3.Cache
 import okhttp3.Call
 import okhttp3.Callback
@@ -14,16 +11,8 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
-import java.util.concurrent.Callable
-import java.util.concurrent.CancellationException
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import java.util.concurrent.Future
 
 /**
  * author ：Peakmain
@@ -33,34 +22,21 @@ import java.util.concurrent.Future
  */
 class InterceptRequestManager private constructor() {
     private lateinit var mApplication: Application
-    private val webViewResourceCacheDir by lazy {
-        File(mApplication.cacheDir, "PkWebView")
-    }
-
     private val mOkHttpClient by lazy {
-        OkHttpClient.Builder().cache(Cache(webViewResourceCacheDir, 500L * 1024 * 1024))
-            .followRedirects(false)
-            .followSslRedirects(false)
-            .addNetworkInterceptor(getWebViewCacheInterceptor())
-            .build()
+        OKHttpManager(mApplication).createOkHttpClient()
     }
 
-    private fun getWebViewCacheInterceptor(): Interceptor {
-        return Interceptor { chain ->
-            val request = chain.request()
-            val response = chain.proceed(request)
-            response.newBuilder().removeHeader("pragma")
-                .removeHeader("Cache-Control")
-                .header("Cache-Control", "max-age=" + (360L * 24 * 60 * 60))
-                .build()
-        }
-    }
 
     companion object {
         @JvmStatic
         val instance by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
             InterceptRequestManager()
         }
+    }
+
+    fun getLocalWebResourceResponse(fileName: String, mimeType: String): WebResourceResponse? {
+        val inputStream = mApplication.assets.open(fileName)
+        return WebResourceResponse(mimeType, "utf-8", inputStream)
     }
 
     fun getWebResourceResponse(request: WebResourceRequest, callback: (WebResourceResponse?) -> Unit) {
@@ -90,7 +66,7 @@ class InterceptRequestManager private constructor() {
                         responseHeaders[header.first] = header.second
                     }
 
-                    val message = if (response.message.isBlank()) "OK" else response.message
+                    val message = response.message.ifBlank { "OK" }
                     val webResourceResponse = WebResourceResponse(mimeType, encoding, body.byteStream())
                     webResourceResponse.responseHeaders = responseHeaders
                     webResourceResponse.setStatusCodeAndReasonPhrase(response.code, message)

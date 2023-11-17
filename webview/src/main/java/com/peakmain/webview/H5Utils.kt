@@ -63,6 +63,7 @@ class H5Utils(decoratorConfig: H5IntentConfig = DefaultH5IntentConfigImpl()) :
         return this
     }
 
+
     fun setHeadContentView(view: View?, block: ((View) -> Unit)? = null): H5Utils {
         params.mHeadContentView = view
         params.mHeadContentViewId = 0
@@ -77,7 +78,18 @@ class H5Utils(decoratorConfig: H5IntentConfig = DefaultH5IntentConfigImpl()) :
         return this
     }
 
-    fun executeJs(methodName: String, data: String, block: ((PkWebView?,WebViewFragment?) -> Unit)? = null): H5Utils {
+    /**
+     * 预置离线包
+     */
+    fun commonWebResourceResponse(
+        fileName: String, mimeType: String,
+        isCommonResource: ((String) -> Boolean)? = null,
+    ): H5Utils {
+        params.mCommonWeResourceResponsePair = Triple(fileName,mimeType,isCommonResource)
+        return this
+    }
+
+    fun executeJs(methodName: String, data: String, block: ((PkWebView?, WebViewFragment?) -> Unit)? = null): H5Utils {
         params.mExecuteJsPair = Triple(methodName, data, block)
         return this
     }

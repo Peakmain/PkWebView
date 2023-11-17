@@ -55,4 +55,17 @@ class WebViewUtils {
         }
 
     }
+    fun isImageType(url: String):Boolean{
+        val lowerUrl = url.lowercase()
+        return lowerUrl.endsWith(".png") || lowerUrl.endsWith(".jpg") || lowerUrl.endsWith(".jpeg")
+                || lowerUrl.endsWith(".gif") || lowerUrl.endsWith(".webp") || lowerUrl.endsWith(".bmp")
+                || lowerUrl.endsWith(".svg")
+    }
+    fun isCacheType(url: String): Boolean {
+        val lowerUrl = url.lowercase()
+        return isImageType(url)
+                || lowerUrl.endsWith(".js") || lowerUrl.endsWith(".css")
+                || lowerUrl.endsWith(".woff") || lowerUrl.endsWith(".woff2")
+                || lowerUrl.endsWith(".ttf") || lowerUrl.endsWith(".otf") || lowerUrl.endsWith(".eot")
+    }
 }

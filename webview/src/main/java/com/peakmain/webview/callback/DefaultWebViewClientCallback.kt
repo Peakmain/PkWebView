@@ -6,9 +6,12 @@ import android.net.Uri
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
+import com.peakmain.webview.H5Utils
 import com.peakmain.webview.fragment.WebViewFragment
+import com.peakmain.webview.manager.H5UtilsParams
 import com.peakmain.webview.manager.InterceptRequestManager
 import com.peakmain.webview.utils.LogWebViewUtils
+import com.peakmain.webview.utils.WebViewUtils
 
 /**
  * author ：Peakmain
@@ -17,7 +20,7 @@ import com.peakmain.webview.utils.LogWebViewUtils
  * describe：
  */
 class DefaultWebViewClientCallback : WebViewClientCallback {
-
+    val params = H5UtilsParams.instance
 
     override fun onPageFinished(view: WebView, url: String, fragment: WebViewFragment?) {
         LogWebViewUtils.e("再次來到onPageFinished")
@@ -83,8 +86,14 @@ class DefaultWebViewClientCallback : WebViewClientCallback {
             return null
         }
         var response: WebResourceResponse? = null
+        val commonWeResourceResponsePair = params.mCommonWeResourceResponsePair
         view?.run {
-            if (isCacheType(url.toString())) {
+            commonWeResourceResponsePair?.let {
+                val isCommonResource = it.third ?: return@let
+                if (isCommonResource(url.toString())) {
+                    response = InterceptRequestManager.instance.getLocalWebResourceResponse(it.first, it.second)
+                }
+            } ?: if (WebViewUtils.instance.isCacheType(url.toString())) {
                 InterceptRequestManager.instance.getWebResourceResponse(request) {
                     response = it
                 }
@@ -95,15 +104,6 @@ class DefaultWebViewClientCallback : WebViewClientCallback {
         return response
     }
 
-    private fun isCacheType(url: String): Boolean {
-        val lowerUrl = url.lowercase()
-        return lowerUrl.endsWith(".png") || lowerUrl.endsWith(".jpg") || lowerUrl.endsWith(".jpeg")
-                || lowerUrl.endsWith(".gif") || lowerUrl.endsWith(".webp") || lowerUrl.endsWith(".bmp")
-                || lowerUrl.endsWith(".js") || lowerUrl.endsWith(".css")
-                || lowerUrl.endsWith(".svg")
-                || lowerUrl.endsWith(".woff") || lowerUrl.endsWith(".woff2")
-                || lowerUrl.endsWith(".ttf") || lowerUrl.endsWith(".otf") || lowerUrl.endsWith(".eot")
-    }
 
     override fun onPageStarted(view: WebView, url: String, fragment: WebViewFragment?) {
         LogWebViewUtils.e("再次來到onPageStart")
