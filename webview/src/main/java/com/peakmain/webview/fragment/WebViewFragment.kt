@@ -124,7 +124,9 @@ open class WebViewFragment : Fragment() {
                 settings.cacheMode = mH5UtilsParams.mCacheMode
             }
             mViewModel.addWebView(fragmentView, this)
-
+           blackMonitorCallback={
+                LogWebViewUtils.e("检查到是否是白屏:$it")
+            }
         }
         loadUrl2WebView()
     }
@@ -163,6 +165,7 @@ open class WebViewFragment : Fragment() {
     fun onPageStarted(view: WebView?, url: String?) {
         mStartTime = System.currentTimeMillis()
         mViewModel.showLoading(view, mLoadingWebViewState, mLoadingViewConfig)
+        mWebView?.postBlankMonitorRunnable()
     }
 
     fun onPageFinished(view: WebView, url: String) {
@@ -173,6 +176,7 @@ open class WebViewFragment : Fragment() {
             executeJs(mWebView, it.first, it.second)
             it.third?.invoke(mWebView,this)
         }
+        mWebView?.removeBlankMonitorRunnable()
     }
 
     fun shouldOverrideUrlLoading(view: WebView, url: String): HandleResult {
