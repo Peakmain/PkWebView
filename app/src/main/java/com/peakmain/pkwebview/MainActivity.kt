@@ -65,9 +65,6 @@ class MainActivity : AppCompatActivity() {
 
                   }*/
                 .setHandleUrlParamsCallback(HandlerUrlParamsImpl())
-                .commonWebResourceResponse("launch.jpg","image/jpg"){
-                    WebViewUtils.instance.isImageType(it)
-                }
                 .startActivityForResult(
                     this, launcher,
                     WebViewConfigBean(

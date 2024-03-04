@@ -39,7 +39,7 @@ abstract class AbstractWebViewClient constructor(val webViewClientCallback: WebV
     }
 
     override fun onReceivedError(
-        view: WebView?, errorCode: Int, description: String?, failingUrl: String?
+        view: WebView?, errorCode: Int, description: String?, failingUrl: String?,
     ) {
         getWebViewFragment()
         fragment?.onReceivedError(view, errorCode, description, failingUrl)
@@ -65,7 +65,7 @@ abstract class AbstractWebViewClient constructor(val webViewClientCallback: WebV
     }
 
     override fun shouldInterceptRequest(
-        view: WebView?, request: WebResourceRequest
+        view: WebView?, request: WebResourceRequest,
     ): WebResourceResponse? {
         getWebViewFragment()
         val url = request.url.toString()
@@ -76,13 +76,13 @@ abstract class AbstractWebViewClient constructor(val webViewClientCallback: WebV
         if (request.requestHeaders.containsKey("noImage") && request.requestHeaders["noImage"] != null) {
             return WebResourceResponse("", "", null)
         }
-        fragment?.shouldInterceptRequest(view, request)
-        return webViewClientCallback?.shouldInterceptRequest(view, request)
-            ?: super.shouldInterceptRequest(view, request)
+        val response = fragment?.shouldInterceptRequest(view, request)
+        return response ?: webViewClientCallback?.shouldInterceptRequest(view, request)
+        ?: super.shouldInterceptRequest(view, request)
     }
 
     override fun onReceivedHttpError(
-        view: WebView?, request: WebResourceRequest?, errorResponse: WebResourceResponse?
+        view: WebView?, request: WebResourceRequest?, errorResponse: WebResourceResponse?,
     ) {
         LogWebViewUtils.e("错误码:${errorResponse?.statusCode},错误信息：${errorResponse?.toString()}")
     }

@@ -11,8 +11,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.ValueCallback
 import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
 import android.webkit.WebView
-import android.webkit.WebViewClient.*
+import android.webkit.WebViewClient.ERROR_CONNECT
+import android.webkit.WebViewClient.ERROR_HOST_LOOKUP
+import android.webkit.WebViewClient.ERROR_IO
+import android.webkit.WebViewClient.ERROR_TIMEOUT
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -23,16 +27,18 @@ import com.peakmain.webview.constants.WebViewConstants
 import com.peakmain.webview.implement.loading.HorizontalProgressBarLoadingConfigImpl
 import com.peakmain.webview.implement.loading.ProgressLoadingConfigImpl
 import com.peakmain.webview.interfaces.LoadingViewConfig
-import com.peakmain.webview.manager.*
+import com.peakmain.webview.manager.H5UtilsParams
+import com.peakmain.webview.manager.WebViewController
+import com.peakmain.webview.manager.WebViewHandle
+import com.peakmain.webview.manager.WebViewManager
+import com.peakmain.webview.manager.WebViewPool
+import com.peakmain.webview.manager.cache.WebResourceResponseManager
 import com.peakmain.webview.sealed.HandleResult
 import com.peakmain.webview.sealed.LoadingWebViewState
-import com.peakmain.webview.utils.EncodeUtils
-import com.peakmain.webview.utils.GsonUtils
 import com.peakmain.webview.utils.LogWebViewUtils
 import com.peakmain.webview.utils.WebViewUtils
 import com.peakmain.webview.view.PkWebView
 import com.peakmain.webview.viewmodel.WebViewFragmentViewModel
-import com.peakmain.webview.viewmodel.WebViewModel
 
 /**
  * author ：Peakmain
@@ -124,7 +130,7 @@ open class WebViewFragment : Fragment() {
                 settings.cacheMode = mH5UtilsParams.mCacheMode
             }
             mViewModel.addWebView(fragmentView, this)
-           blackMonitorCallback={
+            blackMonitorCallback = {
                 LogWebViewUtils.e("检查到是否是白屏:$it")
             }
         }
@@ -174,7 +180,7 @@ open class WebViewFragment : Fragment() {
         mViewModel.hideLoading(mLoadingWebViewState, mLoadingViewConfig)
         mH5UtilsParams.mExecuteJsPair?.also {
             executeJs(mWebView, it.first, it.second)
-            it.third?.invoke(mWebView,this)
+            it.third?.invoke(mWebView, this)
         }
         mWebView?.removeBlankMonitorRunnable()
     }
@@ -303,7 +309,16 @@ open class WebViewFragment : Fragment() {
         super.onResume()
     }
 
-    fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest) {
-
+    fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest): WebResourceResponse? {
+        //处理缓存资源拦截器
+        val scheme = request.url.scheme?.trim()
+        val method = request.method?.trim()
+        if ((scheme.equals("http") || scheme.equals("https"))
+            && method.equals("GET", ignoreCase = true)
+        ) {
+            //获取缓存资源
+            return WebResourceResponseManager.getResponse(request,mWebView?.getWebViewParams()?.userAgent)
+        }
+        return null
     }
 }

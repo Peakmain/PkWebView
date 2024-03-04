@@ -104,5 +104,12 @@ class PkWebView : WebView {
         return mParams
     }
 
+    /**
+     * 释放webView
+     */
+    fun release() {
+
+    }
+
 
 }
