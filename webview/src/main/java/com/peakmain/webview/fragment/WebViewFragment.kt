@@ -2,6 +2,7 @@ package com.peakmain.webview.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.content.MutableContextWrapper
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -317,7 +318,22 @@ open class WebViewFragment : Fragment() {
             && method.equals("GET", ignoreCase = true)
         ) {
             //获取缓存资源
-            return WebResourceResponseManager.getResponse(request,mWebView?.getWebViewParams()?.userAgent)
+            if (view != null ) {
+                if(view.context is MutableContextWrapper){
+                    return WebResourceResponseManager.getResponse(
+                        (view.context as MutableContextWrapper).baseContext,
+                        request,
+                        mWebView?.getWebViewParams()?.userAgent
+                    )
+                }else{
+                    return WebResourceResponseManager.getResponse(
+                        view.context,
+                        request,
+                        mWebView?.getWebViewParams()?.userAgent
+                    )
+                }
+
+            }
         }
         return null
     }

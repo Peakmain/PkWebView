@@ -2,6 +2,7 @@ package com.peakmain.webview.callback
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.content.MutableContextWrapper
 import android.net.Uri
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
@@ -10,8 +11,10 @@ import com.peakmain.webview.H5Utils
 import com.peakmain.webview.fragment.WebViewFragment
 import com.peakmain.webview.manager.H5UtilsParams
 import com.peakmain.webview.manager.InterceptRequestManager
+import com.peakmain.webview.manager.cache.WebResourceResponseManager
 import com.peakmain.webview.utils.LogWebViewUtils
 import com.peakmain.webview.utils.WebViewUtils
+import com.peakmain.webview.view.PkWebView
 
 /**
  * author ：Peakmain
@@ -82,7 +85,12 @@ class DefaultWebViewClientCallback : WebViewClientCallback {
         if (!request.method.equals("GET", true)) {
             return null
         }
-        if (url.scheme != "https" && url.scheme != "http") {
+        return WebResourceResponseManager.getResponse(
+            (view?.context as MutableContextWrapper?)?.baseContext,
+            request,
+            (view as PkWebView?)?.getWebViewParams()?.userAgent
+        )
+       /* if (url.scheme != "https" && url.scheme != "http") {
             return null
         }
         var response: WebResourceResponse? = null
@@ -101,7 +109,7 @@ class DefaultWebViewClientCallback : WebViewClientCallback {
                 response = null
             }
         }
-        return response
+        return response*/
     }
 
 

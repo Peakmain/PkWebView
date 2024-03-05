@@ -5,6 +5,7 @@ import android.content.Context
 import com.peakmain.pkwebview.handle.OnlineServiceHandle
 import com.peakmain.pkwebview.handle.PageActionHandle
 import com.peakmain.webview.PkWebViewInit
+import com.peakmain.webview.manager.cache.CacheConfig
 import com.peakmain.webview.sealed.LoadingWebViewState
 
 /**

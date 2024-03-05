@@ -76,8 +76,8 @@ abstract class AbstractWebViewClient constructor(val webViewClientCallback: WebV
         if (request.requestHeaders.containsKey("noImage") && request.requestHeaders["noImage"] != null) {
             return WebResourceResponse("", "", null)
         }
-        val response = fragment?.shouldInterceptRequest(view, request)
-        return response ?: webViewClientCallback?.shouldInterceptRequest(view, request)
+        //val response = fragment?.shouldInterceptRequest(view, request)
+        return webViewClientCallback?.shouldInterceptRequest(view, request)
         ?: super.shouldInterceptRequest(view, request)
     }
 

@@ -2,12 +2,19 @@ package com.peakmain.webview.utils
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.text.TextUtils
+import androidx.collection.ArraySet
 import androidx.core.content.ContextCompat
+import okhttp3.Headers
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.IOException
+import java.io.InputStream
 import java.security.MessageDigest
 import java.util.Locale
 
@@ -17,7 +24,7 @@ import java.util.Locale
  * mail:2726449200@qq.com
  * describe：
  */
-class WebViewUtils {
+class WebViewUtils private constructor() {
     companion object {
         @JvmStatic
         val instance by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
@@ -25,10 +32,43 @@ class WebViewUtils {
         }
     }
 
+    private val mCacheContentType = ArrayList<String>()
+
+    init {
+        mCacheContentType.add("image/gif")
+        mCacheContentType.add("image/jpeg")
+        mCacheContentType.add("image/png")
+        mCacheContentType.add("image/svg+xml")
+        mCacheContentType.add("image/bmp")
+        mCacheContentType.add("image/webp")
+        mCacheContentType.add("image/tiff")
+        mCacheContentType.add("image/vnd.microsoft.icon")
+        mCacheContentType.add("image/x-icon")
+        mCacheContentType.add("application/javascript")
+        mCacheContentType.add("application/ecmascript")
+        mCacheContentType.add("application/x-ecmascript")
+        mCacheContentType.add("application/x-javascript")
+        mCacheContentType.add("text/ecmascript")
+        mCacheContentType.add("text/javascript")
+        mCacheContentType.add("text/javascript1.0")
+        mCacheContentType.add("text/javascript1.1")
+        mCacheContentType.add("text/javascript1.2")
+        mCacheContentType.add("text/javascript1.3")
+        mCacheContentType.add("text/javascript1.4")
+        mCacheContentType.add("text/javascript1.5")
+        mCacheContentType.add("text/jscript")
+        mCacheContentType.add("text/livescript")
+        mCacheContentType.add("text/x-ecmascript")
+        mCacheContentType.add("text/x-javascript")
+        mCacheContentType.add("text/css")
+        mCacheContentType.add("application/octet-stream")
+        mCacheContentType.add("application/pdf")
+    }
+
     @SuppressLint("MissingPermission")
     fun checkNetworkInfo(
         context: Context, noNetworkBlock: (() -> Unit)? = null,
-        networkBlock: (() -> Unit)? = null
+        networkBlock: (() -> Unit)? = null,
     ) {
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -52,19 +92,21 @@ class WebViewUtils {
                 val activeNetworkInfo = connectivityManager.activeNetworkInfo
                 if (activeNetworkInfo == null || !activeNetworkInfo.isConnected) {
                     noNetworkBlock?.invoke()
-                }else{
+                } else {
                     networkBlock?.invoke()
                 }
             }
         }
 
     }
-    fun isImageType(url: String):Boolean{
+
+    fun isImageType(url: String): Boolean {
         val lowerUrl = url.lowercase()
         return lowerUrl.endsWith(".png") || lowerUrl.endsWith(".jpg") || lowerUrl.endsWith(".jpeg")
                 || lowerUrl.endsWith(".gif") || lowerUrl.endsWith(".webp") || lowerUrl.endsWith(".bmp")
                 || lowerUrl.endsWith(".svg")
     }
+
     fun isCacheType(url: String): Boolean {
         val lowerUrl = url.lowercase()
         return isImageType(url)
@@ -72,6 +114,7 @@ class WebViewUtils {
                 || lowerUrl.endsWith(".woff") || lowerUrl.endsWith(".woff2")
                 || lowerUrl.endsWith(".ttf") || lowerUrl.endsWith(".otf") || lowerUrl.endsWith(".eot")
     }
+
     fun getMimeType(url: String): String {
         val lowerUrl = url.lowercase()
         return when {
@@ -93,7 +136,11 @@ class WebViewUtils {
         }
     }
 
-    fun getMd5(message:String,upperCase:Boolean=true):String{
+    fun isCacheContentType(contentType: String): Boolean {
+        return mCacheContentType.contains(contentType)
+    }
+
+    fun getMd5(message: String, upperCase: Boolean = true): String {
         var md5str = ""
         try {
             val md = MessageDigest.getInstance("MD5")
@@ -173,6 +220,7 @@ class WebViewUtils {
             else -> "unknown"
         }
     }
+
     /**
      * 获取资源文件的类型扩展名
      */
@@ -200,5 +248,69 @@ class WebViewUtils {
             }
         }
         return ""
+    }
+
+    fun getVersionCode(context: Context): Long {
+        val packageManager = context.packageManager
+        val packageInfo: PackageInfo
+        var versionCode = 0L
+        try {
+            packageInfo = packageManager.getPackageInfo(context.packageName, 0)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                versionCode = packageInfo.longVersionCode
+            } else {
+                versionCode = packageInfo.versionCode.toLong()
+            }
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+        }
+        return versionCode
+    }
+
+    fun generateHeadersMap(headers: Headers): Map<String, String>? {
+        val headersMap: MutableMap<String, String> = HashMap()
+        for (key in headers.names()) {
+            val values = StringBuilder()
+            for (value in listToSet(headers.values(key))) {
+                if (!TextUtils.isEmpty(values)) {
+                    values.append(" ")
+                }
+                values.append(value)
+            }
+            headersMap[key] = values.toString().trim { it <= ' ' }
+        }
+        return headersMap
+    }
+
+    private fun listToSet(origin: List<String?>): Set<String?> {
+        val target: MutableSet<String?> = ArraySet(origin.size)
+        target.addAll(origin)
+        return target
+    }
+
+    @Throws(IOException::class)
+    fun streamToBytes(`in`: InputStream): ByteArray? {
+        val out = ByteArrayOutputStream()
+        val buffer = ByteArray(1024)
+        var len: Int
+        while (`in`.read(buffer).also { len = it } > -1) {
+            out.write(buffer, 0, len)
+        }
+        out.flush()
+        `in`.close()
+        return out.toByteArray()
+    }
+
+    @Throws(IOException::class)
+    fun deleteContents(dir: File) {
+        val files = dir.listFiles() ?: throw IOException("not a readable directory: $dir")
+        for (file in files) {
+            if (file.isDirectory) {
+                deleteContents(file)
+            }
+            if (!file.delete()) {
+                throw IOException("failed to delete file: $file")
+            }
+        }
     }
 }

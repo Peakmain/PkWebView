@@ -1,6 +1,6 @@
 package com.peakmain.webview.manager.cache
 
-import android.webkit.WebResourceResponse
+import android.content.Context
 import com.peakmain.webview.bean.cache.CacheRequest
 import com.peakmain.webview.bean.cache.WebResource
 import com.peakmain.webview.manager.cache.implements.DiskCacheInterceptor
@@ -15,12 +15,12 @@ import com.peakmain.webview.manager.cache.interfaces.ICall
  * mail:2726449200@qq.com
  * describe：管理拦截器
  */
-class RealCacheInterfaceCall(private val cacheRequest: CacheRequest) : ICall {
+class RealCacheInterfaceCall(private val context: Context?,private val cacheRequest: CacheRequest) : ICall {
     override fun call(): WebResource? {
         val cacheInterceptorList = ArrayList<ICacheInterceptor>()
         cacheInterceptorList.add(MemoryCacheIntercept())
-        cacheInterceptorList.add(DiskCacheInterceptor())
-        cacheInterceptorList.add(NetworkCacheInterceptor())
+        cacheInterceptorList.add(DiskCacheInterceptor(context))
+        cacheInterceptorList.add(NetworkCacheInterceptor(context))
         val realCacheInterfaceChain = RealCacheInterfaceChain(cacheInterceptorList, 0, cacheRequest)
         return realCacheInterfaceChain.process(cacheRequest)
     }

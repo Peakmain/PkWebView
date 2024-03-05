@@ -1,5 +1,6 @@
 package com.peakmain.webview.manager.cache
 
+import android.content.Context
 import android.os.Build
 import android.text.TextUtils
 import android.webkit.WebResourceRequest
@@ -17,7 +18,7 @@ import java.util.Locale
  */
 class WebResourceResponseManager private constructor() {
     companion object {
-        fun getResponse(request: WebResourceRequest, userAgent: String?): WebResourceResponse? {
+        fun getResponse(context: Context?,request: WebResourceRequest, userAgent: String?): WebResourceResponse? {
             val url = request.url.toString()
             //资源类型
             val mimeType = WebViewUtils.instance.getMimeType(url)
@@ -27,11 +28,11 @@ class WebResourceResponseManager private constructor() {
             cacheRequest.userAgent = userAgent
             val headers = request.requestHeaders
             cacheRequest.headers = headers
-            return get(cacheRequest)
+            return get(context,cacheRequest)
         }
 
-        private fun get(request: CacheRequest): WebResourceResponse? {
-            val response = RealCacheInterfaceCall(request).call() ?: return null
+        private fun get(context: Context?,request: CacheRequest): WebResourceResponse? {
+            val response = RealCacheInterfaceCall(context,request).call() ?: return null
             //需要对获取到的response进行封装
             val responseHeaders = response.responseHeaders
             var contentType = ""

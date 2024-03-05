@@ -91,7 +91,7 @@ public class WebResource {
     /**
      * 参考
      * Okhttp3.internal.cache.CacheStrategy
-     * @return boolean
+     * @return boolean 是否可以缓存HTTP响应
      */
     public boolean isCacheable() {
         return responseCode == HTTP_OK

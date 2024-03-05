@@ -12,7 +12,7 @@ import com.peakmain.webview.bean.cache.WebResource
  */
 interface ICacheInterceptor {
     //每一层需要处理的逻辑
-    fun cacheInterceptor(chain:Chain): WebResource
+    fun cacheInterceptor(chain:Chain): WebResource?
     interface Chain {
         //获取上一层请求的请求体
         fun request(): CacheRequest
