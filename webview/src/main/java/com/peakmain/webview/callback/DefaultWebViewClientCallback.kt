@@ -90,7 +90,7 @@ class DefaultWebViewClientCallback : WebViewClientCallback {
             request,
             (view as PkWebView?)?.getWebViewParams()?.userAgent
         )
-       /* if (url.scheme != "https" && url.scheme != "http") {
+/*        if (url.scheme != "https" && url.scheme != "http") {
             return null
         }
         var response: WebResourceResponse? = null

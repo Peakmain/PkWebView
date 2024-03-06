@@ -50,8 +50,8 @@ class DiskCacheInterceptor(val context: Context?) : ICacheInterceptor {
         }
         val build = CacheConfig.Builder(context!!).build()
         val dir = build.getCacheDir()
-        val version = build!!.getVersion()
-        val cacheSize = build!!.getDiskCacheSize()
+        val version = build.getVersion()
+        val cacheSize = build.getDiskCacheSize()
 
         try {
             mDiskLruCache = DiskLruCache.open(File(dir), version, 2, cacheSize)
@@ -110,7 +110,7 @@ class DiskCacheInterceptor(val context: Context?) : ICacheInterceptor {
                 }
             }
         }
-        return contentType != null && !WebViewUtils.instance.isCacheContentType(contentType)
+        return contentType != null && WebViewUtils.instance.isCacheContentType(contentType)
     }
 
     private fun getWebResourceFromDiskCache(key: String?): WebResource? {

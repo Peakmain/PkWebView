@@ -38,7 +38,7 @@ class WebResourceResponseManager private constructor() {
             var contentType = ""
             var charset = ""
             var mineType = request.mimeType
-            while (responseHeaders != null) {
+            if (responseHeaders != null) {
                 //contentType  "text/html; charset=utf-8"
                 val contentTypeValue = getContentType(responseHeaders, "Content-Type")
                 if (!TextUtils.isEmpty(contentTypeValue)) {

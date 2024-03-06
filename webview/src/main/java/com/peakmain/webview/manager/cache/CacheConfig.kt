@@ -40,7 +40,7 @@ class CacheConfig private constructor() {
     }
 
     class Builder(context: Context) {
-        private var cacheDir: String = context.cacheDir.toString() + File.separator + "cache"
+        private var cacheDir: String = context.applicationContext.cacheDir.toString() + File.separator + "cache"
         private var version: Int
         private var diskCacheSize = DEFAULT_DISK_CACHE_SIZE.toLong()
         fun setCacheDir(cacheDir: String): Builder {
