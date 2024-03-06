@@ -25,20 +25,20 @@ import kotlin.math.sin
  */
 class DiskCacheInterceptor(val context: Context?) : ICacheInterceptor {
     private var mDiskLruCache: DiskLruCache? = null
-    private val DEFAULT_DISK_CACHE_SIZE = 100 * 1024 * 1024
 
 
     override fun cacheInterceptor(chain: ICacheInterceptor.Chain): WebResource? {
         val request = chain.request()
         createLruCache()
-        LogWebViewUtils.e("磁盘缓存：${request.url}")
         var webResource = getWebResourceFromDiskCache(request.key)
         if (webResource != null && isContentTypeCacheable(webResource)) {
+            LogWebViewUtils.e("磁盘缓存：${request.url}")
             return webResource
         }
         webResource = chain.process(request)
         //磁盘进行缓存
         if (webResource != null && isContentTypeCacheable(webResource)) {
+            LogWebViewUtils.e("磁盘缓存缓存数据:${request.url}")
             cacheToDisk(request.key, webResource)
         }
         return webResource

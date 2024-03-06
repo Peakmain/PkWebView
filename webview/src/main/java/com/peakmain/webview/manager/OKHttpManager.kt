@@ -87,7 +87,7 @@ internal class OKHttpManager(context: Context) {
     }
 
     private fun isInterceptorThisRequest(response: Response): Boolean {
-        var code = response.code
+        val code = response.code
         return !(code < 100 || code > 599 || (code in 300..399))
     }
 

@@ -12,8 +12,8 @@ import com.peakmain.webview.manager.cache.interfaces.ICacheInterceptor
  * describe：处理拦截器逻辑的地方
  */
 class RealCacheInterfaceChain(
-    val cacheInterfaceList: MutableList<ICacheInterceptor>,//所有的拦截器
-    val index: Int,//当前拦截器的index
+    private val cacheInterfaceList: MutableList<ICacheInterceptor>,//所有的拦截器
+    private val index: Int,//当前拦截器的index
     val request: CacheRequest,//请求参数
 ) : ICacheInterceptor.Chain {
     override fun request(): CacheRequest {
