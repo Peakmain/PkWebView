@@ -10,6 +10,7 @@ import android.os.Build
 import android.text.TextUtils
 import androidx.collection.ArraySet
 import androidx.core.content.ContextCompat
+import com.peakmain.webview.bean.cache.WebResource
 import okhttp3.Headers
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -33,17 +34,20 @@ class WebViewUtils private constructor() {
     }
 
     private val mCacheContentType = ArrayList<String>()
+    private val mCacheImageContentType = ArrayList<String>()
 
     init {
-        mCacheContentType.add("image/gif")
-        mCacheContentType.add("image/jpeg")
-        mCacheContentType.add("image/png")
-        mCacheContentType.add("image/svg+xml")
-        mCacheContentType.add("image/bmp")
-        mCacheContentType.add("image/webp")
-        mCacheContentType.add("image/tiff")
-        mCacheContentType.add("image/vnd.microsoft.icon")
-        mCacheContentType.add("image/x-icon")
+        //初始化图片
+        mCacheImageContentType.add("image/gif")
+        mCacheImageContentType.add("image/jpeg")
+        mCacheImageContentType.add("image/png")
+        mCacheImageContentType.add("image/svg+xml")
+        mCacheImageContentType.add("image/bmp")
+        mCacheImageContentType.add("image/webp")
+        mCacheImageContentType.add("image/tiff")
+        mCacheImageContentType.add("image/vnd.microsoft.icon")
+        mCacheImageContentType.add("image/x-icon")
+        //初始化其他资源
         mCacheContentType.add("application/javascript")
         mCacheContentType.add("application/ecmascript")
         mCacheContentType.add("application/x-ecmascript")
@@ -63,6 +67,18 @@ class WebViewUtils private constructor() {
         mCacheContentType.add("text/css")
         mCacheContentType.add("application/octet-stream")
         mCacheContentType.add("application/pdf")
+        mCacheContentType.add("text/plain")
+        mCacheContentType.add("text/html")
+        mCacheContentType.add("text/xml")
+
+        // 字体文件
+        mCacheContentType.add("application/x-font-ttf")
+        mCacheContentType.add("application/x-font-opentype")
+        mCacheContentType.add("application/vnd.ms-fontobject")
+        mCacheContentType.add("application/font-woff")
+        mCacheContentType.add("font/woff2")
+        mCacheContentType.add("font/ttf")
+
     }
 
     @SuppressLint("MissingPermission")
@@ -100,20 +116,10 @@ class WebViewUtils private constructor() {
 
     }
 
-    fun isImageType(url: String): Boolean {
-        val lowerUrl = url.lowercase()
-        return lowerUrl.endsWith(".png") || lowerUrl.endsWith(".jpg") || lowerUrl.endsWith(".jpeg")
-                || lowerUrl.endsWith(".gif") || lowerUrl.endsWith(".webp") || lowerUrl.endsWith(".bmp")
-                || lowerUrl.endsWith(".svg")
+    fun isImageType(contentType: String): Boolean {
+        return mCacheImageContentType.contains(contentType)
     }
 
-    fun isCacheType(url: String): Boolean {
-        val lowerUrl = url.lowercase()
-        return isImageType(url)
-                || lowerUrl.endsWith(".js") || lowerUrl.endsWith(".css")
-                || lowerUrl.endsWith(".woff") || lowerUrl.endsWith(".woff2")
-                || lowerUrl.endsWith(".ttf") || lowerUrl.endsWith(".otf") || lowerUrl.endsWith(".eot")
-    }
 
     fun getMimeType(url: String): String {
         val lowerUrl = url.lowercase()
@@ -135,7 +141,25 @@ class WebViewUtils private constructor() {
             else -> "text/plain"
         }
     }
+    fun getContentType(resource: WebResource): String? {
+        val headers = resource.responseHeaders
+        var contentType: String? = null
+        if (headers != null) {
+            val uppercaseKey = "Content-Type"
+            val lowercaseKey = uppercaseKey.lowercase(Locale.getDefault())
+            val contentTypeValue =
+                if (headers.containsKey(uppercaseKey)) headers[uppercaseKey] else headers[lowercaseKey]
 
+
+            if (!TextUtils.isEmpty(contentTypeValue)) {
+                val contentTypeArray = contentTypeValue!!.split(";").toTypedArray()
+                if (contentTypeArray.isNotEmpty()) {
+                    contentType = contentTypeArray[0]
+                }
+            }
+        }
+        return contentType
+    }
     fun isCacheContentType(contentType: String): Boolean {
         return mCacheContentType.contains(contentType)
     }
@@ -174,7 +198,7 @@ class WebViewUtils private constructor() {
     /**
      * 根据statusCode 获取状态值
      */
-    fun getPhrase(statusCode: Int): String? {
+    fun getMessage(statusCode: Int): String? {
         return when (statusCode) {
             100 -> "Continue"
             101 -> "Switching Protocols"

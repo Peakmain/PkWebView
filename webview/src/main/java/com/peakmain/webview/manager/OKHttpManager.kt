@@ -1,8 +1,6 @@
 package com.peakmain.webview.manager
 
-import android.app.Application
 import android.content.Context
-import android.os.Build
 import com.peakmain.webview.bean.cache.CacheRequest
 import com.peakmain.webview.bean.cache.WebResource
 import com.peakmain.webview.utils.WebViewUtils
@@ -49,6 +47,7 @@ internal class OKHttpManager(context: Context) {
 
     fun getResource(request: CacheRequest, isContentType: Boolean): WebResource? {
         val url = request.url
+
         val acceptLanguage =
             Locale.getDefault().toLanguageTag()
         val builder = Request.Builder()

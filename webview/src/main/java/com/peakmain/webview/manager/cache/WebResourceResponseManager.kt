@@ -72,7 +72,7 @@ class WebResourceResponseManager private constructor() {
                 val responseCode = response.responseCode
                 var message = response.message
                 if (TextUtils.isEmpty(message)) {
-                    message = WebViewUtils.instance.getPhrase(responseCode)
+                    message = WebViewUtils.instance.getMessage(responseCode)
                 }
                 return WebResourceResponse(
                     mineType,

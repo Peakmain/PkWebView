@@ -94,24 +94,11 @@ class DiskCacheInterceptor(val context: Context?) : ICacheInterceptor {
         if (resource == null) {
             return false
         }
-        val headers = resource.responseHeaders
-        var contentType: String? = null
-        if (headers != null) {
-            val uppercaseKey = "Content-Type"
-            val lowercaseKey = uppercaseKey.lowercase(Locale.getDefault())
-            val contentTypeValue =
-                if (headers.containsKey(uppercaseKey)) headers[uppercaseKey] else headers[lowercaseKey]
-
-
-            if (!TextUtils.isEmpty(contentTypeValue)) {
-                val contentTypeArray = contentTypeValue!!.split(";").toTypedArray()
-                if (contentTypeArray.isNotEmpty()) {
-                    contentType = contentTypeArray[0]
-                }
-            }
-        }
+        val contentType: String? = WebViewUtils.instance.getContentType(resource)
         return contentType != null && WebViewUtils.instance.isCacheContentType(contentType)
     }
+
+
 
     private fun getWebResourceFromDiskCache(key: String?): WebResource? {
         if (mDiskLruCache?.isClosed == true) return null
