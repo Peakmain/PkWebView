@@ -34,7 +34,6 @@ public class WebResource {
     // 是否新变更
     private boolean isModified = true;
 
-    private boolean isCacheByOurseleves = false;
 
     private byte[] originBytes;
 
@@ -71,13 +70,6 @@ public class WebResource {
         isModified = modified;
     }
 
-    public boolean isCacheByOurseleves() {
-        return isCacheByOurseleves;
-    }
-
-    public void setCacheByOurseleves(boolean cacheByOurseleves) {
-        isCacheByOurseleves = cacheByOurseleves;
-    }
 
     public byte[] getOriginBytes() {
         return originBytes;

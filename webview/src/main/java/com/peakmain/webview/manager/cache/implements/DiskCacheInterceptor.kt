@@ -62,7 +62,6 @@ class DiskCacheInterceptor(val context: Context?) : ICacheInterceptor {
 
     private fun cacheToDisk(key: String?, webResource: WebResource) {
         if (!webResource.isCacheable || mDiskLruCache == null || mDiskLruCache!!.isClosed) return
-        webResource.isCacheByOurseleves = true
         val edit = mDiskLruCache?.edit(key) ?: return
         val outputStream = edit.newOutputStream(0)
         var sink = outputStream.sink().buffer()

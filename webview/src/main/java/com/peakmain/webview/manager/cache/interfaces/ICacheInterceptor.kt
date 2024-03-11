@@ -1,6 +1,5 @@
 package com.peakmain.webview.manager.cache.interfaces
 
-import android.webkit.WebResourceResponse
 import com.peakmain.webview.bean.cache.CacheRequest
 import com.peakmain.webview.bean.cache.WebResource
 

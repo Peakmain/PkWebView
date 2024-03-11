@@ -309,32 +309,4 @@ open class WebViewFragment : Fragment() {
     override fun onResume() {
         super.onResume()
     }
-
-    fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest): WebResourceResponse? {
-        //处理缓存资源拦截器
-        val scheme = request.url.scheme?.trim()
-        val method = request.method?.trim()
-        if ((scheme.equals("http") || scheme.equals("https"))
-            && method.equals("GET", ignoreCase = true)
-        ) {
-            //获取缓存资源
-            if (view != null ) {
-                if(view.context is MutableContextWrapper){
-                    return WebResourceResponseManager.getResponse(
-                        (view.context as MutableContextWrapper).baseContext,
-                        request,
-                        mWebView?.getWebViewParams()?.userAgent
-                    )
-                }else{
-                    return WebResourceResponseManager.getResponse(
-                        view.context,
-                        request,
-                        mWebView?.getWebViewParams()?.userAgent
-                    )
-                }
-
-            }
-        }
-        return null
-    }
 }

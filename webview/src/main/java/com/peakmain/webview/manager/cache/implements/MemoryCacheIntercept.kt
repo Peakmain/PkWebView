@@ -47,7 +47,6 @@ class MemoryCacheIntercept : ICacheInterceptor {
         return resource.originBytes != null && resource.originBytes.isNotEmpty()
                 && resource.responseHeaders != null
                 && resource.responseHeaders.isNotEmpty()
-                && resource.isCacheByOurseleves
     }
 
     class ResourceMemoryCache constructor(maxSize: Int) : LruCache<String, WebResource>(maxSize) {
