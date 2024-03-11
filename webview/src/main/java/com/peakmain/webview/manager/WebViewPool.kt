@@ -55,7 +55,7 @@ internal class WebViewPool private constructor() {
             if (mWebViewPool[i] != null) {
                 val webView = mWebViewPool[i]
                 val contextWrapper = webView?.context as MutableContextWrapper?
-                contextWrapper?.baseContext=context
+                contextWrapper?.baseContext = context
                 mWebViewPool[i] = null
                 return webView
             }
@@ -92,7 +92,7 @@ internal class WebViewPool private constructor() {
     }
 
     private fun createWebView(
-        params: WebViewController.WebViewParams, userAgent: String
+        params: WebViewController.WebViewParams, userAgent: String,
     ): PkWebView {
         val webView = PkWebView(MutableContextWrapper(params.application))
         webView.setWebViewParams(params)
@@ -104,4 +104,5 @@ internal class WebViewPool private constructor() {
         }
         return webView
     }
+
 }

@@ -17,6 +17,7 @@ import com.peakmain.webview.view.PkWebView
  * describe：
  */
 class H5UtilsParams private constructor() {
+    var preLoadUrl: String = ""
     var mCacheMode: Int = WebSettings.LOAD_NO_CACHE
     var updateToolBarBar: ((String, WebViewActivity?) -> Unit)? = null
     var isShowToolBar: Boolean = true

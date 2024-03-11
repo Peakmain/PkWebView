@@ -80,8 +80,7 @@ class DefaultWebViewClientCallback : WebViewClientCallback {
         view: WebView?,
         request: WebResourceRequest,
     ): WebResourceResponse? {
-        val url = request.url
-        if (url == null || request.isForMainFrame) return null
+        request.url ?: return null
         if (!request.method.equals("GET", true)) {
             return null
         }
@@ -90,26 +89,26 @@ class DefaultWebViewClientCallback : WebViewClientCallback {
             request,
             (view as PkWebView?)?.getWebViewParams()?.userAgent
         )
-/*        if (url.scheme != "https" && url.scheme != "http") {
-            return null
-        }
-        var response: WebResourceResponse? = null
-        val commonWeResourceResponsePair = params.mCommonWeResourceResponsePair
-        view?.run {
-            commonWeResourceResponsePair?.let {
-                val isCommonResource = it.third ?: return@let
-                if (isCommonResource(url.toString())) {
-                    response = InterceptRequestManager.instance.getLocalWebResourceResponse(it.first, it.second)
+        /*        if (url.scheme != "https" && url.scheme != "http") {
+                    return null
                 }
-            } ?: if (WebViewUtils.instance.isCacheType(url.toString())) {
-                InterceptRequestManager.instance.getWebResourceResponse(request) {
-                    response = it
+                var response: WebResourceResponse? = null
+                val commonWeResourceResponsePair = params.mCommonWeResourceResponsePair
+                view?.run {
+                    commonWeResourceResponsePair?.let {
+                        val isCommonResource = it.third ?: return@let
+                        if (isCommonResource(url.toString())) {
+                            response = InterceptRequestManager.instance.getLocalWebResourceResponse(it.first, it.second)
+                        }
+                    } ?: if (WebViewUtils.instance.isCacheType(url.toString())) {
+                        InterceptRequestManager.instance.getWebResourceResponse(request) {
+                            response = it
+                        }
+                    } else {
+                        response = null
+                    }
                 }
-            } else {
-                response = null
-            }
-        }
-        return response*/
+                return response*/
     }
 
 

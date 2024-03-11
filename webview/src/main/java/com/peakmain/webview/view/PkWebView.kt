@@ -3,14 +3,11 @@ package com.peakmain.webview.view
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.text.TextUtils
 import android.util.AttributeSet
 import android.webkit.WebView
-import androidx.lifecycle.LifecycleCoroutineScope
-import androidx.lifecycle.LifecycleRegistry
 import com.peakmain.webview.helper.WebViewHelper
 import com.peakmain.webview.manager.WebViewController
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 /**
  * author ：Peakmain
@@ -109,6 +106,15 @@ class PkWebView : WebView {
      */
     fun release() {
 
+    }
+
+    /**
+     * 预加载
+     */
+    fun preLoadUrl( url: String) {
+        if (!TextUtils.isEmpty(url)) {
+            loadUrl(url)
+        }
     }
 
 
