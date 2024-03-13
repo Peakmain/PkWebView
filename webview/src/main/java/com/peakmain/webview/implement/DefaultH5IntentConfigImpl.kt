@@ -26,10 +26,15 @@ class DefaultH5IntentConfigImpl : H5IntentConfig {
         )
     }
 
+    override fun startActivity(context: Context?, intent: Intent) {
+        context?.startActivity(intent)
+    }
+
+
     override fun startActivityForResult(
         context: Activity?,
         bean: WebViewConfigBean,
-        requestCode: Int
+        requestCode: Int,
     ) {
         val intent = Intent(context, WebViewActivity::class.java)
             .putExtra(WebViewConstants.LIBRARY_WEB_VIEW, bean)
@@ -39,7 +44,7 @@ class DefaultH5IntentConfigImpl : H5IntentConfig {
     override fun startActivityForResult(
         context: Fragment?,
         bean: WebViewConfigBean,
-        requestCode: Int
+        requestCode: Int,
     ) {
         if (context == null || context.context == null) return
         val intent = Intent(context.context, WebViewActivity::class.java)
@@ -51,7 +56,7 @@ class DefaultH5IntentConfigImpl : H5IntentConfig {
     override fun startActivityForResult(
         context: FragmentActivity?,
         launcher: ActivityResultLauncher<Intent>?,
-        bean: WebViewConfigBean
+        bean: WebViewConfigBean,
     ) {
         val intent = Intent(context, WebViewActivity::class.java)
             .putExtra(WebViewConstants.LIBRARY_WEB_VIEW, bean)
@@ -61,11 +66,20 @@ class DefaultH5IntentConfigImpl : H5IntentConfig {
     override fun startActivityForResult(
         context: Fragment?,
         launcher: ActivityResultLauncher<Intent>?,
-        bean: WebViewConfigBean
+        bean: WebViewConfigBean,
     ) {
         if (context == null || context.context == null) return
         val intent = Intent(context.context, WebViewActivity::class.java)
             .putExtra(WebViewConstants.LIBRARY_WEB_VIEW, bean)
         launcher?.launch(intent)
+    }
+
+    override fun startActivityForResult(context: Context?, intent: Intent, requestCode: Int) {
+        if(context==null)return
+        if (context is FragmentActivity) {
+            context.startActivityForResult(intent, requestCode)
+        } else if(context is Fragment){
+            context.startActivityForResult(intent, requestCode)
+        }
     }
 }

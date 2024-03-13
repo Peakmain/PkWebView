@@ -26,6 +26,7 @@
             </intent-filter>
 
         </activity>
+        <activity android:name="com.peakmain.pkwebview.SecondWebViewActivity" />
     </application>
 
 </manifest>

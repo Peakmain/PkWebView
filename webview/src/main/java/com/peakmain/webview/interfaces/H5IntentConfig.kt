@@ -21,12 +21,15 @@ interface H5IntentConfig {
     fun startActivityForResult(
         context: FragmentActivity?,
         launcher: ActivityResultLauncher<Intent>?,
-        bean: WebViewConfigBean
+        bean: WebViewConfigBean,
     )
 
     fun startActivityForResult(
         context: Fragment?,
         launcher: ActivityResultLauncher<Intent>?,
-        bean: WebViewConfigBean
+        bean: WebViewConfigBean,
     )
+
+    fun startActivity(context: Context?, intent: Intent)
+    fun startActivityForResult(context: Context?, intent: Intent, requestCode: Int)
 }

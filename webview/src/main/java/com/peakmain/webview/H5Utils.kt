@@ -1,10 +1,9 @@
 package com.peakmain.webview
 
 import android.view.View
-import android.webkit.WebView
 import androidx.annotation.LayoutRes
 import com.peakmain.webview.abstracts.AbstractH5IntentConfigDecorator
-import com.peakmain.webview.activity.WebViewActivity
+import com.peakmain.webview.activity.BaseWebViewActivity
 import com.peakmain.webview.annotation.CacheMode
 import com.peakmain.webview.annotation.CacheModeState
 import com.peakmain.webview.bean.WebViewEvent
@@ -29,12 +28,12 @@ class H5Utils(decoratorConfig: H5IntentConfig = DefaultH5IntentConfigImpl()) :
         return this
     }
 
-    fun updateStatusBar(updateStatusBar: ((String, WebViewActivity?) -> Unit)? = null): H5Utils {
+    fun updateStatusBar(updateStatusBar: ((String, BaseWebViewActivity?) -> Unit)? = null): H5Utils {
         params.updateStatusBar = updateStatusBar
         return this
     }
 
-    fun updateToolBar(updateToolBarBar: ((String, WebViewActivity?) -> Unit)? = null): H5Utils {
+    fun updateToolBar(updateToolBarBar: ((String, BaseWebViewActivity?) -> Unit)? = null): H5Utils {
         params.updateToolBarBar = updateToolBarBar
         return this
     }

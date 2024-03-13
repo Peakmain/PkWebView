@@ -1,7 +1,5 @@
 package com.peakmain.pkwebview.bean
 
-import android.content.Context
-import android.webkit.WebView
 import com.peakmain.webview.bean.WebViewEvent
 
 /**

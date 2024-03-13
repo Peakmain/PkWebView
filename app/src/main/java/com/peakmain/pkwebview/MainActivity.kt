@@ -11,6 +11,7 @@ import com.peakmain.pkwebview.bean.HotelParams
 import com.peakmain.pkwebview.bean.WebViewModel
 import com.peakmain.pkwebview.implements.HandlerUrlParamsImpl
 import com.peakmain.webview.H5Utils
+import com.peakmain.webview.activity.WebViewActivity
 import com.peakmain.webview.annotation.CacheMode
 import com.peakmain.webview.bean.WebViewConfigBean
 import com.peakmain.webview.manager.cache.CacheWebViewManager
@@ -33,17 +34,17 @@ class MainActivity : AppCompatActivity() {
                 //.setLoadingWebViewState(LoadingWebViewState.ProgressBarLoadingStyle)
                 .updateStatusBar { title, activity ->
                     if (title.contains("商城")) {
-                        activity?.updateStateBar(StatusBarState.NoStatusModeState)
+                        (activity as WebViewActivity?)?.updateStateBar(StatusBarState.NoStatusModeState)
                     } else {
-                        activity?.updateStateBar()
+                        (activity as WebViewActivity?)?.updateStateBar()
                     }
                 }
                 .updateToolBar { title, activity ->
                     if (title.contains("商城")) {
-                        activity?.showToolbar(false)
+                        (activity as WebViewActivity?)?.showToolbar(false)
                         activity?.showHeadView(true)
                     } else {
-                        activity?.showToolbar(true)
+                        (activity as WebViewActivity?)?.showToolbar(true)
                         activity?.showHeadView(false)
                         /*    activity?.setOnClickListener({
                                 activity.finish()

@@ -2,7 +2,6 @@ package com.peakmain.webview.fragment
 
 import android.app.Activity
 import android.content.Intent
-import android.content.MutableContextWrapper
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -11,8 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.ValueCallback
-import android.webkit.WebResourceRequest
-import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient.ERROR_CONNECT
 import android.webkit.WebViewClient.ERROR_HOST_LOOKUP
@@ -33,7 +30,6 @@ import com.peakmain.webview.manager.WebViewController
 import com.peakmain.webview.manager.WebViewHandle
 import com.peakmain.webview.manager.WebViewManager
 import com.peakmain.webview.manager.WebViewPool
-import com.peakmain.webview.manager.cache.WebResourceResponseManager
 import com.peakmain.webview.sealed.HandleResult
 import com.peakmain.webview.sealed.LoadingWebViewState
 import com.peakmain.webview.utils.LogWebViewUtils
@@ -51,13 +47,13 @@ open class WebViewFragment : Fragment() {
     protected var mFileUploadCallbackFirst: ValueCallback<Uri>? = null
     protected var mFileUploadCallbackSecond: ValueCallback<Array<Uri>>? = null
     private var mWebView: PkWebView? = null
-    private var mStartTime: Long = 0L
     private var mEndTime: Long = 0L
     private var mGroup: FrameLayout? = null
     private var mLoadingViewConfig: LoadingViewConfig? = null
     private var mLoadingView: View? = null
     private lateinit var mLoadingWebViewState: LoadingWebViewState
     private val mH5UtilsParams = H5UtilsParams.instance
+    private val mStartTime = System.currentTimeMillis()
     private val mWebViewConfigBean by lazy {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
             arguments?.getParcelable(
@@ -110,6 +106,10 @@ open class WebViewFragment : Fragment() {
         }
 
     }
+    fun executeJs(method: String, data: String): Boolean {
+        return executeJs(mWebView,method,data)
+    }
+
 
     fun executeJs(webView: WebView?, method: String, data: String): Boolean {
         return WebViewJsUtils.getInstance().executeJs(webView, method, data)
@@ -170,7 +170,6 @@ open class WebViewFragment : Fragment() {
     }
 
     fun onPageStarted(view: WebView?, url: String?) {
-        mStartTime = System.currentTimeMillis()
         mViewModel.showLoading(view, mLoadingWebViewState, mLoadingViewConfig)
         mWebView?.postBlankMonitorRunnable()
     }
@@ -308,5 +307,9 @@ open class WebViewFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+    }
+
+    fun getStartTime(): Long {
+        return mStartTime
     }
 }

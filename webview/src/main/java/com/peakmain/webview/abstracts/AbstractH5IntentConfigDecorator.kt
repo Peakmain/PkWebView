@@ -54,4 +54,12 @@ abstract class AbstractH5IntentConfigDecorator(private val decoratorConfig: H5In
     ) {
         decoratorConfig.startActivityForResult(context, launcher, bean)
     }
+
+    override fun startActivity(context: Context?, intent: Intent) {
+        decoratorConfig.startActivity(context,intent)
+    }
+
+    override fun startActivityForResult(context: Context?, intent: Intent, requestCode: Int) {
+        decoratorConfig.startActivityForResult(context,intent,requestCode)
+    }
 }

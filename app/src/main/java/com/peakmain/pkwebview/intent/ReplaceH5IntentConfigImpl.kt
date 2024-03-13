@@ -22,6 +22,10 @@ class ReplaceH5IntentConfigImpl:H5IntentConfig {
         Log.e("TAG","ReplaceH5IntentConfigImpl url:${bean.url}")
     }
 
+    override fun startActivity(context: Context?, intent: Intent) {
+
+    }
+
     override fun startActivityForResult(
         context: Activity?,
         bean: WebViewConfigBean,
@@ -48,6 +52,9 @@ class ReplaceH5IntentConfigImpl:H5IntentConfig {
         launcher: ActivityResultLauncher<Intent>?,
         bean: WebViewConfigBean
     ) {
+    }
+
+    override fun startActivityForResult(context: Context?, intent: Intent, requestCode: Int) {
     }
 
 

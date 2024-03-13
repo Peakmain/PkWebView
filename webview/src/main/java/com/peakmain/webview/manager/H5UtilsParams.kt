@@ -2,6 +2,7 @@ package com.peakmain.webview.manager
 
 import android.view.View
 import android.webkit.WebSettings
+import com.peakmain.webview.activity.BaseWebViewActivity
 import com.peakmain.webview.activity.WebViewActivity
 import com.peakmain.webview.bean.WebViewEvent
 import com.peakmain.webview.callback.HandleUrlParamsCallback
@@ -19,9 +20,9 @@ import com.peakmain.webview.view.PkWebView
 class H5UtilsParams private constructor() {
     var preLoadUrl: String = ""
     var mCacheMode: Int = WebSettings.LOAD_NO_CACHE
-    var updateToolBarBar: ((String, WebViewActivity?) -> Unit)? = null
+    var updateToolBarBar: ((String, BaseWebViewActivity?) -> Unit)? = null
     var isShowToolBar: Boolean = true
-    var updateStatusBar: ((String, WebViewActivity?) -> Unit)? = null
+    var updateStatusBar: ((String, BaseWebViewActivity?) -> Unit)? = null
     var mLoadingWebViewState: LoadingWebViewState? = null
     var mLoadingViewConfig: LoadingViewConfig? = null
     var mHandleUrlParamsCallback: HandleUrlParamsCallback<out WebViewEvent>? = null
