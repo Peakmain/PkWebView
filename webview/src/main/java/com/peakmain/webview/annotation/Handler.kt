@@ -1,7 +1,5 @@
 package com.peakmain.webview.annotation
 
-import java.lang.annotation.RetentionPolicy
-
 
 /**
  * author ：Peakmain

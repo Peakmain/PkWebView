@@ -50,7 +50,9 @@ internal class WebViewPool private constructor() {
      * 获取webView
      */
     fun getWebView(context: Context?): PkWebView? {
-        checkIsInitialized()
+        if (!::mWebViewPool.isInitialized) {
+            return null
+        }
         for (i in 0 until WEB_VIEW_COUNT) {
             if (mWebViewPool[i] != null) {
                 val webView = mWebViewPool[i]

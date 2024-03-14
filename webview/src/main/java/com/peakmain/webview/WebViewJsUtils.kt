@@ -1,11 +1,7 @@
 package com.peakmain.webview
 
-import android.text.TextUtils
 import android.webkit.WebView
 import com.peakmain.webview.utils.EncodeUtils
-import com.peakmain.webview.utils.GsonUtils
-import com.peakmain.webview.utils.LogWebViewUtils
-import com.peakmain.webview.viewmodel.WebViewModel
 
 /**
  * author ：Peakmain

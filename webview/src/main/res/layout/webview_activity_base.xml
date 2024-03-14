@@ -44,6 +44,7 @@
                 android:textColor="#272a2b"
                 android:textSize="@dimen/font_size_16"
                 android:textStyle="bold"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/web_view_back"
                 app:layout_constraintRight_toRightOf="parent"

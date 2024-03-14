@@ -16,11 +16,10 @@ import com.peakmain.webview.sealed.LoadingWebViewState
  */
 class App : Application() {
     override fun onCreate() {
-
         PkWebViewInit.Builder(this)
             //.setLoadingView(ReplaceLoadingConfigImpl())
             .setLoadingWebViewState(LoadingWebViewState.HorizontalProgressBarLoadingStyle)
-            .registerEntities(OnlineServiceHandle::class.java,PageActionHandle::class.java)
+            .registerEntities(OnlineServiceHandle::class.java, PageActionHandle::class.java)
             .setUserAgent(BuildConfig.config.userAgent)
             .build()
         super.onCreate()

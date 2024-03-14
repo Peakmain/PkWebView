@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Looper
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.annotation.MainThread
 import com.peakmain.webview.callback.WebViewChromeClientCallback
 import com.peakmain.webview.callback.WebViewClientCallback
 import com.peakmain.webview.interfaces.InitWebViewSetting
@@ -20,6 +21,7 @@ import com.peakmain.webview.sealed.LoadingWebViewState
  * mail:2726449200@qq.com
  * describe：WebView初始化类
  */
+@MainThread
 class PkWebViewInit private constructor() {
     private var mWebViewController: WebViewController = WebViewController()
 
@@ -67,7 +69,7 @@ class PkWebViewInit private constructor() {
 
         fun setNoNetWorkView(
             view: View,
-            noNetWorkViewBlock: ((View?, View?, String?) -> Unit)? = null
+            noNetWorkViewBlock: ((View?, View?, String?) -> Unit)? = null,
         ): Builder {
             P.mNoNetWorkView = view
             P.mNoNetWorkViewId = 0
@@ -77,7 +79,7 @@ class PkWebViewInit private constructor() {
 
         fun setNoNetWorkView(
             @LayoutRes viewIdRes: Int,
-            noNetWorkViewBlock: ((View?, View?, String?) -> Unit)?
+            noNetWorkViewBlock: ((View?, View?, String?) -> Unit)?,
         ): Builder {
             P.mNoNetWorkView = null
             P.mNoNetWorkViewId = viewIdRes
@@ -102,13 +104,10 @@ class PkWebViewInit private constructor() {
         }
 
         fun build() {
-            Looper.myQueue().addIdleHandler {
-                if (mPkWebViewInit == null) {
-                    create()
-                }
-                mPkWebViewInit!!.initPool()
-                false
+            if (mPkWebViewInit == null) {
+                create()
             }
+            mPkWebViewInit!!.initPool()
         }
 
         private fun create(): PkWebViewInit {
