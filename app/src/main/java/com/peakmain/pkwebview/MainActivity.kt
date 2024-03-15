@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
                 /*  .setHeadContentView(R.layout.hotel_list_head) {
 
                   }*/
-                .setHandleUrlParamsCallback(HandlerUrlParamsImpl())
+                //.setHandleUrlParamsCallback(HandlerUrlParamsImpl())
                 .startActivityForResult(
                     this, launcher,
                     WebViewConfigBean(

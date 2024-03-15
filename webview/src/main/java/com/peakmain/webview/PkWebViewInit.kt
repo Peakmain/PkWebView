@@ -1,11 +1,11 @@
 package com.peakmain.webview
 
 import android.app.Application
-import android.content.Context
-import android.os.Looper
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.annotation.MainThread
+import com.peakmain.webview.bean.WebViewEvent
+import com.peakmain.webview.callback.HandleUrlParamsCallback
 import com.peakmain.webview.callback.WebViewChromeClientCallback
 import com.peakmain.webview.callback.WebViewClientCallback
 import com.peakmain.webview.interfaces.InitWebViewSetting
@@ -115,6 +115,17 @@ class PkWebViewInit private constructor() {
             P.apply(pkWebViewInit.mWebViewController, P)
             mPkWebViewInit = pkWebViewInit
             return pkWebViewInit
+        }
+
+        /**
+         * 设置全局拦截url回调
+         */
+        fun setHandleUrlParamsCallback(
+            handleUrlParamsCallback:
+            HandleUrlParamsCallback<out WebViewEvent>,
+        ): Builder {
+            P.mHandleUrlParamsCallback = handleUrlParamsCallback
+            return this
         }
 
         fun registerEntities(vararg entities: Class<*>): Builder {

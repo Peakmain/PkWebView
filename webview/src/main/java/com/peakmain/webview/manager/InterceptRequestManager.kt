@@ -3,37 +3,16 @@ package com.peakmain.webview.manager
 import android.app.Application
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
-import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
-import android.webkit.WebView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.peakmain.webview.bean.cache.CacheRequest
 import com.peakmain.webview.bean.cache.WebResource
 import com.peakmain.webview.utils.LogWebViewUtils
-import com.peakmain.webview.utils.WebViewUtils
-import okhttp3.Cache
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.Interceptor
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
-import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.IOException
-import java.util.concurrent.Callable
-import java.util.concurrent.CancellationException
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import java.util.concurrent.Future
 
 /**
  * author ：Peakmain
@@ -72,15 +51,15 @@ class InterceptRequestManager private constructor() {
                     ): Boolean { if (dataSource == DataSource.MEMORY_CACHE) {
                         // 图片来自内存缓存
                         // 处理内存缓存的逻辑
-                        LogWebViewUtils.e("图片缓存来自内存缓存：${request.url}")
+                        LogWebViewUtils.i("图片缓存来自内存缓存：${request.url}")
                     } else if (dataSource == DataSource.DATA_DISK_CACHE) {
                         // 图片来自磁盘缓存
                         // 处理磁盘缓存的逻辑
-                        LogWebViewUtils.e("图片缓存来自磁盘缓存：${request.url}")
+                        LogWebViewUtils.i("图片缓存来自磁盘缓存：${request.url}")
                     } else {
                         // 图片来自网络
                         // 处理网络加载的逻辑
-                        LogWebViewUtils.e("图片缓存来自网络缓存：${request.url}")
+                        LogWebViewUtils.i("图片缓存来自网络缓存：${request.url}")
                     }
                         return false
                     }

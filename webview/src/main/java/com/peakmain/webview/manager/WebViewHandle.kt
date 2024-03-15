@@ -17,7 +17,8 @@ import com.peakmain.webview.utils.WebViewEventManager
  */
 internal class WebViewHandle(
     val webView: WebView?,
-    private val handleUrlParamsCallback: HandleUrlParamsCallback<out WebViewEvent>?
+    private val handleUrlParamsCallback: HandleUrlParamsCallback<out WebViewEvent>?,
+    private val sHandlerUrlParamsCallback: HandleUrlParamsCallback<out WebViewEvent>?,
 ) {
     private val mWebViewEventManager: WebViewEventManager = WebViewEventManager.instance
 
@@ -57,7 +58,13 @@ internal class WebViewHandle(
                 event.webView = webView
                 event.context = webView?.context
                 return mWebViewEventManager.execute(cmdUri, event)
+            }else if(sHandlerUrlParamsCallback!=null){
+                val event = sHandlerUrlParamsCallback.handleUrlParamsCallback(url, path)
+                event.webView = webView
+                event.context = webView?.context
+                return mWebViewEventManager.execute(cmdUri, event)
             }
+            LogWebViewUtils.e("请设置handleUrlParamsCallback!!!!!!!!")
             return mWebViewEventManager.execute(cmdUri, WebViewEvent(webView, webView?.context))
         }
         return HandleResult.NotConsume

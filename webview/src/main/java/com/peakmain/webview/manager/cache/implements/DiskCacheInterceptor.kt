@@ -1,7 +1,6 @@
 package com.peakmain.webview.manager.cache.implements
 
 import android.content.Context
-import android.content.Intent
 import android.text.TextUtils
 import com.peakmain.webview.bean.cache.WebResource
 import com.peakmain.webview.manager.cache.CacheConfig
@@ -14,8 +13,6 @@ import okio.buffer
 import okio.sink
 import okio.source
 import java.io.File
-import java.util.Locale
-import kotlin.math.sin
 
 /**
  * author ：Peakmain
@@ -32,13 +29,13 @@ class DiskCacheInterceptor(val context: Context?) : ICacheInterceptor {
         createLruCache()
         var webResource = getWebResourceFromDiskCache(request.key)
         if (webResource != null && isContentTypeCacheable(webResource)) {
-            LogWebViewUtils.e("磁盘缓存：${request.url}")
+            LogWebViewUtils.i("磁盘缓存：${request.url}")
             return webResource
         }
         webResource = chain.process(request)
         //磁盘进行缓存
         if (webResource != null && isContentTypeCacheable(webResource)) {
-            LogWebViewUtils.e("磁盘缓存缓存数据:${request.url}")
+            LogWebViewUtils.i("磁盘缓存缓存数据:${request.url}")
             cacheToDisk(request.key, webResource)
         }
         return webResource

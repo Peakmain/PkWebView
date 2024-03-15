@@ -25,7 +25,7 @@ class NetworkCacheInterceptor(val context: Context?) : ICacheInterceptor {
             if (WebViewUtils.instance.isImageType(request.mimeType)) {
                 InterceptRequestManager.instance.loadImage(context,request)
             } else{
-                LogWebViewUtils.e("网络缓存:${request.url}")
+                LogWebViewUtils.i("网络缓存:${request.url}")
                 OKHttpManager(it).getResource(request, isCacheContentType)
             }
 

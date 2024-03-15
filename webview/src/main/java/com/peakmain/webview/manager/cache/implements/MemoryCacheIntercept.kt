@@ -29,14 +29,14 @@ class MemoryCacheIntercept : ICacheInterceptor {
         mLruCache?.let {
             val resource = it.get(request.key)
             if (checkResourceValid(resource)) {
-                LogWebViewUtils.e("内存缓存:${request.url}")
+                LogWebViewUtils.i("内存缓存:${request.url}")
                 return resource
             }
         }
         val resource = chain.process(request)
         //内存缓存资源
         if (mLruCache != null && checkResourceValid(resource) && resource?.isCacheable == true){
-            LogWebViewUtils.e("内存缓存缓存数据:${request.url}")
+            LogWebViewUtils.i("内存缓存缓存数据:${request.url}")
             mLruCache?.put(request.key, resource)
         }
         return resource

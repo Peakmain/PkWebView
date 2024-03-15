@@ -1,11 +1,10 @@
 package com.peakmain.pkwebview
 
 import android.app.Application
-import android.content.Context
 import com.peakmain.pkwebview.handle.OnlineServiceHandle
 import com.peakmain.pkwebview.handle.PageActionHandle
+import com.peakmain.pkwebview.implements.HandlerUrlParamsImpl
 import com.peakmain.webview.PkWebViewInit
-import com.peakmain.webview.manager.cache.CacheConfig
 import com.peakmain.webview.sealed.LoadingWebViewState
 
 /**
@@ -21,6 +20,7 @@ class App : Application() {
             .setLoadingWebViewState(LoadingWebViewState.HorizontalProgressBarLoadingStyle)
             .registerEntities(OnlineServiceHandle::class.java, PageActionHandle::class.java)
             .setUserAgent(BuildConfig.config.userAgent)
+            .setHandleUrlParamsCallback(HandlerUrlParamsImpl())
             .build()
         super.onCreate()
     }

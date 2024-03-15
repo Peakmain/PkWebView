@@ -17,4 +17,10 @@ object LogWebViewUtils {
             Log.e(TAG, message)
         }
     }
+    @JvmStatic
+    fun i(message: String) {
+        if (BuildConfig.DEBUG) {
+            Log.e(TAG, message)
+        }
+    }
 }

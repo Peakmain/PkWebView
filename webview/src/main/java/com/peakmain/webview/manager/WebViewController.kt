@@ -3,8 +3,10 @@ package com.peakmain.webview.manager
 import android.app.Application
 import android.view.View
 import com.peakmain.webview.R
+import com.peakmain.webview.bean.WebViewEvent
 import com.peakmain.webview.callback.DefaultWebViewChromeClientCallback
 import com.peakmain.webview.callback.DefaultWebViewClientCallback
+import com.peakmain.webview.callback.HandleUrlParamsCallback
 import com.peakmain.webview.callback.WebViewChromeClientCallback
 import com.peakmain.webview.callback.WebViewClientCallback
 import com.peakmain.webview.implement.init.DefaultInitWebViewSetting
@@ -27,6 +29,7 @@ class WebViewController {
     class WebViewParams(val application: Application) {
 
 
+        var mHandleUrlParamsCallback: HandleUrlParamsCallback<out WebViewEvent>? = null
         var mWebViewCount: Int = 3
         var userAgent: String = ""
         var mWebViewSetting: InitWebViewSetting = DefaultInitWebViewSetting()
