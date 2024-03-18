@@ -51,7 +51,7 @@ class DiskCacheInterceptor(val context: Context?) : ICacheInterceptor {
         val cacheSize = build.getDiskCacheSize()
 
         try {
-            mDiskLruCache = DiskLruCache.open(File(dir), version, 2, cacheSize)
+            mDiskLruCache = DiskLruCache.open(dir?.let { File(it) }, version, 2, cacheSize)
         } catch (e: Exception) {
             e.printStackTrace()
         }

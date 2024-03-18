@@ -19,6 +19,25 @@ class PkWebView : WebView {
     var blackMonitorCallback: ((Boolean) -> Unit)? = null
 
 
+    constructor(context: Context, attrs: AttributeSet? = null) : super(context, attrs) {
+        WebViewHelper.loadWebViewResource(context)
+
+    }
+
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
+        WebViewHelper.loadWebViewResource(context)
+    }
+
+    constructor(
+        context: Context,
+    ) : this(context, null)
+
+
+
     fun postBlankMonitorRunnable() {
         removeCallbacks(blackMonitorRunnable)
         postDelayed(blackMonitorRunnable, 1000)
@@ -59,23 +78,6 @@ class PkWebView : WebView {
         }
         return whitePixelCount
     }
-
-    constructor(context: Context, attrs: AttributeSet? = null) : super(context, attrs) {
-        WebViewHelper.loadWebViewResource(context)
-    }
-
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
-    ) {
-        WebViewHelper.loadWebViewResource(context)
-    }
-
-    constructor(
-        context: Context,
-    ) : this(context, null)
-
 
     private var mParams: WebViewController.WebViewParams? = null
     var mLoadUrlListener: ((String) -> String)? = null

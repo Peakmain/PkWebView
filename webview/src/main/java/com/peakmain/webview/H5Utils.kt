@@ -53,7 +53,6 @@ class H5Utils(decoratorConfig: H5IntentConfig = DefaultH5IntentConfigImpl()) :
         params.mCacheMode = cacheMode
         return this
     }
-
     fun setHandleUrlParamsCallback(
         handleUrlParamsCallback:
         HandleUrlParamsCallback<out WebViewEvent>,

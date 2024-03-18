@@ -69,7 +69,7 @@ class CacheConfig private constructor() {
 
         companion object {
             private const val CACHE_DIR_NAME = "cache_webview"
-            private const val DEFAULT_DISK_CACHE_SIZE = 100 * 1024 * 1024
+            private const val DEFAULT_DISK_CACHE_SIZE = 250 * 1024 * 1024
         }
 
         init {

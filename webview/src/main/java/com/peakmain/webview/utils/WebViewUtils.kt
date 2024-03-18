@@ -280,10 +280,10 @@ class WebViewUtils private constructor() {
         var versionCode = 0L
         try {
             packageInfo = packageManager.getPackageInfo(context.packageName, 0)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                versionCode = packageInfo.longVersionCode
+            versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                packageInfo.longVersionCode
             } else {
-                versionCode = packageInfo.versionCode.toLong()
+                packageInfo.versionCode.toLong()
             }
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()

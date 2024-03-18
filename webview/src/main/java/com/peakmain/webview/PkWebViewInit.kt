@@ -1,6 +1,7 @@
 package com.peakmain.webview
 
 import android.app.Application
+import android.os.Looper
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.annotation.MainThread
@@ -104,10 +105,13 @@ class PkWebViewInit private constructor() {
         }
 
         fun build() {
-            if (mPkWebViewInit == null) {
-                create()
+            Looper.myQueue().addIdleHandler {
+                if (mPkWebViewInit == null) {
+                    create()
+                }
+                mPkWebViewInit!!.initPool()
+                false
             }
-            mPkWebViewInit!!.initPool()
         }
 
         private fun create(): PkWebViewInit {
