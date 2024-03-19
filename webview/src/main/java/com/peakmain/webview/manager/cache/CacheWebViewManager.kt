@@ -1,11 +1,9 @@
 package com.peakmain.webview.manager.cache
 
 import android.content.Context
-import android.os.Handler
 import android.os.Looper
 import android.os.MessageQueue
 import com.peakmain.webview.manager.WebViewPool
-import com.peakmain.webview.utils.LogWebViewUtils
 import com.peakmain.webview.view.PkWebView
 
 /**
@@ -15,6 +13,8 @@ import com.peakmain.webview.view.PkWebView
  * describe：外部WebView的管理，提供给外部使用
  */
 class CacheWebViewManager private constructor() {
+
+    private var mCacheConfig: CacheConfig? = null
 
     companion object {
         @JvmStatic
@@ -33,6 +33,23 @@ class CacheWebViewManager private constructor() {
 
     fun releaseWebView(webView: PkWebView?) {
         return webViewPool.releaseWebView(webView)
+    }
+
+    fun setCacheConfig(cacheConfig: CacheConfig): CacheWebViewManager {
+        this.mCacheConfig = cacheConfig
+        return this
+    }
+
+    fun getVersion(): Int {
+        return mCacheConfig?.getVersion() ?: 0
+    }
+
+    fun clearDiskCache():CacheWebViewManager{
+        mCacheConfig?.clearDiskCache(true)
+        return this
+    }
+    fun getCacheConfig(): CacheConfig? {
+        return mCacheConfig
     }
 
     /**

@@ -12,6 +12,8 @@ import java.io.File
  */
 class CacheConfig private constructor() {
 
+    private var isClearDiskCache: Boolean = false
+
     // 缓存路径
     private var mCacheDir: String? = null
 
@@ -19,6 +21,7 @@ class CacheConfig private constructor() {
     private var mVersion = 0
     private var mDiskCacheSize: Long = 0
     private var mMemCacheSize = 0
+    private var defaultCacheDir: String = ""
     fun getCacheDir(): String? {
         return mCacheDir
     }
@@ -39,13 +42,34 @@ class CacheConfig private constructor() {
         return mMemCacheSize
     }
 
+    fun getDefaultCache(): String {
+        return defaultCacheDir
+    }
+
+    fun clearDiskCache(isClearDiskCache: Boolean) {
+        this.isClearDiskCache = isClearDiskCache
+    }
+
+    fun isClearDiskCache(): Boolean {
+        return isClearDiskCache
+    }
+
+
     class Builder(context: Context) {
-        private var cacheDir: String = context.applicationContext.cacheDir.toString() + File.separator + "cache"
-        private var version: Int
+        private val defaultCacheDir: String =
+            context.applicationContext.cacheDir.toString() + File.separator + CACHE_DIR_NAME
+        private var cacheDir: String = defaultCacheDir
+        private var version: Int = 1
         private var diskCacheSize = DEFAULT_DISK_CACHE_SIZE.toLong()
+        private var isClearDiskCache: Boolean = false
+
         fun setCacheDir(cacheDir: String): Builder {
             this.cacheDir = cacheDir
             return this
+        }
+
+        fun getDefaultCacheDir(): String {
+            return defaultCacheDir
         }
 
         fun setVersion(version: Int): Builder {
@@ -58,17 +82,24 @@ class CacheConfig private constructor() {
             return this
         }
 
+   /*     fun clearDiskCache(isClearDiskCache: Boolean): Builder {
+            this.isClearDiskCache = isClearDiskCache
+            return this
+        }*/
 
         fun build(): CacheConfig {
             val config = CacheConfig()
             config.mCacheDir = cacheDir
             config.mVersion = version
             config.mDiskCacheSize = diskCacheSize
+            config.defaultCacheDir = defaultCacheDir
+            config.isClearDiskCache = isClearDiskCache
             return config
         }
 
+
         companion object {
-            private const val CACHE_DIR_NAME = "cache_webview"
+            private const val CACHE_DIR_NAME = "pk_webview_disk_cache"
             private const val DEFAULT_DISK_CACHE_SIZE = 250 * 1024 * 1024
         }
 

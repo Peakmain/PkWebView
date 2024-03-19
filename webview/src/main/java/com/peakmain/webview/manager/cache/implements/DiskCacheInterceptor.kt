@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.TextUtils
 import com.peakmain.webview.bean.cache.WebResource
 import com.peakmain.webview.manager.cache.CacheConfig
+import com.peakmain.webview.manager.cache.CacheWebViewManager
 import com.peakmain.webview.manager.cache.interfaces.ICacheInterceptor
 import com.peakmain.webview.utils.LogWebViewUtils
 import com.peakmain.webview.utils.WebViewUtils
@@ -41,15 +42,20 @@ class DiskCacheInterceptor(val context: Context?) : ICacheInterceptor {
         return webResource
     }
 
+    @Synchronized
     private fun createLruCache() {
         if (mDiskLruCache != null && !mDiskLruCache!!.isClosed) {
             return
         }
-        val build = CacheConfig.Builder(context!!).build()
-        val dir = build.getCacheDir()
-        val version = build.getVersion()
-        val cacheSize = build.getDiskCacheSize()
-
+        if (context == null) return
+        var cacheConfig = CacheWebViewManager.instance.getCacheConfig()
+        if (cacheConfig == null) {
+            cacheConfig = CacheConfig.Builder(context).build()
+        }
+        val dir =
+            if (!TextUtils.isEmpty(cacheConfig.getCacheDir())) cacheConfig.getCacheDir() else cacheConfig.getDefaultCache()
+        val version = cacheConfig.getVersion()
+        val cacheSize = cacheConfig.getDiskCacheSize()
         try {
             mDiskLruCache = DiskLruCache.open(dir?.let { File(it) }, version, 2, cacheSize)
         } catch (e: Exception) {
@@ -93,7 +99,6 @@ class DiskCacheInterceptor(val context: Context?) : ICacheInterceptor {
         val contentType: String? = WebViewUtils.instance.getContentType(resource)
         return contentType != null && WebViewUtils.instance.isCacheContentType(contentType)
     }
-
 
 
     private fun getWebResourceFromDiskCache(key: String?): WebResource? {

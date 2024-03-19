@@ -14,6 +14,7 @@ import com.peakmain.webview.H5Utils
 import com.peakmain.webview.activity.WebViewActivity
 import com.peakmain.webview.annotation.CacheMode
 import com.peakmain.webview.bean.WebViewConfigBean
+import com.peakmain.webview.manager.cache.CacheConfig
 import com.peakmain.webview.manager.cache.CacheWebViewManager
 import com.peakmain.webview.sealed.StatusBarState
 import com.peakmain.webview.utils.GsonUtils
@@ -26,7 +27,11 @@ class MainActivity : AppCompatActivity() {
         val launcher = registerForActivityResult(StartActivityForResult()) {
             Log.e("TAG", "收到结果:${it.resultCode}")
         }
+
+        CacheWebViewManager.instance.setCacheConfig(CacheConfig.Builder(this)
+            .setCacheDir("").build())
         CacheWebViewManager.instance.preLoadUrl(this, BuildConfig.config.url)
+
         findViewById<TextView>(R.id.tv_webview).setOnClickListener {
             H5Utils()
                 .isShowToolBar(false)
