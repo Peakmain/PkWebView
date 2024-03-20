@@ -82,10 +82,10 @@ class CacheConfig private constructor() {
             return this
         }
 
-   /*     fun clearDiskCache(isClearDiskCache: Boolean): Builder {
+        fun clearDiskCache(isClearDiskCache: Boolean): Builder {
             this.isClearDiskCache = isClearDiskCache
             return this
-        }*/
+        }
 
         fun build(): CacheConfig {
             val config = CacheConfig()
