@@ -27,6 +27,7 @@
 
         </activity>
         <activity android:name="com.peakmain.pkwebview.SecondWebViewActivity" />
+        <activity android:name="com.peakmain.pkwebview.NormalWebActivity" />
     </application>
 
 </manifest>

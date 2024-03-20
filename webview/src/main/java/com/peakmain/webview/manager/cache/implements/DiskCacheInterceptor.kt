@@ -30,7 +30,7 @@ class DiskCacheInterceptor(val context: Context?) : ICacheInterceptor {
         createLruCache()
         var webResource = getWebResourceFromDiskCache(request.key)
         if (webResource != null && isContentTypeCacheable(webResource)) {
-            LogWebViewUtils.i("磁盘缓存：${request.url}")
+            LogWebViewUtils.i("读取磁盘缓存：${request.url}")
             return webResource
         }
         webResource = chain.process(request)

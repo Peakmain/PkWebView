@@ -176,7 +176,7 @@ open class WebViewFragment : Fragment() {
 
     fun onPageFinished(view: WebView, url: String) {
         mEndTime = System.currentTimeMillis()
-        LogWebViewUtils.e("消耗的时间:${(mEndTime - mStartTime)}ms")
+        LogWebViewUtils.e("pkWebView消耗的时间:${(mEndTime - mStartTime)}ms")
         mViewModel.hideLoading(mLoadingWebViewState, mLoadingViewConfig)
         mH5UtilsParams.mExecuteJsPair?.also {
             executeJs(mWebView, it.first, it.second)

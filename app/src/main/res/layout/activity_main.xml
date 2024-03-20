@@ -5,15 +5,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
-
     <TextView
-        android:id="@+id/tv_webview"
+        android:id="@+id/tv_normal_webview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
+        android:background="@color/amber_100"
+        android:text="普通加载webView"
+        android:paddingLeft="@dimen/dimen_30"
+        android:paddingRight="@dimen/dimen_30"
+        android:textColor="#272a2b"
+        android:paddingTop="@dimen/dimen_10"
+        android:paddingBottom="@dimen/dimen_10"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/tv_webview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/amber_100"
+        android:text="预加载webView"
+        android:paddingLeft="@dimen/dimen_30"
+        android:paddingRight="@dimen/dimen_30"
+        android:textColor="#272a2b"
+        android:paddingTop="@dimen/dimen_10"
+        android:layout_marginTop="@dimen/dimen_10"
+        android:paddingBottom="@dimen/dimen_10"
+        app:layout_constraintTop_toBottomOf="@id/tv_normal_webview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

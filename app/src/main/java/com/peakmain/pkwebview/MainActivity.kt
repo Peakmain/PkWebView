@@ -1,5 +1,7 @@
 package com.peakmain.pkwebview
 
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -28,10 +30,16 @@ class MainActivity : AppCompatActivity() {
             Log.e("TAG", "收到结果:${it.resultCode}")
         }
 
-        CacheWebViewManager.instance.setCacheConfig(CacheConfig.Builder(this)
-            .setCacheDir("").build())
+        CacheWebViewManager.instance.setCacheConfig(
+            CacheConfig.Builder(this)
+                .setCacheDir("").build()
+        )
         CacheWebViewManager.instance.preLoadUrl(this, BuildConfig.config.url)
-
+        findViewById<TextView>(R.id.tv_normal_webview).setOnClickListener {
+            val intent = Intent(this@MainActivity, NormalWebActivity::class.java)
+            intent.putExtra("url", BuildConfig.config.url)
+            startActivity(intent)
+        }
         findViewById<TextView>(R.id.tv_webview).setOnClickListener {
             H5Utils()
                 .isShowToolBar(false)
@@ -77,7 +85,7 @@ class MainActivity : AppCompatActivity() {
                 .startActivityForResult(
                     this, launcher,
                     WebViewConfigBean(
-                        BuildConfig.config.url
+                       BuildConfig.config.url
                     )
                 )
         }
