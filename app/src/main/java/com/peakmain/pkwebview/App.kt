@@ -17,6 +17,8 @@ class App : Application() {
     override fun onCreate() {
         PkWebViewInit.Builder(this)
             //.setLoadingView(ReplaceLoadingConfigImpl())
+            //设置全局拦截url回调
+            .setHandleUrlParamsCallback(HandlerUrlParamsImpl())
             .setLoadingWebViewState(LoadingWebViewState.HorizontalProgressBarLoadingStyle)
             .registerEntities(OnlineServiceHandle::class.java, PageActionHandle::class.java)
             .setUserAgent(BuildConfig.config.userAgent)

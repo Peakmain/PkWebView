@@ -35,13 +35,16 @@ internal class OKHttpManager(context: Context) {
     }
 
     private fun getWebViewCacheInterceptor(): Interceptor {
-        return Interceptor { chain ->
-            val request = chain.request()
-            val response = chain.proceed(request)
-            response.newBuilder().removeHeader("pragma")
-                .removeHeader("Cache-Control")
-                .header("Cache-Control", "max-age=" + (360L * 24 * 60 * 60))
-                .build()
+        return object : Interceptor {
+            override fun intercept(chain: Interceptor.Chain): Response {
+                val request = chain.request()
+                val response = chain.proceed(request)
+                return response.newBuilder()
+                    .removeHeader("pragma")
+                    .removeHeader("Cache-Control")
+                    .header("Cache-Control", "max-age=" + (360L * 24 * 60 * 60))
+                    .build()
+            }
         }
     }
 
