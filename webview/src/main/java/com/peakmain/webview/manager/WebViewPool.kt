@@ -5,8 +5,10 @@ import android.content.MutableContextWrapper
 import android.view.ViewGroup
 import com.peakmain.webview.implement.WebViewChromeClientImpl
 import com.peakmain.webview.implement.WebViewClientImpl
+import com.peakmain.webview.utils.LogWebViewUtils
 import com.peakmain.webview.utils.WebViewEventManager
 import com.peakmain.webview.view.PkWebView
+import java.util.LinkedList
 
 /**
  * author ：Peakmain
@@ -16,7 +18,7 @@ import com.peakmain.webview.view.PkWebView
  */
 internal class WebViewPool private constructor() {
     private lateinit var mUserAgent: String
-    private lateinit var mWebViewPool: Array<PkWebView?>
+    private lateinit var mWebViewPool: LinkedList<PkWebView?>
     lateinit var mParams: WebViewController.WebViewParams
 
     companion object {
@@ -33,11 +35,11 @@ internal class WebViewPool private constructor() {
     fun initWebViewPool(params: WebViewController.WebViewParams?) {
         if (params == null) return
         WEB_VIEW_COUNT = params.mWebViewCount
-        mWebViewPool = arrayOfNulls(WEB_VIEW_COUNT)
+        mWebViewPool = LinkedList()
         mUserAgent = params.userAgent
         mParams = params
         for (i in 0 until WEB_VIEW_COUNT) {
-            mWebViewPool[i] = createWebView(params, mUserAgent)
+            mWebViewPool.add(createWebView(params, mUserAgent))
         }
         registerEntities(params)
     }
@@ -58,7 +60,7 @@ internal class WebViewPool private constructor() {
                 val webView = mWebViewPool[i]
                 val contextWrapper = webView?.context as MutableContextWrapper?
                 contextWrapper?.baseContext = context
-                mWebViewPool[i] = null
+                mWebViewPool.remove()
                 return webView
             }
         }
@@ -76,6 +78,7 @@ internal class WebViewPool private constructor() {
      */
     fun releaseWebView(webView: PkWebView?) {
         checkIsInitialized()
+        LogWebViewUtils.e("释放当前WebView:$webView")
         webView?.apply {
             stopLoading()
             removeAllViews()
@@ -83,11 +86,8 @@ internal class WebViewPool private constructor() {
             clearCache(true)
             destroy()
             (parent as ViewGroup?)?.removeView(this)
-            for (i in 0 until WEB_VIEW_COUNT) {
-                if (mWebViewPool[i] == null) {
-                    mWebViewPool[i] = createWebView(mParams, mUserAgent)
-                    return
-                }
+            if (mWebViewPool.size < WEB_VIEW_COUNT) {
+                mWebViewPool.add(createWebView(mParams, mUserAgent))
             }
         }
 
@@ -97,6 +97,7 @@ internal class WebViewPool private constructor() {
         params: WebViewController.WebViewParams, userAgent: String,
     ): PkWebView {
         val webView = PkWebView(MutableContextWrapper(params.application))
+        LogWebViewUtils.e("创建webView:$webView")
         webView.setWebViewParams(params)
         params.apply {
             mWebViewSetting.initWebViewSetting(webView, userAgent)

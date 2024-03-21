@@ -3,6 +3,7 @@ package com.peakmain.webview.manager.cache
 import android.content.Context
 import android.os.Looper
 import android.os.MessageQueue
+import android.webkit.WebView
 import com.peakmain.webview.manager.WebViewPool
 import com.peakmain.webview.view.PkWebView
 
@@ -60,6 +61,7 @@ class CacheWebViewManager private constructor() {
             override fun queueIdle(): Boolean {
                 val webView = getWebView(context) ?: return true
                 webView.preLoadUrl(url)
+                WebViewPool.instance.releaseWebView(webView)
                 return false
             }
         })
