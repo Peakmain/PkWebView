@@ -68,7 +68,7 @@ class WebViewUtils private constructor() {
         mCacheContentType.add("application/octet-stream")
         mCacheContentType.add("application/pdf")
         mCacheContentType.add("text/plain")
-        mCacheContentType.add("text/html")
+       // mCacheContentType.add("text/html")
         mCacheContentType.add("text/xml")
 
         // 字体文件
