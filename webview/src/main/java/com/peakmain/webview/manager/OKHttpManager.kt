@@ -1,6 +1,7 @@
 package com.peakmain.webview.manager
 
 import android.content.Context
+import com.peakmain.webview.WebViewJsUtils
 import com.peakmain.webview.bean.cache.CacheRequest
 import com.peakmain.webview.bean.cache.WebResource
 import com.peakmain.webview.utils.WebViewUtils
@@ -83,6 +84,12 @@ internal class OKHttpManager(context: Context) {
                 remoteResource.originBytes = responseBody.bytes()
             }
             remoteResource.responseHeaders = WebViewUtils.instance.generateHeadersMap(response.headers)
+            val contentType = WebViewUtils.instance.getContentType(remoteResource)
+            if (contentType != null) {
+                if(!WebViewUtils.instance.isCacheContentType(contentType)){
+                    return null
+                }
+            }
             return remoteResource
         }
         return null
