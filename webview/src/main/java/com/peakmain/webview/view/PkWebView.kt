@@ -20,7 +20,7 @@ class PkWebView : WebView {
 
 
     constructor(context: Context, attrs: AttributeSet? = null) : super(context, attrs) {
-        WebViewHelper.loadWebViewResource(context)
+       // WebViewHelper.loadWebViewResource(context)
 
     }
 
@@ -29,7 +29,7 @@ class PkWebView : WebView {
         attrs,
         defStyleAttr
     ) {
-        WebViewHelper.loadWebViewResource(context)
+       // WebViewHelper.loadWebViewResource(context)
     }
 
     constructor(
