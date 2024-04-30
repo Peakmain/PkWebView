@@ -6,7 +6,6 @@ import android.graphics.Canvas
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.webkit.WebView
-import com.peakmain.webview.helper.WebViewHelper
 import com.peakmain.webview.manager.WebViewController
 
 /**
@@ -20,7 +19,6 @@ class PkWebView : WebView {
 
 
     constructor(context: Context, attrs: AttributeSet? = null) : super(context, attrs) {
-       // WebViewHelper.loadWebViewResource(context)
 
     }
 
@@ -29,7 +27,6 @@ class PkWebView : WebView {
         attrs,
         defStyleAttr
     ) {
-       // WebViewHelper.loadWebViewResource(context)
     }
 
     constructor(
