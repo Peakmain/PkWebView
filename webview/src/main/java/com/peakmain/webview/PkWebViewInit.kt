@@ -136,6 +136,11 @@ class PkWebViewInit private constructor() {
             P.mEntities = entities
             return this
         }
+
+        fun setNoCacheUrl(notCacheUrl:Array<String>): Builder {
+           P.notCacheUrlArray=notCacheUrl
+            return this
+        }
     }
 
 }

@@ -7,6 +7,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import com.peakmain.webview.bean.cache.CacheRequest
 import com.peakmain.webview.utils.WebViewUtils
+import com.peakmain.webview.view.PkWebView
 import java.io.ByteArrayInputStream
 import java.util.Locale
 
@@ -18,8 +19,21 @@ import java.util.Locale
  */
 class WebResourceResponseManager private constructor() {
     companion object {
-        fun getResponse(context: Context?,request: WebResourceRequest, userAgent: String?): WebResourceResponse? {
+        fun getResponse(
+            context: Context?,
+            request: WebResourceRequest,
+            userAgent: String?,
+            webView: PkWebView?,
+        ): WebResourceResponse? {
             val url = request.url.toString()
+            webView?.let {view->
+                val webViewParams = view.getWebViewParams()
+                webViewParams?.notCacheUrlArray?.forEach {
+                    if (url.contains(it)) {
+                        return null
+                    }
+                }
+            }
             //资源类型
             val mimeType = WebViewUtils.instance.getMimeType(url)
             val cacheRequest = CacheRequest()
@@ -28,11 +42,11 @@ class WebResourceResponseManager private constructor() {
             cacheRequest.userAgent = userAgent
             val headers = request.requestHeaders
             cacheRequest.headers = headers
-            return get(context,cacheRequest)
+            return get(context, cacheRequest)
         }
 
-        private fun get(context: Context?,request: CacheRequest): WebResourceResponse? {
-            val response = RealCacheInterfaceCall(context,request).call() ?: return null
+        private fun get(context: Context?, request: CacheRequest): WebResourceResponse? {
+            val response = RealCacheInterfaceCall(context, request).call() ?: return null
             //需要对获取到的response进行封装
             val responseHeaders = response.responseHeaders
             var contentType = ""

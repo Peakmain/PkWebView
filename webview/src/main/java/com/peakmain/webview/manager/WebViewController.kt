@@ -29,6 +29,7 @@ class WebViewController {
     class WebViewParams(val application: Application) {
 
 
+        var notCacheUrlArray: Array<String>? = null
         var mHandleUrlParamsCallback: HandleUrlParamsCallback<out WebViewEvent>? = null
         var mWebViewCount: Int = 3
         var userAgent: String = ""

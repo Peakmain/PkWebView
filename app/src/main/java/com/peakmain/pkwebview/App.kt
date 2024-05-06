@@ -23,6 +23,7 @@ class App : Application() {
             .registerEntities(OnlineServiceHandle::class.java, PageActionHandle::class.java)
             .setUserAgent(BuildConfig.config.userAgent)
             .setHandleUrlParamsCallback(HandlerUrlParamsImpl())
+            .setNoCacheUrl(arrayOf("https://miniapp.yaduo.com/atourlife/signIn/signIn"))
             .build()
         super.onCreate()
     }

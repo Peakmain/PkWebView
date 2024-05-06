@@ -7,13 +7,10 @@ import android.net.Uri
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
-import com.peakmain.webview.H5Utils
 import com.peakmain.webview.fragment.WebViewFragment
 import com.peakmain.webview.manager.H5UtilsParams
-import com.peakmain.webview.manager.InterceptRequestManager
 import com.peakmain.webview.manager.cache.WebResourceResponseManager
 import com.peakmain.webview.utils.LogWebViewUtils
-import com.peakmain.webview.utils.WebViewUtils
 import com.peakmain.webview.view.PkWebView
 
 /**
@@ -87,7 +84,8 @@ class DefaultWebViewClientCallback : WebViewClientCallback {
         return WebResourceResponseManager.getResponse(
             (view?.context as MutableContextWrapper?)?.baseContext,
             request,
-            (view as PkWebView?)?.getWebViewParams()?.userAgent
+            (view as PkWebView?)?.getWebViewParams()?.userAgent,
+            view
         )
         /*        if (url.scheme != "https" && url.scheme != "http") {
                     return null
