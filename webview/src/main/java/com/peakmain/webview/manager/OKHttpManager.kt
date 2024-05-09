@@ -69,28 +69,33 @@ internal class OKHttpManager(context: Context) {
                 }
             }
         }
-        val request = builder.url(url!!)
-            .get().build()
-        var response: Response? = null
+        try {
+            val request = builder.url(url!!)
+                .get().build()
+            val response: Response?
 
-        val remoteResource = WebResource()
-        response = createOkHttpClient().newCall(request).execute()
-        if (isInterceptorThisRequest(response)) {
-            remoteResource.responseCode = response.code
-            remoteResource.message = response.message
-            remoteResource.isModified = response.code != HttpURLConnection.HTTP_NOT_MODIFIED
-            val responseBody: ResponseBody? = response.body
-            if (responseBody != null) {
-                remoteResource.originBytes = responseBody.bytes()
-            }
-            remoteResource.responseHeaders = WebViewUtils.instance.generateHeadersMap(response.headers)
-            val contentType = WebViewUtils.instance.getContentType(remoteResource)
-            if (contentType != null) {
-                if(!WebViewUtils.instance.isCacheContentType(contentType)){
-                    return null
+            val remoteResource = WebResource()
+            response = createOkHttpClient().newCall(request).execute()
+            if (isInterceptorThisRequest(response)) {
+                remoteResource.responseCode = response.code
+                remoteResource.message = response.message
+                remoteResource.isModified = response.code != HttpURLConnection.HTTP_NOT_MODIFIED
+                val responseBody: ResponseBody? = response.body
+                if (responseBody != null) {
+                    remoteResource.originBytes = responseBody.bytes()
                 }
+                remoteResource.responseHeaders =
+                    WebViewUtils.instance.generateHeadersMap(response.headers)
+                val contentType = WebViewUtils.instance.getContentType(remoteResource)
+                if (contentType != null) {
+                    if (!WebViewUtils.instance.isCacheContentType(contentType)) {
+                        return null
+                    }
+                }
+                return remoteResource
             }
-            return remoteResource
+        } catch (e: Exception) {
+            return null
         }
         return null
     }
