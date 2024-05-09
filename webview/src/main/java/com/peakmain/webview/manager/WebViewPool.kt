@@ -67,17 +67,10 @@ internal class WebViewPool private constructor() {
         return null
     }
 
-    private fun checkIsInitialized() {
-        if (!::mWebViewPool.isInitialized) {
-            throw UninitializedPropertyAccessException("Please call the PkWebViewInit.init method for initialization in the Application")
-        }
-    }
-
     /**
      * Activity销毁时需要释放当前WebView
      */
     fun releaseWebView(webView: PkWebView?) {
-        checkIsInitialized()
         LogWebViewUtils.e("释放当前WebView:$webView")
         webView?.apply {
             stopLoading()
@@ -86,6 +79,9 @@ internal class WebViewPool private constructor() {
             clearCache(true)
             destroy()
             (parent as ViewGroup?)?.removeView(this)
+            if (!::mWebViewPool.isInitialized) {
+                return
+            }
             if (mWebViewPool.size < WEB_VIEW_COUNT) {
                 mWebViewPool.add(createWebView(mParams, mUserAgent))
             }
