@@ -296,7 +296,7 @@ public final class DiskLruCache implements Closeable {
     private void readJournalLine(String line) throws IOException {
         int firstSpace = line.indexOf(' ');
         if (firstSpace == -1) {
-            throw new IOException("unexpected journal line: " + line);
+            return;
         }
 
         int keyBegin = firstSpace + 1;
@@ -398,8 +398,9 @@ public final class DiskLruCache implements Closeable {
                 new OutputStreamWriter(new FileOutputStream(journalFile, true), Charset.forName("US-ASCII")));
     }
 
-    private static void deleteIfExists(File file) throws IOException {
+    private static void deleteIfExists(File file) {
         if (file.exists() && !file.delete()) {
+            return;
         }
     }
 
@@ -408,7 +409,7 @@ public final class DiskLruCache implements Closeable {
             deleteIfExists(to);
         }
         if (!from.renameTo(to)) {
-            throw new IOException();
+           return;
         }
     }
 
@@ -526,7 +527,7 @@ public final class DiskLruCache implements Closeable {
     private synchronized void completeEdit(Editor editor, boolean success) throws IOException {
         Entry entry = editor.entry;
         if (entry.currentEditor != editor) {
-            throw new IllegalStateException();
+            return;
         }
 
         // If this edit is creating the entry for the first time, every index must have a value.
@@ -605,7 +606,7 @@ public final class DiskLruCache implements Closeable {
         for (int i = 0; i < valueCount; i++) {
             File file = entry.getCleanFile(i);
             if (file.exists() && !file.delete()) {
-                throw new IOException("failed to delete " + file);
+               return false;
             }
             size -= entry.lengths[i];
             entry.lengths[i] = 0;
@@ -681,8 +682,7 @@ public final class DiskLruCache implements Closeable {
     private void validateKey(String key) {
         Matcher matcher = LEGAL_KEY_PATTERN.matcher(key);
         if (!matcher.matches()) {
-            throw new IllegalArgumentException("keys must match regex "
-                    + STRING_KEY_PATTERN + ": \"" + key + "\"");
+           return;
         }
     }
 
