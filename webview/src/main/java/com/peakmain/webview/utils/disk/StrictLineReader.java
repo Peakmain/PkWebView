@@ -62,10 +62,10 @@ class StrictLineReader implements Closeable {
     /**
      * Constructs a new {@code LineReader} with the specified charset and the default capacity.
      *
-     * @param in      the {@code InputStream} to read data from.
+     * @param in the {@code InputStream} to read data from.
      * @param charset the charset used to decode data. Only US-ASCII, UTF-8 and ISO-8859-1 are
-     *                supported.
-     * @throws NullPointerException     if {@code in} or {@code charset} is null.
+     * supported.
+     * @throws NullPointerException if {@code in} or {@code charset} is null.
      * @throws IllegalArgumentException if the specified charset is not supported.
      */
     public StrictLineReader(InputStream in, Charset charset) {
@@ -75,23 +75,23 @@ class StrictLineReader implements Closeable {
     /**
      * Constructs a new {@code LineReader} with the specified capacity and charset.
      *
-     * @param in       the {@code InputStream} to read data from.
+     * @param in the {@code InputStream} to read data from.
      * @param capacity the capacity of the buffer.
-     * @param charset  the charset used to decode data. Only US-ASCII, UTF-8 and ISO-8859-1 are
-     *                 supported.
-     * @throws NullPointerException     if {@code in} or {@code charset} is null.
+     * @param charset the charset used to decode data. Only US-ASCII, UTF-8 and ISO-8859-1 are
+     * supported.
+     * @throws NullPointerException if {@code in} or {@code charset} is null.
      * @throws IllegalArgumentException if {@code capacity} is negative or zero
-     *                                  or the specified charset is not supported.
+     * or the specified charset is not supported.
      */
     public StrictLineReader(InputStream in, int capacity, Charset charset) {
         if (in == null || charset == null) {
-            return;
+            throw new NullPointerException();
         }
         if (capacity < 0) {
             throw new IllegalArgumentException("capacity <= 0");
         }
         if (!(charset.equals(Charset.forName("US-ASCII")))) {
-            return;
+            throw new IllegalArgumentException("Unsupported encoding");
         }
 
         this.in = in;
@@ -119,7 +119,7 @@ class StrictLineReader implements Closeable {
      * this end of line marker is not included in the result.
      *
      * @return the next line from the input.
-     * @throws IOException  for underlying {@code InputStream} errors.
+     * @throws IOException for underlying {@code InputStream} errors.
      * @throws EOFException for the end of source stream.
      */
     public String readLine() throws IOException {
@@ -152,7 +152,7 @@ class StrictLineReader implements Closeable {
                     try {
                         return new String(buf, 0, length, charset.name());
                     } catch (UnsupportedEncodingException e) {
-                        return "";
+                        throw new AssertionError(e); // Since we control the charset this will never happen.
                     }
                 }
             };
@@ -187,7 +187,7 @@ class StrictLineReader implements Closeable {
     private void fillBuf() throws IOException {
         int result = in.read(buf, 0, buf.length);
         if (result == -1) {
-            return;
+            throw new EOFException();
         }
         pos = 0;
         end = result;
