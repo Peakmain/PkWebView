@@ -337,7 +337,6 @@ public final class DiskLruCache implements Closeable {
      * cache. Dirty entries are assumed to be inconsistent and will be deleted.
      */
     private void processJournal() throws IOException {
-        deleteIfExists(journalFileTmp);
         for (Iterator<Entry> i = lruEntries.values().iterator(); i.hasNext(); ) {
             Entry entry = i.next();
             if (entry.currentEditor == null) {
@@ -347,8 +346,6 @@ public final class DiskLruCache implements Closeable {
             } else {
                 entry.currentEditor = null;
                 for (int t = 0; t < valueCount; t++) {
-                    deleteIfExists(entry.getCleanFile(t));
-                    deleteIfExists(entry.getDirtyFile(t));
                 }
                 i.remove();
             }
@@ -398,16 +395,10 @@ public final class DiskLruCache implements Closeable {
                 new OutputStreamWriter(new FileOutputStream(journalFile, true), Charset.forName("US-ASCII")));
     }
 
-    private static void deleteIfExists(File file) {
-        if (file.exists() && !file.delete()) {
-            return;
-        }
-    }
+
 
     private static void renameTo(File from, File to, boolean deleteDestination) throws IOException {
-        if (deleteDestination) {
-            deleteIfExists(to);
-        }
+
         if (!from.renameTo(to)) {
            return;
         }
@@ -555,8 +546,6 @@ public final class DiskLruCache implements Closeable {
                     entry.lengths[i] = newLength;
                     size = size - oldLength + newLength;
                 }
-            } else {
-                deleteIfExists(dirty);
             }
         }
 

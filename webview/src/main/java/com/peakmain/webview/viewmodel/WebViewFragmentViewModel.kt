@@ -177,7 +177,9 @@ class WebViewFragmentViewModel() : ViewModel() {
         }
         mNoNetworkView?.visibility = View.VISIBLE
         if (activity == null) return mNoNetworkView
-        (activity as WebViewActivity).isNotifyTitle(false)
+        if(activity is WebViewActivity){
+            activity.isNotifyTitle(false)
+        }
         return mNoNetworkView
     }
 
