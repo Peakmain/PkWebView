@@ -34,7 +34,7 @@ class WebViewFragmentViewModel() : ViewModel() {
     }
 
     fun hideStatusView(statusView: View?, activity: Activity?) {
-        if (statusView == null || activity == null) return
+        if (statusView == null || !isWebViewActivity(activity)) return
         if (statusView.visibility == View.VISIBLE) {
             statusView.visibility = View.INVISIBLE
         }
@@ -60,7 +60,7 @@ class WebViewFragmentViewModel() : ViewModel() {
 
     fun hideLoading(
         loadingWebViewState: LoadingWebViewState,
-        loadingViewConfig: LoadingViewConfig?
+        loadingViewConfig: LoadingViewConfig?,
     ) {
         if (loadingWebViewState != LoadingWebViewState.NotLoading) {
             loadingViewConfig?.let {
@@ -74,7 +74,7 @@ class WebViewFragmentViewModel() : ViewModel() {
     fun showLoading(
         view: WebView?,
         loadingWebViewState: LoadingWebViewState,
-        loadingViewConfig: LoadingViewConfig?
+        loadingViewConfig: LoadingViewConfig?,
     ) {
         if (loadingWebViewState != LoadingWebViewState.NotLoading
             && loadingViewConfig?.isShowLoading() == false
@@ -87,9 +87,11 @@ class WebViewFragmentViewModel() : ViewModel() {
         when (loadingWebViewState) {
             is LoadingWebViewState.NotLoading -> {
             }
+
             is LoadingWebViewState.ProgressBarLoadingStyle,
             LoadingWebViewState.CustomLoadingStyle,
-            LoadingWebViewState.HorizontalProgressBarLoadingStyle -> {
+            LoadingWebViewState.HorizontalProgressBarLoadingStyle,
+            -> {
                 block?.invoke()
             }
         }
@@ -102,7 +104,7 @@ class WebViewFragmentViewModel() : ViewModel() {
         failingUrl: String?,
         webView: PkWebView?,
         frameLayout: FrameLayout?,
-        retryClickListener: ((String?) -> Unit)? = null
+        retryClickListener: ((String?) -> Unit)? = null,
     ) {
         if (webViewParams == null)
             showNoNetworkViewById(
@@ -130,7 +132,7 @@ class WebViewFragmentViewModel() : ViewModel() {
         webView: PkWebView?,
         webViewParams: WebViewController.WebViewParams,
         frameLayout: FrameLayout?,
-        retryClickListener: ((String?) -> Unit)? = null
+        retryClickListener: ((String?) -> Unit)? = null,
     ) {
         var noNetWorkView = webViewParams.mNoNetWorkView
         val noNetWorkViewId = webViewParams.mNoNetWorkViewId
@@ -164,7 +166,7 @@ class WebViewFragmentViewModel() : ViewModel() {
         @LayoutRes layoutId: Int,
         frameLayout: FrameLayout?,
         noNetWorkView: View?,
-        retryClickListener: ((String?) -> Unit)? = null
+        retryClickListener: ((String?) -> Unit)? = null,
     ): View? {
         var mNoNetworkView = noNetWorkView
         if (mNoNetworkView == null && layoutId != 0) {
@@ -177,7 +179,7 @@ class WebViewFragmentViewModel() : ViewModel() {
         }
         mNoNetworkView?.visibility = View.VISIBLE
         if (activity == null) return mNoNetworkView
-        if(activity is WebViewActivity){
+        if (activity is WebViewActivity) {
             activity.isNotifyTitle(false)
         }
         return mNoNetworkView
