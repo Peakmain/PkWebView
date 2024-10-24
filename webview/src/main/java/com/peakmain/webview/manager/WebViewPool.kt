@@ -19,7 +19,7 @@ import java.util.LinkedList
 internal class WebViewPool private constructor() {
     private lateinit var mUserAgent: String
     private lateinit var mWebViewPool: LinkedList<PkWebView?>
-    lateinit var mParams: WebViewController.WebViewParams
+    var mParams: WebViewController.WebViewParams? = null
 
     companion object {
         private var WEB_VIEW_COUNT = 3
@@ -55,6 +55,10 @@ internal class WebViewPool private constructor() {
         if (!::mWebViewPool.isInitialized) {
             return null
         }
+        if (mWebViewPool.size <= 0) {
+            if (mParams == null) return null
+            mWebViewPool.add(createWebView(mParams!!, mUserAgent))
+        }
         for (i in 0 until WEB_VIEW_COUNT) {
             if (mWebViewPool[i] != null) {
                 val webView = mWebViewPool[i]
@@ -83,7 +87,9 @@ internal class WebViewPool private constructor() {
                 return
             }
             if (mWebViewPool.size < WEB_VIEW_COUNT) {
-                mWebViewPool.add(createWebView(mParams, mUserAgent))
+               mParams?.let {
+                   mWebViewPool.add(createWebView(it, mUserAgent))
+               }
             }
         }
 
