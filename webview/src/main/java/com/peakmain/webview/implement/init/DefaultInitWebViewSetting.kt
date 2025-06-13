@@ -32,6 +32,7 @@ class DefaultInitWebViewSetting : InitWebViewSetting {
             setSupportMultipleWindows(false)
             setSupportZoom(false)
             builtInZoomControls = false
+            textZoom = 100
             cacheMode = WebSettings.LOAD_DEFAULT
             allowFileAccess = true
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

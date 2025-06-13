@@ -34,12 +34,13 @@ class WebViewFragmentViewModel() : ViewModel() {
     }
 
     fun hideStatusView(statusView: View?, activity: Activity?) {
-        if (statusView == null || !isWebViewActivity(activity)) return
+        if (statusView == null) return
         if (statusView.visibility == View.VISIBLE) {
             statusView.visibility = View.INVISIBLE
         }
-        val webViewActivity = activity as WebViewActivity
-        webViewActivity.isNotifyTitle(true)
+        if (activity is WebViewActivity) {
+            activity.isNotifyTitle(true)
+        }
     }
 
     fun onReceivedTitle(activity: Activity?, view: WebView?, title: String) {
@@ -91,7 +92,7 @@ class WebViewFragmentViewModel() : ViewModel() {
             is LoadingWebViewState.ProgressBarLoadingStyle,
             LoadingWebViewState.CustomLoadingStyle,
             LoadingWebViewState.HorizontalProgressBarLoadingStyle,
-            -> {
+                -> {
                 block?.invoke()
             }
         }
