@@ -100,8 +100,12 @@ open class WebViewFragment : Fragment() {
                 mH5UtilsParams.mLoadingViewConfig ?: webViewParams.mLoadingViewConfig
             mLoadingView = mLoadingViewConfig?.getLoadingView(frameLayout.context)
             mLoadingView?.visibility = View.VISIBLE
-            if (mLoadingView?.parent != frameLayout) {
-                frameLayout.addView(mLoadingView, -1)
+            mLoadingView?.let { loadingView ->
+                val parent = loadingView.parent
+                if (parent is ViewGroup) {
+                    parent.removeView(loadingView)
+                }
+                frameLayout.addView(loadingView, -1)
             }
         }
 
